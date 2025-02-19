@@ -25,6 +25,7 @@ export const configureSession = (app, config) => {
   );
 
   app.use((req, res, next) => {
+    res.locals.link = "https://" + req.host + req.url;
     res.locals.user = req.user || null;
     res.locals.theme = req.cookies.theme || "dark";
     next();
