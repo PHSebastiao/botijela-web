@@ -1,0 +1,11 @@
+html[data-bs-theme="dark"] body {
+  --bs-body-bg: #111 !important;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    transition: background-color 0.3s, color 0.3s;
+}

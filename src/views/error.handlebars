@@ -1,0 +1,61 @@
+<html lang="pt-BR" data-bs-theme="{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{status}} - {{message}} </title>
+
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="BotiJela" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <style>
+        #themeToggle {
+            position: absolute;
+            border: none;
+            top: 10px;
+            right: 10px;
+            padding: 7px;
+            z-index: 1050;
+        }
+
+        #returnHome {
+            position: absolute;
+            border: none;
+            top: 10px;
+            right: 45px;
+            padding: 7px;
+            z-index: 1050;
+        }
+
+        .button-light {
+            color: #e0e0e0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container pt-3">
+        <h1>{{message}}</h1>
+        <h2>{{error.status}}</h2>
+        <pre>{{error.stack}}</pre>
+    </div>
+    <button type="button" id="themeToggle" class="btn btn-outline-{{#if (eq theme 'dark')}}light{{else}}dark{{/if}}">
+        <i class="bi {{#if (eq theme 'dark')}}bi-moon{{else}}bi-sun{{/if}}"></i>
+    </button>
+    <a type="button" id="returnHome" class="btn btn-outline-{{#if (eq theme 'dark')}}light{{else}}dark{{/if}}" href="/">
+        <i class="bi bi-house"></i>
+    </a>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/shared.js"></script>
+</body>
+
+</html>
