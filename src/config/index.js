@@ -7,7 +7,7 @@ const requiredEnvVars = [
   "SESSION_SECRET",
   "GENERAL_CALLBACK_URL",
   "ADVANCED_CALLBACK_URL",
-  'NODE_ENV', 'PORT', 'API_URL'
+  'NODE_ENV', 'PORT', 'BOT_API_URL'
 ];
 
 requiredEnvVars.forEach((envVar) => {

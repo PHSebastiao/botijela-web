@@ -1,5 +1,6 @@
 import passport from "passport";
 import OAuth2Strategy from "passport-oauth2";
+import internalApi from '../services/InternalApiService.js';
 
 export default function configurePassport(
   TWITCH_CLIENT_ID,
@@ -56,7 +57,7 @@ export default function configurePassport(
         scope: scope,
         state: true,
       },
-      function (accessToken, refreshToken, params, profile, done) {
+      async function (accessToken, refreshToken, params, profile, done) {
         const userProfile = profile.data[0];
         const user = {
           userId: userProfile.id,
@@ -68,7 +69,7 @@ export default function configurePassport(
           refreshToken,
           scope: params.scope,
         };
-        // todo: send user to ${API_URL}/auth/user
+        await internalApi.createUser(user);
         console.log(user);
         done(null, user);
       }

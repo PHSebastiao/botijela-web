@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /logout
+Disallow: /auth/general
+Disallow: /auth/general/callback
+Disallow: /auth/advanced
+Disallow: /auth/advanced/callback
+Disallow: /queue
+Disallow: /options
+
+Allow: /
+Allow: /login

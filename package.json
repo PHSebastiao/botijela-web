@@ -1,6 +1,6 @@
 {
   "name": "botijela-web",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Botijela's Dashboard. Integration of Express, Handlebars and Twitch OAuth",
   "main": "app.js",
   "type": "module",
@@ -13,6 +13,7 @@
   "dependencies": {
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "compression": "^1.8.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -22,6 +23,7 @@
     "helmet": "^8.0.0",
     "jquery": "^3.7.1",
     "morgan": "^1.10.0",
+    "node-fetch": "^3.3.2",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0"
   },

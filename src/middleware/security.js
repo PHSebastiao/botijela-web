@@ -1,5 +1,6 @@
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
+import compression from "compression";
 
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour window
@@ -8,6 +9,7 @@ const limiter = rateLimit({
 
 
 export const configureSecurity = (app) => {
+  app.use(compression());
   app.use(
     helmet({
       contentSecurityPolicy: {

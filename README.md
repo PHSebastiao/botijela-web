@@ -1,5 +1,5 @@
 # Botijela Web
-Here you will find a simple Express web app illustrating how to authenticate Twitch API calls using the OAuth authorization code flow.  This sample uses [Express](http://expressjs.com/), [Passport](http://passportjs.org/), and [Handlebars](http://handlebarsjs.com/).
+Here you will find a dashboard for Botijela made with Express web app and how it authenticates Twitch API calls using the OAuth authorization code flow.  This sample uses [Express](http://expressjs.com/), [Passport](http://passportjs.org/), and [Handlebars](http://handlebarsjs.com/).
 
 ## Installation
 After you have cloned this repository, use [npm](https://www.npmjs.com/) to install dependencies.
