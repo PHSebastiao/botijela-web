@@ -2,7 +2,7 @@
 
 const API_URL = process.env.BOT_API_URL;
 
-import BaseApiService from "./baseApiService.js";
+import BaseApiService from "./BaseApiService.js";
 
 class InternalApiService extends BaseApiService {
   constructor() {
