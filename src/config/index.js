@@ -36,7 +36,7 @@ export default {
     general: process.env.GENERAL_CALLBACK_URL,
     advanced: process.env.ADVANCED_CALLBACK_URL,
   },
-  apiUrl: process.env.API_URL,
+  apiUrl: process.env.BOT_API_URL,
   port: process.env.PORT || 4200,
   host: process.env.HOST || "::",
 };

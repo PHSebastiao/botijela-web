@@ -10,26 +10,26 @@ class BaseApiService {
   async request(endpoint, method = "GET", data = null) {
     try {
       const url = `${this.baseURL}${endpoint}`;
-    const config = {
-      method,
-      headers: this.options.headers,
-      credentials: "include",
-    };
+      const config = {
+        method,
+        headers: this.options.headers,
+        credentials: "include",
+      };
 
-    if (data) {
-      config.body = JSON.stringify(data);
-    }
+      if (data) {
+        config.body = JSON.stringify(data);
+      }
 
-    const response = await fetch(url, config);
+      const response = await fetch(url, config);
 
-    if (!response.ok) {
-      console.error(response.type, response.statusText)
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+      if (!response.ok) {
+        console.error(response.type, response.statusText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-    return response.json();
+      return response.json();
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
