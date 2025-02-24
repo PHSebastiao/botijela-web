@@ -38,5 +38,5 @@ export default {
   },
   apiUrl: process.env.API_URL,
   port: process.env.PORT || 4200,
-  host: process.env.HOST || "0.0.0.0",
+  host: process.env.HOST || "::",
 };
