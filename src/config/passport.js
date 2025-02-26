@@ -84,7 +84,7 @@ export default function configurePassport(
       TWITCH_CLIENT_ID,
       TWITCH_SECRET,
       GENERAL_CALLBACK_URL,
-      "channel:bot chat:read user:read:moderated_channels moderator:read:followers channel:read:redemptions channel:manage:redemptions channel:read:subscriptions"
+      "channel:bot chat:read chat:edit channel:read:redemptions channel:manage:redemptions user:read:moderated_channels moderator:read:moderators moderation:read"
     )
   );
 
@@ -94,7 +94,7 @@ export default function configurePassport(
       TWITCH_CLIENT_ID,
       TWITCH_SECRET,
       ADVANCED_CALLBACK_URL,
-      "channel:bot chat:read chat:edit channel:read:redemptions channel:manage:redemptions channel:manage:moderators channel:edit:commercial channel:manage:raids channel:read:subscriptions channel:manage:vips moderator:manage:banned_users moderator:read:shoutouts moderator:manage:shoutouts moderator:read:chatters moderator:read:followers moderation:read user:manage:chat_color channel:read:predictions channel:manage:predictions user:write:chat user:manage:whispers user:read:whispers"
+      "channel:bot chat:read chat:edit channel:read:redemptions channel:manage:redemptions user:read:moderated_channels moderator:read:moderators moderation:read moderator:manage:banned_users channel:manage:moderators channel:manage:vips channel:read:subscriptions channel:manage:raids channel:edit:commercial moderator:read:shoutouts moderator:manage:shoutouts channel:read:predictions channel:manage:predictions moderator:read:chatters moderator:read:followers user:manage:chat_color user:write:chat user:manage:whispers user:read:whispers"
     )
   );
 
