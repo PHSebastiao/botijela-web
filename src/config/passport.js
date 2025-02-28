@@ -94,7 +94,7 @@ export default function configurePassport(
       TWITCH_CLIENT_ID,
       TWITCH_SECRET,
       ADVANCED_CALLBACK_URL,
-      "channel:bot chat:read chat:edit channel:read:redemptions channel:manage:redemptions user:read:moderated_channels moderator:read:moderators moderation:read moderator:manage:banned_users channel:manage:moderators channel:manage:vips channel:read:subscriptions channel:manage:raids channel:edit:commercial moderator:read:shoutouts moderator:manage:shoutouts channel:read:predictions channel:manage:predictions moderator:read:chatters moderator:read:followers user:manage:chat_color user:write:chat user:manage:whispers user:read:whispers"
+      "channel:bot chat:read chat:edit channel:read:redemptions channel:manage:redemptions user:read:moderated_channels moderator:read:moderators moderation:read moderator:manage:banned_users moderator:manage:automod channel:manage:moderators channel:manage:vips channel:read:subscriptions channel:manage:raids channel:edit:commercial moderator:read:shoutouts moderator:manage:shoutouts channel:read:predictions channel:manage:predictions moderator:read:chatters moderator:read:followers user:manage:chat_color user:write:chat user:manage:whispers user:read:whispers"
     )
   );
 
