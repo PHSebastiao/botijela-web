@@ -1,15 +1,34 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --btn-outline-color: #000000;
+  --btn-background-color: #bdbdbd;
+}
+
+[data-theme="dark"] {
+  --bg-color: #111;
+  --text-color: #ffffff;
+  --btn-outline-color: #ffffff;
+}
+
 html[data-bs-theme="dark"] body {
   --bs-body-bg: #111 !important;
 }
 
 body {
-    display: flex;
-    height: 100vh;
-    margin: 0;
-    overflow: hidden;
-    transition: background-color 0.3s, color 0.3s;
+  display: flex;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  transition: background-color 0.3s, color 0.3s;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
+.btn-outline-light, .btn-outline-dark {
+  border-color: var(--btn-outline-color);
+  color: var(--btn-outline-color);
+}
 
 #sidebar {
   position: fixed;
@@ -59,7 +78,7 @@ body {
 }
 
 #sidebarCollapse:hover {
-  background-color: rgba(100, 100, 100, 230);
+  background-color: var(--btn-background-color);
 }
 
 #sidebarCollapse.shift {

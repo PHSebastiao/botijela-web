@@ -13,11 +13,15 @@ class InternalApiService extends BaseApiService {
   }
 
   async createUser(userData) {
-    return this.post("/auth/user", userData);
+    return await this.post("/auth/user", userData);
   }
 
-  async getUsers() {
-    return this.get("/users");
+  async getModeratedChannels(userId) {
+    return await this.get(`/channel/${userId}/moderatedChannels`);
+  }
+
+  async getManagedChannelInfo(channelName) {
+    return await this.get(`/channels/${channelName}`)
   }
 }
 

@@ -9,17 +9,13 @@ function setCookie(name, value, days) {
 }
 
 function toggleTheme() {
-  if (document.documentElement.getAttribute("data-bs-theme") == "dark") {
-    document.documentElement.setAttribute("data-bs-theme", "light");
-  } else {
-    document.documentElement.setAttribute("data-bs-theme", "dark");
-  }
-  const newTheme = document.documentElement.getAttribute("data-bs-theme");
+  const body = document.body;
+  const currentTheme = body.getAttribute("data-theme");
+  const newTheme = currentTheme === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-bs-theme", newTheme);
+  body.setAttribute("data-theme", newTheme);
   setCookie("theme", newTheme, 30);
   $(this).find("i").toggleClass("bi-moon bi-sun");
-  $("#sidebarCollapse, #themeToggle, #returnHome").toggleClass(
-    "btn-outline-light btn-outline-dark"
-  );
 }
 
 $("#themeToggle").on("click", toggleTheme);

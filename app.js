@@ -37,7 +37,7 @@ app.use(errorHandler);
 
 const server = app
   .listen(config.port, config.host, () => {
-    console.log(`Server is running on http://${config.host}:${config.port}`);
+    console.log(`Server is running on [${config.host}]:${config.port}`);
   })
   .on("error", (error) => {
     console.error("Server failed to start:", error);
