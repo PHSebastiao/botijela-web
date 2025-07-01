@@ -29,14 +29,57 @@ export const configureSession = (app, config) => {
     res.locals.link = "https://" + req.hostname + req.url;
     res.locals.theme = req.cookies.theme || "dark";
     res.locals.user = req.user || null;
-    res.locals.manageable = req.user ? await InternalApiService.getModeratedChannels(req.user.userId) : null;
-    if(res.locals.manageable && res.locals.manageable.map(user => user.name).includes(req.cookies.managing)) {
-      res.locals.managing = await InternalApiService.getManagedChannelInfo(req.cookies.managing)
-      res.cookie('managingSelf', false)
-    } else {
-      res.locals.managing = req.user ? await InternalApiService.getManagedChannelInfo(req.user.username) : null;
-      res.cookie('managingSelf', true)
-      req.user ? res.cookie('managing', res.locals.managing.username) : null;
+
+    if (!req.user) {
+      // Not authenticated, skip managing logic
+      res.locals.managing = null;
+      res.locals.managingSelf = true;
+      res.locals.manageable = null;
+      return next();
+    }
+
+    try {
+      const username = req.user.username;
+      const managingCookie = req.cookies.managing;
+
+      // Get manageable channels
+      res.locals.manageable = await InternalApiService.getModeratedChannels(
+        req.user.userId
+      );
+
+      let managingUser = username;
+      let managingSelf = true;
+
+      if (
+        managingCookie &&
+        managingCookie !== username &&
+        res.locals.manageable &&
+        res.locals.manageable.map((user) => user.name).includes(managingCookie)
+      ) {
+        // User is allowed to manage this channel
+        managingUser = managingCookie;
+        managingSelf = false;
+      }
+
+      // Get managed channel info
+      res.locals.managing = await InternalApiService.getManagedChannelInfo(
+        managingUser
+      );
+      res.locals.managingSelf = managingSelf;
+
+      // Set cookie if needed
+      if (req.cookies.managing !== managingUser) {
+        res.cookie("managing", managingUser, {
+          httpOnly: false,
+          sameSite: "lax",
+        });
+      }
+    } catch (err) {
+      // Handle errors gracefully
+      res.locals.managing = null;
+      res.locals.managingSelf = true;
+      res.locals.manageable = null;
+      console.error("Error in managing middleware:", err);
     }
     next();
   });

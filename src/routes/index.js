@@ -9,17 +9,17 @@ router.get("/login", isNotAuthenticated, (req, res) => {
 
 router.get("/logout", (req, res) => {
   req.logout((err) => {
-    if (err) console.error('Logout error:', err);
+    if (err) console.error("Logout error:", err);
     req.session.destroy((err) => {
-      res.clearCookie('connect.sid');
+      res.clearCookie("connect.sid");
       res.redirect("/");
     });
   });
 });
 
-
 router.get("/", isAuthenticated, (req, res) => {
-  res.render("home", { title: "Botijela", activePage: "home" });
+  console.log(req.locals);
+  res.render("home", { title: "Botijela", activePage: "home"});
 });
 
 router.get("/queue", isAuthenticated, (req, res) => {

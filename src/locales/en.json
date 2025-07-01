@@ -1,0 +1,24 @@
+{
+  "home": {
+    "message": "This is the homepage, there is not much here yet, but soon there will be news 🔥",
+    "welcome": "Welcome, {{name}}!"
+  },
+  "sidebar": {
+    "options": "Options",
+    "home": "Home",
+    "queues": "Queues"
+  },
+  "login": {
+    "access": "Access",
+    "to_login": "Login",
+    "message": "Access dashboard by logging in Twitch with basic permissions for Botijela's operation."
+  },
+  "options": {
+    "title": "Options",
+    "message": "This is the options page, where some things related to Botijela and your channel will be configured."
+  },
+  "queues": {
+    "title": "Queues",
+    "message": "This is the queues page, where you can manage your queues without having to use ransoms or commands."
+  }
+}

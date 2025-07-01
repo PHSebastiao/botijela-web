@@ -19,3 +19,10 @@ function toggleTheme() {
 }
 
 $("#themeToggle").on("click", toggleTheme);
+
+$(document).on("click", ".lang-switch", function (e) {
+  e.preventDefault();
+  var lang = $(this).data("lang");
+  document.cookie = "i18next=" + lang + ";path=/;SameSite=Lax";
+  location.reload();
+});

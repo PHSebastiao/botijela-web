@@ -1,0 +1,24 @@
+{
+  "home": {
+    "message": "Esta es la página de inicio, todavía no hay mucho, pero pronto habrá noticias 🔥",
+    "welcome": "Seja bem vindo, {{name}}!"
+  },
+  "sidebar": {
+    "options": "Opción",
+    "home": "Página Inicial",
+    "queues": "Colas"
+  },
+  "login": {
+    "access": "Acceso",
+    "to_login": "Acceso",
+    "message": "Acceda al tablero iniciando sesión en Twitch con permisos básicos para la operación del Botijela."
+  },
+  "options": {
+    "title": "Opción",
+    "message": "Esta es la página de opciones, donde se configurarán algunas cosas relacionadas con Botijela y su canal."
+  },
+  "queues": {
+    "title": "Colas",
+    "message": "Esta es la página de colas, donde puede administrar sus colas sin tener que usar rescates o comandos."
+  }
+}

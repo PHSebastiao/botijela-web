@@ -1,0 +1,24 @@
+{
+  "home": {
+    "welcome": "Seja bem vindo, {{name}}!",
+    "message": "Esta é a página inicial, ainda não tem muita coisa por aqui, mas em breve haverá novidades 🔥"
+  },
+  "sidebar": {
+    "options": "Opções",
+    "queues": "Filas",
+    "home": "Início"
+  },
+  "login": {
+    "to_login": "Logar",
+    "message": "Acessar o dashboard ao fazer login com a twitch com permissões básicas para funcionamento do Botijela.",
+    "access": "Acesso"
+  },
+  "options": {
+    "message": "Esta é a página de opções, onde serão configurados algumas coisas relacionado ao bot e seu canal.",
+    "title": "Opções"
+  },
+  "queues": {
+    "title": "Filas",
+    "message": "Esta é a página de filas, onde poderá gerenciar suas filas sem ter que usar resgates ou comandos."
+  }
+}

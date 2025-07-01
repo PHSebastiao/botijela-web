@@ -24,6 +24,27 @@ app.engine(
     defaultLayout: "main",
     helpers: {
       eq: (a, b) => a === b,
+      array: (...args) => args.slice(0, -1),
+      object: function () {
+        const args = Array.from(arguments);
+        const options = args.pop();
+        const obj = {};
+        for (let i = 0; i < args.length; i += 2) {
+          obj[args[i]] = args[i + 1];
+        }
+        return obj;
+      },
+      t: function () {
+        // Handlebars passes (key, options)
+        const args = Array.from(arguments);
+        const options = args.pop();
+        const key = args[0];
+        // options.hash contains named parameters
+        if (typeof options.data.root.t === "function") {
+          return options.data.root.t(key, options.hash);
+        }
+        return key;
+      },
     },
   })
 );

@@ -1,4 +1,5 @@
 import logger from "morgan";
+import { i18nextMiddleware } from "../config/i18n.js";
 import { configureSecurity } from "./security.js";
 import { configureSession } from "./session.js";
 import { configureStatic } from "./static.js";
@@ -12,8 +13,22 @@ export const configureMiddleware = (app, config) => {
       })
     );
   } else {
-    app.use(logger("dev"));
+    app.use(
+      logger("dev", {
+        skip: (req) => req.url.startsWith("/favicon"),
+      })
+    );
   }
+
+  app.use((req, res, next) => {
+    if (req.cookies && ["pt-BR", "en", "es"].includes(req.cookies.i18next)) {
+      res.clearCookie("i18next", { path: "/" });
+      delete req.cookies.i18next;
+    }
+    next();
+  });
+
+  app.use(i18nextMiddleware);
 
   configureSecurity(app);
   configureStatic(app);

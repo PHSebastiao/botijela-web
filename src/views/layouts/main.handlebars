@@ -36,6 +36,22 @@
             background-color: var(--btn-background-color);
         }
 
+        .language-flag {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        div.manage-self {
+            padding: 8px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        button.manage-self:hover {
+            color: #f44040;
+        }
+
         .dropdown-menu {
             max-height: 200px;
             overflow-y: auto;
@@ -81,15 +97,53 @@
                 <h4 class="mb-3">Botijela</h4>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link {{#if (eq activePage 'home')}}active{{/if}}" href="/">Home</a>
+                        <a class="nav-link {{#if (eq activePage 'home')}}active{{/if}}" href="/">
+                            {{t 'sidebar.home' }}
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{#if (eq activePage 'queue')}}active{{/if}}" href="/queue">Filas</a>
+                        <a class="nav-link {{#if (eq activePage 'queue')}}active{{/if}}" href="/queue">
+                            {{t 'sidebar.queues' }}
+                        </a>
                     </li>
+                    {{#if managingSelf }}
                     <li class="nav-item">
-                        <a class="nav-link {{#if (eq activePage 'options')}}active{{/if}}" href="/options">Opções</a>
+                        <a class="nav-link {{#if (eq activePage 'options')}}active{{/if}}" href="/options">
+                            {{t "sidebar.options"}}
+                        </a>
                     </li>
+                    {{/if}}
                 </ul>
+                <div class="mt-auto d-flex nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="changeLanguage" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            {{#if (eq language 'pt-BR' )}}
+                            <img src="/img/br.png" class="language-flag" alt="Português">
+                            {{else if (eq language 'en')}}
+                            <img src="/img/eua.png" class="language-flag" alt="English">
+                            {{else}}
+                            <img src="/img/es.png" class="language-flag" alt="Español">
+                            {{/if}}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="changeLanguage">
+                            {{#each (array
+                            (object "code" "pt-BR" "img" "/img/br.png" "label" "Português")
+                            (object "code" "en" "img" "/img/eua.png" "label" "English")
+                            (object "code" "es" "img" "/img/es.png" "label" "Español")
+                            )}}
+                            <li>
+                                <a href="#"
+                                    class="lang-switch dropdown-item{{#if (eq language this.code)}} active disabled{{/if}}"
+                                    data-lang="{{this.code}}" title="{{this.label}}">
+                                    <img src="{{this.img}}" class="language-flag" alt="{{this.label}}">
+                                    {{this.label}}
+                                </a>
+                            </li>
+                            {{/each}}
+                        </ul>
+                    </li>
+                </div>
             </div>
         </nav>
 
@@ -106,7 +160,8 @@
                             class="btn btn-outline-{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
                             <i class="bi {{#if (eq theme 'dark')}}bi-moon{{else}}bi-sun{{/if}}"></i>
                         </button>
-                        <div class="collapse navbar-collapse justify-content-end">
+                        <div class="collapse navbar-collapse justify-content-end ">
+                            {{#if managingSelf}}
                             <ul class="navbar-nav">
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="channelToManage" role="button"
@@ -116,7 +171,8 @@
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="channelToManage">
                                         {{#each manageable}}
                                         <li>
-                                            <a href="#" class="dropdown-item"><img class="dropdown-pfp rounded-circle"
+                                            <a href="#" class="dropdown-item select-managing"
+                                                data-username="{{this.name}}"><img class="dropdown-pfp rounded-circle"
                                                     src="{{this.profilePictureUrl}}"
                                                     alt="{{this.name}}'s Profile Picture"
                                                     style="{{#if this.isLive}}border-color: red;{{/if}}">
@@ -127,6 +183,14 @@
                                     </ul>
                                 </li>
                             </ul>
+                            {{else}}
+                            <div class="manage-self">
+                                <button type="button" class="btn btn-sm manage-self">
+                                    {{managing.displayName}}
+                                    <i class="bi bi-x ms-1"></i>
+                                </button>
+                            </div>
+                            {{/if}}
                         </div>
                     </div>
                 </nav>

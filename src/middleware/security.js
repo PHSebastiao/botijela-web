@@ -1,10 +1,15 @@
+import compression from "compression";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
-import compression from "compression";
 
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour window
-  max: 1000 // 1000 requests per windowMs
+  max: 10000, // 10000 requests per windowMs
+  skip: (req) => 
+    req.url.startsWith("/favicon") ||
+    req.url.startsWith("/js/") ||
+    req.url.startsWith("/css/") ||
+    req.url.startsWith("/images/") 
 });
 
 
