@@ -1,6 +1,6 @@
 import passport from "passport";
 import OAuth2Strategy from "passport-oauth2";
-import InternalApiService from '../services/InternalApiService.js';
+import InternalApiService from "../services/InternalApiService.js";
 
 export default function configurePassport(
   TWITCH_CLIENT_ID,
@@ -56,22 +56,32 @@ export default function configurePassport(
         callbackURL: callbackUrl,
         scope: scope,
         state: true,
+        passReqToCallback: true,
       },
-      async function (accessToken, refreshToken, params, profile, done) {
-        const userProfile = profile.data[0];
-        const user = {
-          userId: userProfile.id,
-          username: userProfile.login,
-          displayName: userProfile.display_name,
-          obtainmentTimestamp: Date.now(),
-          expiresIn: params.expires_in,
-          accessToken,
-          refreshToken,
-          scope: params.scope,
-        };
-        await InternalApiService.createUser(user);
-        console.log(user);
-        done(null, user);
+      async function (req, accessToken, refreshToken, params, profile, done) {
+        try {
+          const userProfile = profile.data[0];
+          const user = {
+            userId: userProfile.id,
+            username: userProfile.login,
+            displayName: userProfile.display_name,
+            obtainmentTimestamp: Date.now(),
+            expiresIn: params.expires_in,
+            accessToken,
+            refreshToken,
+            scope: params.scope,
+            preferredLanguage:
+              req.session.language || req.cookies.i18next || "pt",
+          };
+          const apiUser = { ...user };
+          delete apiUser.preferredLanguage;
+          await InternalApiService.createUser(apiUser);
+          console.log(user);
+          done(null, user);
+        } catch (error) {
+          console.error("Error in TwitchStrategy callback:", error);
+          done(error);
+        }
       }
     );
 

@@ -1,5 +1,5 @@
 import logger from "morgan";
-import { i18nextMiddleware } from "../config/i18n.js";
+import { i18nextMiddleware, preserveLanguageMiddleware } from "./i18next.js";
 import { configureSecurity } from "./security.js";
 import { configureSession } from "./session.js";
 import { configureStatic } from "./static.js";
@@ -28,9 +28,10 @@ export const configureMiddleware = (app, config) => {
     next();
   });
 
-  app.use(i18nextMiddleware);
-
   configureSecurity(app);
   configureStatic(app);
   configureSession(app, config);
+
+  app.use(preserveLanguageMiddleware);
+  app.use(i18nextMiddleware);
 };

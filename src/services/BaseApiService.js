@@ -8,28 +8,46 @@ class BaseApiService {
   }
 
   async request(endpoint, method = "GET", data = null) {
-    try {
-      const url = `${this.baseURL}${endpoint}`;
-      const config = {
-        method,
-        headers: this.options.headers,
-        credentials: "include",
-      };
+    const url = `${this.baseURL}${endpoint}`;
+    const config = {
+      method,
+      headers: this.options.headers,
+      credentials: "include",
+    };
 
-      if (data) {
-        config.body = JSON.stringify(data);
+    if (data) {
+      config.body = JSON.stringify(data);
+    }
+
+    const response = await fetch(url, config);
+
+    if (!response.ok) {
+      let errorMsg = response.statusText;
+      try {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const errorJson = await response.json();
+          if (errorJson && errorJson.error) {
+            errorMsg = errorJson.error;
+          }
+        }
+      } catch (e) {
+        // ignore JSON parse errors
       }
+      throw new Error(errorMsg);
+    }
 
-      const response = await fetch(url, config);
-
-      if (!response.ok) {
-        console.error(response.type, response.statusText);
-        throw new Error(`HTTP error! status: ${response.status}`);
+    // Only parse JSON if there is content
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const text = await response.text();
+      if (text) {
+        return JSON.parse(text);
+      } else {
+        return null;
       }
-
-      return response.json();
-    } catch (error) {
-      console.error(error);
+    } else {
+      return null;
     }
   }
 

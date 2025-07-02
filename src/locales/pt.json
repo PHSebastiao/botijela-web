@@ -20,6 +20,32 @@
   "queues": {
     "title": "Filas",
     "message": "Esta é a página de filas, onde poderá gerenciar suas filas sem ter que usar resgates ou comandos.",
-    "no_queues": "Nenhuma fila encontrada"
+    "no_queues": "Nenhuma fila encontrada",
+    "form": {
+      "name": "Nome da Fila",
+      "description": "Descrição da fila",
+      "separator": "Separador dos itens",
+      "silentActions": "Ações Silenciosas",
+      "create": "Criar",
+      "title": {
+        "description": "Pequeno texto que inicia a fila.",
+        "silentActions": "Não mandar no chat ações da fila (adicionar, completar, remover).",
+        "separator": "Caractere que fica entre os itens da fila"
+      }
+    },
+    "description": "Descrição",
+    "command": "Comando",
+    "separator": "Separador",
+    "create_error": "Erro na criação da fila.",
+    "create_success": "Fila criada com sucesso!",
+    "titles": {
+      "complete": "Lista de Completos",
+      "edit": "Editar Fila",
+      "delete": "Excluir Fila"
+    }
+  },
+  "queue": {},
+  "other": {
+    "fetch_error": "Erro ao carregar."
   }
 }

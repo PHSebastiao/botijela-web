@@ -20,12 +20,15 @@ body {
   height: 100vh;
   margin: 0;
   overflow: hidden;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
   background-color: var(--bg-color);
   color: var(--text-color);
 }
 
-.btn-outline-light, .btn-outline-dark {
+.btn-outline-light,
+.btn-outline-dark {
   border-color: var(--btn-outline-color);
   color: var(--btn-outline-color);
 }
@@ -43,7 +46,12 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  box-shadow:
+    rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px,
+    rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px,
+    rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
 #sidebar.collapsed {
@@ -103,19 +111,35 @@ main {
 
 @media (max-width: 768px) {
   #sidebar {
-      width: 100%;
-      transform: translateX(0);
+    width: 100%;
+    transform: translateX(0);
   }
 
   #sidebar.collapsed {
-      transform: translateX(-100%);
+    transform: translateX(-100%);
   }
 
+  #content {
+    display: none;
+  }
   #content.shift {
-      margin-left: 0;
+    display: block;
   }
 
   #showSidebar {
-      display: block;
+    display: block;
+  }
+
+  #sidebarCollapse,
+  #themeToggle {
+    display: block !important;
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    left: auto;
+    z-index: 2000;
+  }
+  #sidebarCollapse {
+    margin-right: 50px;
   }
 }

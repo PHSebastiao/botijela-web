@@ -1,8 +1,96 @@
-<h1>{{t 'queues.title'  }}</h1>
+<style>
+  .max-width {
+    width: -webkit-fill-available;
+  }
+
+  .min-width {
+    width: min-content;
+    display: flex;
+    flex-direction: column;
+  }
+</style>
+
+<h1>{{t 'queues.title' }}</h1>
+<div class="accordion mb-4" id="new-queue-acc">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#new-queue"
+        aria-expanded="false" aria-controls="new-queue">
+        Criar nova fila
+      </button>
+    </h2>
+    <div id="new-queue" class="accordion-collapse collapse" data-bs-parent="#new-queue-acc">
+      <div class="accordion-body">
+        <form action="/queue" method="post" class="row g-3 align-items-center">
+          <div class="col-auto">
+            <div class="input-group">
+              <span class="input-group-text" id="queue-prefix">{{managing.prefix}}</span>
+              <input type="text" name="queueName" class="form-control" placeholder="{{t 'queues.form.name'}}"
+                maxlength="40" aria-describedby="queue-prefix" required>
+            </div>
+          </div>
+          <div class="col-auto">
+            <input type="text" name="queueDescription" class="form-control"
+              placeholder="{{t 'queues.form.description'}}" data-bs-toggle="tooltip"
+              data-bs-title="{{t 'queues.form.title.description' }}" maxlength="50" required>
+          </div>
+          <div class="col-auto">
+            <input type="text" name="queueSeparator" class="form-control" placeholder="{{t 'queues.form.separator'}}"
+              data-bs-toggle="tooltip" data-bs-title="{{t 'queues.form.title.separator' }}" maxlength="3" required>
+          </div>
+          <div class="col-auto form-check">
+            <label class="form-check-label" data-bs-toggle="tooltip"
+              data-bs-title="{{t 'queues.form.title.silentActions' }}" for="silentActions">
+              <input class="form-check-input" type="checkbox" name="silentActions" id="silentActions">
+              {{t 'queues.form.silentActions'}}
+            </label>
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-outline-primary">{{t
+              'queues.form.create'}}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {{#if queues}}
-<ul>
+<ul class="list-group">
   {{#each queues}}
-    <li>{{this.queueName}} - {{this.queueDescription}}</li>
+  <li class="list-group-item">
+    <div class="d-flex justify-content-between align-items-start">
+      <div class="max-width">
+        <h3>{{this.queueName}}</h3>
+        <div name="queueInfo">
+          {{t "queues.command" }}: {{ ../managing.prefix }}{{this.queueName}}
+          |
+          {{t "queues.description" }}: {{ this.queueDescription }}
+          |
+          {{t "queues.separator" }}: {{ this.queueSeparator }}
+        </div>
+        {{#if this.items}}
+        <hr>
+        {{/if}}
+        {{#each this.items}}
+        {{#unless this.isCompleted}} {{ this.itemName }} {{/unless}}
+        {{/each}}
+      </div>
+      <div class="min-width">
+        <button type="button" class="btn btn-sm btn-outline-primary border-0 me-1" data-bs-toggle="tooltip"
+          data-bs-placement="left" data-bs-title="{{t 'queues.titles.complete' }}">
+          <i class="bi bi-list"></i>
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-warning border-0 me-1" data-bs-toggle="tooltip"
+          data-bs-placement="left" data-bs-title="{{t 'queues.titles.edit' }}">
+          <i class="bi bi-pencil-square"></i>
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-danger border-0" data-bs-toggle="tooltip"
+          data-bs-placement="left" data-bs-title="{{t 'queues.titles.delete' }}">
+          <i class="bi bi-trash3"></i>
+        </button>
+      </div>
+    </div>
+  </li>
   {{/each}}
 </ul>
 {{else}}

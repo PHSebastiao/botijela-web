@@ -20,6 +20,32 @@
   "queues": {
     "title": "Colas",
     "message": "Esta es la página de colas, donde puede administrar sus colas sin tener que usar rescates o comandos.",
-    "no_queues": "No se encontraron colas"
+    "no_queues": "No se encontraron colas",
+    "form": {
+      "create": "Crear",
+      "description": "Descripción de la cola",
+      "name": "Nombre de la cola",
+      "separator": "Artículos separadores",
+      "silentActions": "Acciones silenciosas",
+      "title": {
+        "description": "Texto corto que inicia la cola.",
+        "silentActions": "No envíe las acciones de chat de la cola (agregar, completar, eliminar).",
+        "separator": "Carácter que se encuentra entre los elementos de cola"
+      }
+    },
+    "description": "Descripción",
+    "command": "Comando",
+    "separator": "Separador",
+    "create_error": "Error creando cola.",
+    "create_success": "¡La cola creó con éxito!",
+    "titles": {
+      "complete": "Lista de Completo",
+      "edit": "Editar la cola",
+      "delete": "Borrar la cola"
+    }
+  },
+  "queue": {},
+  "other": {
+    "fetch_error": "Error de carga."
   }
 }

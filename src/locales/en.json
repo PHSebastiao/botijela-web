@@ -20,6 +20,32 @@
   "queues": {
     "title": "Queues",
     "message": "This is the queues page, where you can manage your queues without having to use ransoms or commands.",
-    "no_queues": "No queues found"
+    "no_queues": "No queues found",
+    "form": {
+      "silentActions": "Silent Actions",
+      "name": "Queue Name",
+      "description": "Queue Description",
+      "separator": "Items Separator",
+      "create": "Create",
+      "title": {
+        "description": "Short text that starts the queue.",
+        "silentActions": "Do not send in the chat shares of the queue (add, complete, remove).",
+        "separator": "Character(s) that sit between the queue items"
+      }
+    },
+    "description": "Description",
+    "command": "Command",
+    "separator": "Separator",
+    "create_error": "Error creating queue.",
+    "create_success": "Queue created successfully!",
+    "titles": {
+      "complete": "Completed List",
+      "edit": "Edit queue",
+      "delete": "Delete queue"
+    }
+  },
+  "queue": {},
+  "other": {
+    "fetch_error": "Error loading."
   }
 }

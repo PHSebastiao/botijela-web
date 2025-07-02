@@ -26,3 +26,14 @@ $(document).on("click", ".lang-switch", function (e) {
   document.cookie = "i18next=" + lang + ";path=/;SameSite=Lax";
   location.reload();
 });
+
+$(function () {
+  var $toastEl = $(".toast");
+  if ($toastEl.length) {
+    var toast = new bootstrap.Toast($toastEl[0], { delay: 4000 });
+    toast.show();
+  }
+});
+
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
