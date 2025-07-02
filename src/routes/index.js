@@ -1,5 +1,6 @@
 import express from "express";
 import { isAuthenticated, isNotAuthenticated } from "../middleware/auth.js";
+import InternalApiService from "../services/InternalApiService.js";
 
 const router = express.Router();
 
@@ -18,12 +19,12 @@ router.get("/logout", (req, res) => {
 });
 
 router.get("/", isAuthenticated, (req, res) => {
-  console.log(req.locals);
   res.render("home", { title: "Botijela", activePage: "home"});
 });
 
-router.get("/queue", isAuthenticated, (req, res) => {
-  res.render("queue", { title: "Queue", activePage: "queue" });
+router.get("/queue", isAuthenticated, async (req, res) => {
+  let queues = await InternalApiService.getQueueList(req.locals.managing.username);
+  res.render("queue", { title: "Queue", activePage: "queue", queues: queues });
 });
 
 router.get("/options", isAuthenticated, (req, res) => {

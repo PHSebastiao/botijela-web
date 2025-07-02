@@ -1,6 +1,6 @@
 import passport from "passport";
 import OAuth2Strategy from "passport-oauth2";
-import internalApi from '../services/InternalApiService.js';
+import InternalApiService from '../services/InternalApiService.js';
 
 export default function configurePassport(
   TWITCH_CLIENT_ID,
@@ -69,7 +69,7 @@ export default function configurePassport(
           refreshToken,
           scope: params.scope,
         };
-        await internalApi.createUser(user);
+        await InternalApiService.createUser(user);
         console.log(user);
         done(null, user);
       }
@@ -84,7 +84,7 @@ export default function configurePassport(
       TWITCH_CLIENT_ID,
       TWITCH_SECRET,
       GENERAL_CALLBACK_URL,
-      "channel:bot chat:read chat:edit channel:read:redemptions channel:manage:redemptions user:read:moderated_channels moderator:read:moderators moderation:read"
+      "channel:bot user:write:chat chat:read chat:edit channel:read:redemptions channel:manage:redemptions user:read:moderated_channels moderator:read:moderators moderation:read"
     )
   );
 
@@ -94,7 +94,7 @@ export default function configurePassport(
       TWITCH_CLIENT_ID,
       TWITCH_SECRET,
       ADVANCED_CALLBACK_URL,
-      "channel:bot chat:read chat:edit channel:read:redemptions channel:manage:redemptions user:read:moderated_channels moderator:read:moderators moderation:read moderator:manage:banned_users moderator:manage:automod channel:manage:moderators channel:manage:vips channel:read:subscriptions channel:manage:raids channel:edit:commercial moderator:read:shoutouts moderator:manage:shoutouts channel:read:predictions channel:manage:predictions moderator:read:chatters moderator:read:followers user:manage:chat_color user:write:chat user:manage:whispers user:read:whispers"
+      "channel:bot user:bot user:write:chat chat:read chat:edit channel:read:redemptions channel:manage:redemptions user:read:moderated_channels moderator:read:moderators moderation:read moderator:manage:banned_users moderator:manage:automod channel:manage:moderators channel:manage:vips channel:read:subscriptions channel:manage:raids channel:edit:commercial moderator:read:shoutouts moderator:manage:shoutouts channel:read:predictions channel:manage:predictions moderator:read:chatters moderator:read:followers user:manage:chat_color user:manage:whispers user:read:whispers"
     )
   );
 

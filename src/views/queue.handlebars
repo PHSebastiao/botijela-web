@@ -1,2 +1,6 @@
 <h1>{{t 'queues.title'  }}</h1>
-{{t 'queues.message'  }}
+<ul>
+  {{#each queues}}
+    <li>{{this.queueName}} - {{this.queueDescription}}</li>
+  {{/each}}
+</ul>

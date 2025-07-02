@@ -42,9 +42,9 @@
             transition: transform 0.3s ease;
         }
 
-        div.manage-self {
+        li.manage-self {
             padding: 8px;
-            display: inline-flex;
+            display: flex;
             align-items: center;
         }
 
@@ -106,21 +106,19 @@
                             {{t 'sidebar.queues' }}
                         </a>
                     </li>
-                    {{#if managingSelf }}
                     <li class="nav-item">
                         <a class="nav-link {{#if (eq activePage 'options')}}active{{/if}}" href="/options">
                             {{t "sidebar.options"}}
                         </a>
                     </li>
-                    {{/if}}
                 </ul>
                 <div class="mt-auto d-flex nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="changeLanguage" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            {{#if (eq language 'pt-BR' )}}
+                            {{#if (eq resolvedLanguage 'pt' )}}
                             <img src="/img/br.png" class="language-flag" alt="Português">
-                            {{else if (eq language 'en')}}
+                            {{else if (eq resolvedLanguage 'en')}}
                             <img src="/img/eua.png" class="language-flag" alt="English">
                             {{else}}
                             <img src="/img/es.png" class="language-flag" alt="Español">
@@ -128,13 +126,13 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="changeLanguage">
                             {{#each (array
-                            (object "code" "pt-BR" "img" "/img/br.png" "label" "Português")
+                            (object "code" "pt" "img" "/img/br.png" "label" "Português")
                             (object "code" "en" "img" "/img/eua.png" "label" "English")
                             (object "code" "es" "img" "/img/es.png" "label" "Español")
                             )}}
                             <li>
                                 <a href="#"
-                                    class="lang-switch dropdown-item{{#if (eq language this.code)}} active disabled{{/if}}"
+                                    class="lang-switch dropdown-item{{#if (eq resolvedLanguage this.code)}} active disabled{{/if}}"
                                     data-lang="{{this.code}}" title="{{this.label}}">
                                     <img src="{{this.img}}" class="language-flag" alt="{{this.label}}">
                                     {{this.label}}
@@ -160,14 +158,20 @@
                             class="btn btn-outline-{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
                             <i class="bi {{#if (eq theme 'dark')}}bi-moon{{else}}bi-sun{{/if}}"></i>
                         </button>
-                        <div class="collapse navbar-collapse justify-content-end ">
-                            {{#if managingSelf}}
-                            <ul class="navbar-nav">
+                        <div class="collapse navbar-collapse justify-content-end">
+                            <ul class="navbar-nav align-items-center">
+                                {{#unless managing.join }}
+                                <li class="nav-item">
+                                    <button class="btn btn-success" id="joinChannel">Join</button>
+                                </li>
+                                {{/unless}}
+                                {{#if managingSelf}}
+
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="channelToManage" role="button"
+                                    <button class="nav-link dropdown-toggle" id="channelToManage" type="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         {{managing.displayName}}
-                                    </a>
+                                    </button>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="channelToManage">
                                         {{#each manageable}}
                                         <li>
@@ -184,12 +188,12 @@
                                 </li>
                             </ul>
                             {{else}}
-                            <div class="manage-self">
+                            <li class="nav-item manage-self">
                                 <button type="button" class="btn btn-sm manage-self">
                                     {{managing.displayName}}
                                     <i class="bi bi-x ms-1"></i>
                                 </button>
-                            </div>
+                            </li>
                             {{/if}}
                         </div>
                     </div>
