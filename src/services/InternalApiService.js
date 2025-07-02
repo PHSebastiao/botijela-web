@@ -25,7 +25,7 @@ class InternalApiService extends BaseApiService {
   }
 
   async getQueueList(channelName) {
-    return await this.get(`/${channelName}/queues`);
+    return await this.get(`/channels/${channelName}/queues`);
   }
 }
 

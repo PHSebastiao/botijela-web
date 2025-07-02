@@ -19,6 +19,7 @@
   },
   "queues": {
     "title": "Filas",
-    "message": "Esta é a página de filas, onde poderá gerenciar suas filas sem ter que usar resgates ou comandos."
+    "message": "Esta é a página de filas, onde poderá gerenciar suas filas sem ter que usar resgates ou comandos.",
+    "no_queues": "Nenhuma fila encontrada"
   }
 }

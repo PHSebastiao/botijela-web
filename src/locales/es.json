@@ -19,6 +19,7 @@
   },
   "queues": {
     "title": "Colas",
-    "message": "Esta es la página de colas, donde puede administrar sus colas sin tener que usar rescates o comandos."
+    "message": "Esta es la página de colas, donde puede administrar sus colas sin tener que usar rescates o comandos.",
+    "no_queues": "No se encontraron colas"
   }
 }

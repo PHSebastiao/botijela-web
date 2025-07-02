@@ -1,6 +1,10 @@
 <h1>{{t 'queues.title'  }}</h1>
+{{#if queues}}
 <ul>
   {{#each queues}}
     <li>{{this.queueName}} - {{this.queueDescription}}</li>
   {{/each}}
 </ul>
+{{else}}
+{{t 'queues.no_queues'}}
+{{/if}}

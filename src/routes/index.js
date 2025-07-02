@@ -1,6 +1,7 @@
 import express from "express";
 import { isAuthenticated, isNotAuthenticated } from "../middleware/auth.js";
 import InternalApiService from "../services/InternalApiService.js";
+import i18next from "i18next";
 
 const router = express.Router();
 
@@ -23,12 +24,12 @@ router.get("/", isAuthenticated, (req, res) => {
 });
 
 router.get("/queue", isAuthenticated, async (req, res) => {
-  let queues = await InternalApiService.getQueueList(req.locals.managing.username);
-  res.render("queue", { title: "Queue", activePage: "queue", queues: queues });
+  let queues = await InternalApiService.getQueueList(res.locals.managing.username);
+  res.render("queue", { title: req.t("sidebar.queues"), activePage: "queue", queues: queues });
 });
 
 router.get("/options", isAuthenticated, (req, res) => {
-  res.render("options", { title: "Options", activePage: "options" });
+  res.render("options", { title: req.t("sidebar.options"), activePage: "options" });
 });
 
 export default router;

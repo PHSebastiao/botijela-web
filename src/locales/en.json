@@ -19,6 +19,7 @@
   },
   "queues": {
     "title": "Queues",
-    "message": "This is the queues page, where you can manage your queues without having to use ransoms or commands."
+    "message": "This is the queues page, where you can manage your queues without having to use ransoms or commands.",
+    "no_queues": "No queues found"
   }
 }
