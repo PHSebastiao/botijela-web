@@ -49,8 +49,8 @@
                 <h2 class="text-center mb-4">{{t 'login.access' }}</h2>
                 <div class="card">
                     <div class="card-body">
-                        <h5>{{t 'login.to_login'  }}</h5>
-                        <p>{{t 'login.message'  }}</p>
+                        <h5>{{t 'login.to_login' }}</h5>
+                        <p>{{t 'login.message' }}</p>
                         <a class="btn btn-twitch" href="/auth/general"><i class="bi bi-twitch"></i></a>
                     </div>
                 </div>
@@ -64,6 +64,15 @@
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/shared.js"></script>
+    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+    <script>
+        kofiWidgetOverlay.draw('botijela', {
+            'type': 'floating-chat',
+            'floating-chat.donateButton.text': 'Support Me',
+            'floating-chat.donateButton.background-color': '#794bc4',
+            'floating-chat.donateButton.text-color': '#fff'
+        });
+    </script>
 </body>
 
 </html>
