@@ -87,8 +87,7 @@
             "Español")
             )}}
             <li>
-                <a href="#"
-                    class="lang-switch dropdown-item{{#if (eq ../resolvedLanguage this.code)}} disabled{{/if}}"
+                <a href="#" class="lang-switch dropdown-item{{#if (eq ../resolvedLanguage this.code)}} disabled{{/if}}"
                     data-lang="{{this.code}}" title="{{this.label}}">
                     <img src="{{this.img}}" class="language-flag" alt="{{this.label}}">
                     {{this.label}}
@@ -105,6 +104,14 @@
     <script src="/js/jquery.min.js"></script>
     <script src="/js/shared.js"></script>
     <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+    <script>
+        kofiWidgetOverlay.draw('botijela', {
+            'type': 'floating-chat',
+            'floating-chat.donateButton.text': 'Support Me',
+            'floating-chat.donateButton.background-color': '#794bc4',
+            'floating-chat.donateButton.text-color': '#fff'
+        });
+    </script>
 </body>
 
 </html>
