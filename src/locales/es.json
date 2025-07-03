@@ -42,7 +42,8 @@
       "complete": "Lista de Completo",
       "edit": "Editar la cola",
       "delete": "Borrar la cola"
-    }
+    },
+    "create_new_queue": "Nueva cola"
   },
   "queue": {},
   "other": {

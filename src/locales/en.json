@@ -29,7 +29,7 @@
       "create": "Create",
       "title": {
         "description": "Short text that starts the queue.",
-        "silentActions": "Do not send in the chat shares of the queue (add, complete, remove).",
+        "silentActions": "Do not send in the chat actions of the queue (add, complete, remove).",
         "separator": "Character(s) that sit between the queue items"
       }
     },
@@ -42,7 +42,8 @@
       "complete": "Completed List",
       "edit": "Edit queue",
       "delete": "Delete queue"
-    }
+    },
+    "create_new_queue": "New queue"
   },
   "queue": {},
   "other": {

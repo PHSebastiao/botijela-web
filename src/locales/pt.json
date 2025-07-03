@@ -42,7 +42,8 @@
       "complete": "Lista de Completos",
       "edit": "Editar Fila",
       "delete": "Excluir Fila"
-    }
+    },
+    "create_new_queue": "Criar nova fila"
   },
   "queue": {},
   "other": {

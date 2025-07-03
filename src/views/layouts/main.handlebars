@@ -22,84 +22,9 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/styles.css">
-
-    <style>
-        #sidebarCollapse,
-        #themeToggle {
-            position: revert;
-            border: none;
-            padding: 4px 8px;
-            z-index: 1050;
-        }
-
-        #themeToggle:hover {
-            background-color: var(--btn-background-color);
-        }
-
-        .language-flag {
-            width: 24px;
-            height: 24px;
-            transition: transform 0.3s ease;
-        }
-
-        li.manage-self {
-            padding: 8px;
-            display: flex;
-            align-items: center;
-        }
-
-        button.manage-self:hover {
-            color: #f44040;
-        }
-
-        .dropdown-menu {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .dropdown-pfp {
-            margin-right: 5px;
-            max-width: 25px;
-            border-color: #6c757d;
-            border-style: solid;
-            border-width: 2px;
-        }
-
-        html,
-        body,
-        #content {
-            height: 100%;
-        }
-
-        #content {
-            overflow-y: auto;
-        }
-
-        @supports (scrollbar-color: auto; ) {
-            * {
-                scrollbar-color: hsl(0, 0%, 60%) var(--bg-color);
-                scrollbar-width: thin;
-            }
-        }
-
-        ::-webkit-scrollbar {
-            width: .5em;
-            width: .5em;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: hsl(0, 0%, 60%);
-            border: .1em solid var(--bg-color);
-            border-radius: 100vw;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: hsl(0, 0%, 50%)
-        }
-    </style>
 </head>
 
-<body data-theme="{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
+<body name="Botijela-Body" data-theme="{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
     <div class="wrapper d-flex w-100">
         <!-- Sidebar -->
         <nav id="sidebar">
@@ -145,7 +70,7 @@
                             )}}
                             <li>
                                 <a href="#"
-                                    class="lang-switch dropdown-item{{#if (eq resolvedLanguage this.code)}} active disabled{{/if}}"
+                                    class="lang-switch dropdown-item{{#if (eq ../resolvedLanguage this.code)}} disabled{{/if}}"
                                     data-lang="{{this.code}}" title="{{this.label}}">
                                     <img src="{{this.img}}" class="language-flag" alt="{{this.label}}">
                                     {{this.label}}
@@ -238,14 +163,6 @@
     <script src="/js/main.js"></script>
     <script src="/js/shared.js"></script>
     <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
-    <script>
-        kofiWidgetOverlay.draw('botijela', {
-            'type': 'floating-chat',
-            'floating-chat.donateButton.text': 'Support Me',
-            'floating-chat.donateButton.background-color': '#794bc4',
-            'floating-chat.donateButton.text-color': '#fff'
-        });
-    </script>
 </body>
 
 </html>

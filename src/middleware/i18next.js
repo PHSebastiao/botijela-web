@@ -11,7 +11,7 @@ i18next
   .use(Backend)
   .use(middleware.LanguageDetector)
   .init({
-    fallbackLng: "en",
+    fallbackLng: "pt",
     preload: ["en", "pt", "es"],
     backend: {
       loadPath: path.join(__dirname, "../locales/{{lng}}.json"),

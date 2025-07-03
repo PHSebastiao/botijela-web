@@ -1,3 +1,4 @@
+/* Root Variables */
 :root {
   --bg-color: #ffffff;
   --text-color: #000000;
@@ -5,34 +6,36 @@
   --btn-background-color: #bdbdbd;
 }
 
+/* Dark Theme Variables */
 [data-theme="dark"] {
   --bg-color: #111;
   --text-color: #ffffff;
   --btn-outline-color: #ffffff;
 }
 
+/* Body Styles */
 html[data-bs-theme="dark"] body {
   --bs-body-bg: #111 !important;
 }
 
-body {
+body[name="Botijela-Body"] {
   display: flex;
   height: 100vh;
   margin: 0;
   overflow: hidden;
-  transition:
-    background-color 0.3s,
-    color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
   background-color: var(--bg-color);
   color: var(--text-color);
 }
 
+/* Button Styles */
 .btn-outline-light,
 .btn-outline-dark {
   border-color: var(--btn-outline-color);
   color: var(--btn-outline-color);
 }
 
+/* Sidebar Styles */
 #sidebar {
   position: fixed;
   top: 0;
@@ -59,6 +62,7 @@ body {
   box-shadow: none;
 }
 
+/* Sidebar Links */
 #sidebar a {
   color: #e0e0e0;
   text-decoration: none;
@@ -74,6 +78,7 @@ body {
   background-color: #2a2a2a;
 }
 
+/* Sidebar Collapse Button */
 #sidebarCollapse {
   position: absolute;
   border: none;
@@ -93,6 +98,7 @@ body {
   transform: translateX(-250px);
 }
 
+/* Content Styles */
 #content {
   margin-left: 250px;
   transition: margin-left 0.3s ease;
@@ -109,6 +115,90 @@ main {
   padding: 20px;
 }
 
+/* Theme Toggle Button */
+#sidebarCollapse,
+#themeToggle {
+  position: revert;
+  border: none;
+  padding: 4px 8px;
+  z-index: 1050;
+}
+
+#themeToggle:hover {
+  background-color: var(--btn-background-color);
+}
+
+/* Language Flag Styles */
+.language-flag {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.3s ease;
+}
+
+#sidebar .dropdown-menu {
+  background-color: #111;
+  color: #ffffff;
+}
+
+/* Manage Self List Item */
+li.manage-self {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+}
+
+button.manage-self:hover {
+  color: #f44040;
+}
+
+/* Dropdown Menu Styles */
+.dropdown-menu {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-pfp {
+  margin-right: 5px;
+  max-width: 25px;
+  border-color: #6c757d;
+  border-style: solid;
+  border-width: 2px;
+}
+
+/* Full Height for HTML, Body, and Content */
+html,
+body,
+#content {
+  height: 100%;
+}
+
+#content {
+  overflow-y: auto;
+}
+
+/* Custom Scrollbar Styles */
+@supports (scrollbar-color: auto) {
+  * {
+    scrollbar-color: hsl(0, 0%, 60%) var(--bg-color);
+    scrollbar-width: thin;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(0, 0%, 60%);
+  border: 0.1em solid var(--bg-color);
+  border-radius: 100vw;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(0, 0%, 50%);
+}
+
+/* Responsive Styles */
 @media (max-width: 768px) {
   #sidebar {
     width: 100%;
@@ -122,6 +212,7 @@ main {
   #content {
     display: none;
   }
+  
   #content.shift {
     display: block;
   }
@@ -139,6 +230,7 @@ main {
     left: auto;
     z-index: 2000;
   }
+  
   #sidebarCollapse {
     margin-right: 50px;
   }
