@@ -115,6 +115,10 @@ main {
   padding: 20px;
 }
 
+iframe {
+  color-scheme: light;
+}
+
 /* Theme Toggle Button */
 #sidebarCollapse,
 #themeToggle {
