@@ -18,9 +18,6 @@ import queueRoutes from "./src/routes/queue.js";
 
 const app = express();
 
-const key = fs.readFileSync("./key.pem");
-const cert = fs.readFileSync("./cert.pem");
-
 configureMiddleware(app, config);
 app.engine(
   "handlebars",
