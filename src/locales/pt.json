@@ -43,10 +43,15 @@
       "edit": "Editar Fila",
       "delete": "Excluir Fila"
     },
-    "create_new_queue": "Criar nova fila"
+    "create_new_queue": "Criar nova fila",
+    "delete_success": "Fila deletada com sucesso.",
+    "delete_error": "Erro ao deletar fila."
   },
   "queue": {},
   "other": {
     "fetch_error": "Erro ao carregar."
+  },
+  "main": {
+    "moderated_channels": "Canais que modera"
   }
 }

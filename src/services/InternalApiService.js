@@ -31,6 +31,10 @@ class InternalApiService extends BaseApiService {
   async createQueue(channelName, queueData) {
     return await this.post(`/queues/${channelName}`, queueData);
   }
+
+  async deleteQueue(queueId) {
+    return await this.delete(`/queues/${queueId}`);
+  }
 }
 
 export default new InternalApiService();

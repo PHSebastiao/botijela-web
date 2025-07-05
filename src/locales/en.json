@@ -43,10 +43,15 @@
       "edit": "Edit queue",
       "delete": "Delete queue"
     },
-    "create_new_queue": "New queue"
+    "create_new_queue": "New queue",
+    "delete_success": "Queue successfully deleted.",
+    "delete_error": "Error deleting queue."
   },
   "queue": {},
   "other": {
     "fetch_error": "Error loading."
+  },
+  "main": {
+    "moderated_channels": "Moderate channel"
   }
 }

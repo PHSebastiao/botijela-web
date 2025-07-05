@@ -43,10 +43,15 @@
       "edit": "Editar la cola",
       "delete": "Borrar la cola"
     },
-    "create_new_queue": "Nueva cola"
+    "create_new_queue": "Nueva cola",
+    "delete_success": "Cola eliminada con éxito.",
+    "delete_error": "Error al eliminar una cola."
   },
   "queue": {},
   "other": {
     "fetch_error": "Error de carga."
+  },
+  "main": {
+    "moderated_channels": "Canales moderados"
   }
 }

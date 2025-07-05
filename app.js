@@ -14,8 +14,12 @@ import {
 import { configureMiddleware } from "./src/middleware/index.js";
 import authRoutes from "./src/routes/auth.js";
 import routes from "./src/routes/index.js";
+import queueRoutes from "./src/routes/queue.js";
 
 const app = express();
+
+const key = fs.readFileSync("./key.pem");
+const cert = fs.readFileSync("./cert.pem");
 
 configureMiddleware(app, config);
 app.engine(
@@ -51,7 +55,16 @@ app.engine(
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "src/views"));
 
+app.use((req, res, next) => {
+  res.setHeader(
+    "Permissions-Policy",
+    'payment=(self "https://ko-fi.com" "https://storage.ko-fi.com")'
+  );
+  next();
+});
+
 app.use("/", routes);
+app.use("/queue", queueRoutes);
 app.use("/auth", authRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);

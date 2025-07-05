@@ -62,6 +62,10 @@ class BaseApiService {
   put(endpoint, data) {
     return this.request(endpoint, "PUT", data);
   }
+  
+  patch(endpoint, data) {
+    return this.request(endpoint, "PATCH", data);
+  }
 
   delete(endpoint) {
     return this.request(endpoint, "DELETE");

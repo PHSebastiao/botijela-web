@@ -42,12 +42,13 @@
             <label class="form-check-label" data-bs-toggle="tooltip"
               data-bs-title="{{t 'queues.form.title.silentActions' }}" for="silentActions">
               <input class="form-check-input" type="checkbox" name="silentActions" id="silentActions">
-              {{t 'queues.form.silentActions'}}
+              {{t 'queues.form.silentActions' }}
             </label>
           </div>
           <div class="col-auto">
-            <button type="submit" class="btn btn-outline-primary">{{t
-              'queues.form.create'}}</button>
+            <button type="submit" class="btn btn-outline-primary">
+              {{t 'queues.form.create' }}
+            </button>
           </div>
         </form>
       </div>
@@ -76,16 +77,19 @@
         {{/each}}
       </div>
       <div class="min-width">
-        <button type="button" class="btn btn-sm btn-outline-primary border-0 me-1" data-bs-toggle="tooltip"
-          data-bs-placement="left" data-bs-title="{{t 'queues.titles.complete' }}">
+        <button type="button" class="btn-completed btn btn-sm btn-outline-primary border-0 me-1"
+          data-queue="{{this.queueConfig_id}}" data-bs-toggle="tooltip" data-bs-placement="left"
+          data-bs-title="{{t 'queues.titles.complete' }}">
           <i class="bi bi-list"></i>
         </button>
-        <button type="button" class="btn btn-sm btn-outline-warning border-0 me-1" data-bs-toggle="tooltip"
-          data-bs-placement="left" data-bs-title="{{t 'queues.titles.edit' }}">
+        <button type="button" class="btn-edit btn btn-sm btn-outline-warning border-0 me-1"
+          data-queue="{{this.queueConfig_id}}" data-bs-toggle="tooltip" data-bs-placement="left"
+          data-bs-title="{{t 'queues.titles.edit' }}">
           <i class="bi bi-pencil-square"></i>
         </button>
-        <button type="button" class="btn btn-sm btn-outline-danger border-0" data-bs-toggle="tooltip"
-          data-bs-placement="left" data-bs-title="{{t 'queues.titles.delete' }}">
+        <button type="button" class="btn-delete btn btn-sm btn-outline-danger border-0"
+          data-queue="{{this.queueConfig_id}}" data-bs-toggle="tooltip" data-bs-placement="left"
+          data-bs-title="{{t 'queues.titles.delete' }}">
           <i class="bi bi-trash3"></i>
         </button>
       </div>

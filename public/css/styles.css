@@ -18,12 +18,13 @@ html[data-bs-theme="dark"] body {
   --bs-body-bg: #111 !important;
 }
 
-body[name="Botijela-Body"] {
-  display: flex;
+body {
   height: 100vh;
   margin: 0;
   overflow: hidden;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
   background-color: var(--bg-color);
   color: var(--text-color);
 }
@@ -90,10 +91,6 @@ body[name="Botijela-Body"] {
   transition: transform 0.3s ease;
 }
 
-#sidebarCollapse:hover {
-  background-color: var(--btn-background-color);
-}
-
 #sidebarCollapse.shift {
   transform: translateX(-250px);
 }
@@ -111,24 +108,21 @@ body[name="Botijela-Body"] {
   margin-left: 0;
 }
 
-main {
-  padding: 20px;
-}
-
 iframe {
   color-scheme: light;
 }
 
-/* Theme Toggle Button */
+/* Buttons */
 #sidebarCollapse,
-#themeToggle {
+#themeToggle,
+#returnHome {
   position: revert;
   border: none;
   padding: 4px 8px;
-  z-index: 1050;
+  transition: opacity 0.3s ease;
 }
 
-#themeToggle:hover {
+#themeToggle:hover, #sidebarCollapse:hover, #returnHome:hover {
   background-color: var(--btn-background-color);
 }
 
@@ -151,7 +145,8 @@ li.manage-self {
   align-items: center;
 }
 
-button.manage-self:hover {
+button.manage-self:hover,
+.log-out:hover {
   color: #f44040;
 }
 
@@ -159,6 +154,10 @@ button.manage-self:hover {
 .dropdown-menu {
   max-height: 200px;
   overflow-y: auto;
+}
+
+.navbar-nav .dropdown-menu {
+  position: absolute;
 }
 
 .dropdown-pfp {
@@ -178,6 +177,10 @@ body,
 
 #content {
   overflow-y: auto;
+}
+
+.h-90 {
+  height: 90%;
 }
 
 /* Custom Scrollbar Styles */
@@ -200,42 +203,4 @@ body,
 
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(0, 0%, 50%);
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-  #sidebar {
-    width: 100%;
-    transform: translateX(0);
-  }
-
-  #sidebar.collapsed {
-    transform: translateX(-100%);
-  }
-
-  #content {
-    display: none;
-  }
-  
-  #content.shift {
-    display: block;
-  }
-
-  #showSidebar {
-    display: block;
-  }
-
-  #sidebarCollapse,
-  #themeToggle {
-    display: block !important;
-    position: fixed;
-    top: 10px;
-    right: 20px;
-    left: auto;
-    z-index: 2000;
-  }
-  
-  #sidebarCollapse {
-    margin-right: 50px;
-  }
 }

@@ -15,44 +15,29 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/styles.css">
-
-    <style>
-        #themeToggle {
-            position: absolute;
-            border: none;
-            top: 10px;
-            right: 10px;
-            padding: 7px;
-            z-index: 1050;
-        }
-
-        #returnHome {
-            position: absolute;
-            border: none;
-            top: 10px;
-            right: 45px;
-            padding: 7px;
-            z-index: 1050;
-        }
-
-        .button-light {
-            color: #e0e0e0;
-        }
-    </style>
 </head>
 
-<body>
+<body data-theme="{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
+    <nav class="navbar">
+        <div class="container-fluid">
+            <div></div>
+            <div>
+                <button type="button" id="themeToggle"
+                    class="btn btn-outline-{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
+                    <i class="bi {{#if (eq theme 'dark')}}bi-moon{{else}}bi-sun{{/if}}"></i>
+                </button>
+                <a type="button" id="returnHome"
+                    class="btn btn-outline-{{#if (eq theme 'dark')}}light{{else}}dark{{/if}}" href="/">
+                    <i class="bi bi-house"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
     <div class="container pt-3">
         <h1>{{message}}</h1>
         <h2>{{error.status}}</h2>
         <pre>{{error.stack}}</pre>
     </div>
-    <button type="button" id="themeToggle" class="btn btn-outline-{{#if (eq theme 'dark')}}light{{else}}dark{{/if}}">
-        <i class="bi {{#if (eq theme 'dark')}}bi-moon{{else}}bi-sun{{/if}}"></i>
-    </button>
-    <a type="button" id="returnHome" class="btn btn-outline-{{#if (eq theme 'dark')}}light{{else}}dark{{/if}}" href="/">
-        <i class="bi bi-house"></i>
-    </a>
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/shared.js"></script>

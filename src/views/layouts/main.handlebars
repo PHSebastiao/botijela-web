@@ -22,33 +22,72 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/styles.css">
+
+    <style>
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            #sidebar {
+                width: 100%;
+                transform: translateX(0);
+            }
+
+            #sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+
+            #content>main {
+                display: none;
+            }
+
+            #content.shift>main {
+                display: block;
+            }
+
+            #content:not(.shift) {
+                #themeToggle {
+                    opacity: 0;
+                    touch-action: none;
+                    pointer-events: none;
+                }
+            }
+
+            #showSidebar {
+                display: block;
+            }
+        }
+    </style>
 </head>
 
-<body name="Botijela-Body" data-theme="{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
-    <div class="wrapper d-flex w-100">
+<body data-theme="{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
+    <div class="wrapper d-flex w-100 h-100">
         <!-- Sidebar -->
         <nav id="sidebar">
-            <div class="p-3">
-                <h4 class="mb-3">Botijela</h4>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link {{#if (eq activePage 'home')}}active{{/if}}" href="/">
-                            {{t 'sidebar.home' }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{#if (eq activePage 'queue')}}active{{/if}}" href="/queue">
-                            {{t 'sidebar.queues' }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{#if (eq activePage 'options')}}active{{/if}}" href="/options">
-                            {{t "sidebar.options"}}
-                        </a>
-                    </li>
-                </ul>
-                <div class="mt-auto d-flex nav">
-                    <li class="nav-item dropdown">
+            <div class="p-3 d-flex flex-column justify-content-between pb-5 h-90">
+                <div>
+                    <h4 class="mb-3">Botijela</h4>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {{#if (eq activePage 'home')}}active{{/if}}" {{#if (eq activePage 'home'
+                                )}} aria-current="page" {{/if}} href="/">
+                                {{t 'sidebar.home' }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{#if (eq activePage 'queue')}}active{{/if}}" {{#if (eq
+                                activePage 'queue' )}} aria-current="page" {{/if}} href="/queue">
+                                {{t 'sidebar.queues' }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{#if (eq activePage 'options')}}active{{/if}}" {{#if (eq
+                                activePage 'options' )}} aria-current="page" {{/if}} href="/options">
+                                {{t "sidebar.options"}}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="d-flex nav">
+                    <li class="nav-item dropup">
                         <a class="nav-link dropdown-toggle" href="#" id="changeLanguage" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             {{#if (eq resolvedLanguage 'pt' )}}
@@ -88,15 +127,17 @@
             <header>
                 <nav class="navbar navbar-expand-lg">
                     <div class="container-fluid">
-                        <button type="button" id="sidebarCollapse"
-                            class="btn btn-outline-{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
-                            <i class="bi bi-layout-sidebar"></i>
-                        </button>
-                        <button type="button" id="themeToggle"
-                            class="btn btn-outline-{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
-                            <i class="bi {{#if (eq theme 'dark')}}bi-moon{{else}}bi-sun{{/if}}"></i>
-                        </button>
-                        <div class="collapse navbar-collapse justify-content-end">
+                        <div class="d-flex flex-row">
+                            <button type="button" id="sidebarCollapse"
+                                class="btn btn-outline-{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
+                                <i class="bi bi-layout-sidebar"></i>
+                            </button>
+                            <button type="button" id="themeToggle"
+                                class="btn btn-outline-{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
+                                <i class="bi {{#if (eq theme 'dark')}}bi-moon{{else}}bi-sun{{/if}}"></i>
+                            </button>
+                        </div>
+                        <div class="justify-content-end">
                             <ul class="navbar-nav align-items-center">
                                 {{#unless managing.join }}
                                 <li class="nav-item">
@@ -111,6 +152,9 @@
                                         {{managing.displayName}}
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="channelToManage">
+                                        <li>
+                                            <h6 class="dropdown-header">{{t 'main.moderated_channels' }}:</h6>
+                                        </li>
                                         {{#each manageable}}
                                         <li>
                                             <a href="#" class="dropdown-item select-managing"
@@ -122,6 +166,10 @@
                                             </a>
                                         </li>
                                         {{/each}}
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item log-out" href="/logout">Logout</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -137,21 +185,23 @@
                     </div>
                 </nav>
             </header>
-            <main class="container-fluid mt-1">
+            <main class="container-fluid p-3">
                 {{{body}}}
             </main>
-            {{#if toast}}
+            {{#if toasts}}
             <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
-                <div class="toast align-items-center text-bg-{{toast.type}} border-0 show" role="alert"
-                    aria-live="assertive" aria-atomic="true">
+                {{#each toasts}}
+                <div class="toast align-items-center text-bg-{{this.type}} border-0 mb-2" role="alert"
+                    aria-live="assertive" aria-atomic="true" data-toast-id="{{this.id}}">
                     <div class="d-flex">
                         <div class="toast-body">
-                            {{toast.message}}
+                            {{this.message}}
                         </div>
                         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
                             aria-label="Close"></button>
                     </div>
                 </div>
+                {{/each}}
             </div>
             {{/if}}
         </div>
@@ -162,6 +212,9 @@
     <script src="/js/jquery.min.js"></script>
     <script src="/js/main.js"></script>
     <script src="/js/shared.js"></script>
+    {{#if (eq activePage 'queue')}}
+    <script src="/js/queues.js"></script>
+    {{/if}}
     <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
     <script>
         kofiWidgetOverlay.draw('botijela', {

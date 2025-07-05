@@ -28,12 +28,43 @@ $(document).on("click", ".lang-switch", function (e) {
 });
 
 $(function () {
-  var $toastEl = $(".toast");
-  if ($toastEl.length) {
-    var toast = new bootstrap.Toast($toastEl[0], { delay: 4000 });
-    toast.show();
+  var $toastElements = $(".toast");
+  if ($toastElements.length) {
+    $toastElements.each(function(index, element) {
+      var toast = new bootstrap.Toast(element, { 
+        delay: 4000,
+        autohide: true
+      });
+      
+      // Stagger the display slightly for multiple toasts
+      setTimeout(function() {
+        toast.show();
+      }, index * 200);
+    });
   }
 });
 
-const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+const tooltipTriggerList = document.querySelectorAll(
+  '[data-bs-toggle="tooltip"]'
+);
+const tooltipList = [...tooltipTriggerList].map(
+  (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+);
+
+// Add slideDown animation to Bootstrap dropdown when expanding.
+$(".dropdown").on("show.bs.dropdown", function () {
+  $(this).find(".dropdown-menu").first().slideToggle(300);
+});
+
+// Add slideUp animation to Bootstrap dropdown when collapsing.
+$(".dropdown").on("hide.bs.dropdown", function () {
+  $(this).find(".dropdown-menu").first().slideToggle(300);
+});
+
+$(".dropup").on("show.bs.dropdown", function () {
+  $(this).find(".dropdown-menu").first().slideToggle(300);
+});
+
+$(".dropup").on("hide.bs.dropdown", function () {
+  $(this).find(".dropdown-menu").first().stop(100, 100).slideDown(300);
+});
