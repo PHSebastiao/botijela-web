@@ -2,7 +2,12 @@ import express from "express";
 import { isAuthenticated } from "../middleware/auth.js";
 import InternalApiService from "../services/InternalApiService.js";
 import { validateQueueData } from "../utils/validation.js";
-import { getAndClearToasts, addValidationErrors, addSuccess, addError } from "../utils/toast.js";
+import {
+  getAndClearToasts,
+  addValidationErrors,
+  addSuccess,
+  addError,
+} from "../utils/toast.js";
 
 const queueRouter = express.Router();
 
@@ -29,12 +34,12 @@ queueRouter.post("/", isAuthenticated, async (req, res) => {
   try {
     // Validate and sanitize input data
     const validation = validateQueueData(req.body);
-    
+
     if (!validation.isValid) {
       addValidationErrors(req, validation.errors);
       return res.redirect("/queue");
     }
-    
+
     await InternalApiService.createQueue(res.locals.managing.username, {
       username: res.locals.managing.username,
       userId: res.locals.managing.userId,
@@ -44,7 +49,7 @@ queueRouter.post("/", isAuthenticated, async (req, res) => {
       silentActions: validation.sanitized.silentActions,
       lng: res.locals.resolvedLanguage,
     });
-    
+
     addSuccess(req, req.t("queues.create_success"));
     res.redirect("/queue");
   } catch (error) {
@@ -54,17 +59,41 @@ queueRouter.post("/", isAuthenticated, async (req, res) => {
   }
 });
 
-queueRouter.delete("/:queueId", isAuthenticated, async (req, res) => {
-  try {
-    const queueId = req.params.queueId;
-    await InternalApiService.deleteQueue(queueId);
-    addSuccess(req, req.t("queues.delete_success"));
-    res.redirect("/queue");
-  } catch (error) {
-    console.error("Error deleting queue:", error);
-    addError(req, error.message || req.t("queues.delete_error"));
-    return res.redirect("/queue");
+queueRouter.delete(
+  "/:channelId/:queueId",
+  isAuthenticated,
+  async (req, res) => {
+    try {
+      const channelId = req.params.channelId;
+      const queueId = req.params.queueId;
+      // addSuccess(req, req.t("queues.delete_success"));
+      res
+        .status(200)
+        .json(await InternalApiService.deleteQueue(channelId, queueId));
+    } catch (error) {
+      console.error("Error deleting queue:", error);
+      // addError(req, error.message || req.t("queues.delete_error"));
+      return res.redirect("/queue");
+    }
   }
-});
+);
+
+queueRouter.put(
+  "/:queueId/reorder",
+  isAuthenticated,
+  async (req, res) => {
+    try {
+      const queueId = req.params.queueId;
+      // addSuccess(req, req.t("queues.delete_success"));
+      res
+        .status(200)
+        .json(await InternalApiService.reorderItem(queueId, req.body));
+    } catch (error) {
+      console.error("Error deleting queue:", error);
+      // addError(req, error.message || req.t("queues.delete_error"));
+      return res.redirect("/queue");
+    }
+  }
+);
 
 export default queueRouter;

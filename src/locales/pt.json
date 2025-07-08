@@ -45,7 +45,9 @@
     },
     "create_new_queue": "Criar nova fila",
     "delete_success": "Fila deletada com sucesso.",
-    "delete_error": "Erro ao deletar fila."
+    "delete_error": "Erro ao deletar fila.",
+    "reorder_success": "Fila atualizada com sucesso",
+    "reorder_error": "Erro ao atualizar ordem da fila"
   },
   "queue": {},
   "other": {

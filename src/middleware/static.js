@@ -10,6 +10,8 @@ export const configureStatic = (app) => {
   app.use('/css', express.static(path.join(__dirname, '../../node_modules/bootstrap-icons/font')));
   app.use('/js', express.static(path.join(__dirname, '../../node_modules/bootstrap/dist/js')));
   app.use('/js', express.static(path.join(__dirname, '../../node_modules/jquery/dist')));
+  app.use('/js', express.static(path.join(__dirname, '../../node_modules/sortablejs')));
+  app.use('/js', express.static(path.join(__dirname, '../../node_modules/jquery-sortablejs')));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 };

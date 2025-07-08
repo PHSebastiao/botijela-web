@@ -8,6 +8,122 @@
     display: flex;
     flex-direction: column;
   }
+
+  .queue-items {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .queue-item-draggable {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background-color: var(--bs-secondary-bg);
+    color: var(--bs-white);
+    border-radius: 50px;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    position: relative;
+    white-space: nowrap;
+    overflow: visible;
+    width: 120px;
+    flex-shrink: 0;
+  }
+
+  .queue-item-draggable.expanded {
+    min-width: 120px;
+    background-color: var(--bs-primary-dark, var(--bs-tertiary-bg));
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+  }
+
+  .queue-item-draggable.sortable-ghost {
+    opacity: 0.5;
+  }
+
+  .queue-item-draggable.sortable-drag {
+    opacity: 0.8;
+  }
+
+  .drag-handle {
+    color: var(--bs-white);
+    cursor: grab;
+    margin-right: 6px;
+    font-size: 0.75rem;
+  }
+
+  .drag-handle:active {
+    cursor: grabbing;
+  }
+
+  .queue-item-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .queue-item-actions {
+    display: flex;
+    gap: 4px;
+    margin-left: 8px;
+    width: 0;
+    overflow: hidden;
+    transition: width 0.3s ease;
+  }
+
+  .queue-item-draggable.expanded .queue-item-actions {
+    width: 60px;
+  }
+
+  .queue-item-btn {
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--bs-white);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .queue-item-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: none;
+  }
+
+  .queue-item-btn.btn-edit:hover {
+    background-color: var(--bs-warning);
+  }
+
+  .queue-item-btn.btn-delete:hover {
+    background-color: var(--bs-danger);
+  }
+  .queue-item-btn.btn-add {
+    background-color: var(--bs-primary);
+    padding: 6px 12px;
+    font-size: 0.875rem;
+}
+  .queue-item-btn.btn-add:hover {
+    background-color: var(--bs-primary-bg-subtle);
+  }
+
+  [data-bs-theme=light] .queue-item-draggable {
+    background-color: var(--bs-tertiary-color);
+    color: var(--bs-black);
+  }
+
+  [data-bs-theme=light] .queue-item-draggable.expanded {
+    background-color: var(--bs-primary-dark, var(--bs-secondary-color));
+    color: var(--bs-black);
+  }
+
+  [data-bs-theme=light] .drag-handle {
+    color: var(--bs-black);
+  }
 </style>
 
 <h1>{{t 'queues.title' }}</h1>
@@ -69,12 +185,26 @@
           |
           {{t "queues.separator" }}: {{ this.queueSeparator }}
         </div>
-        {{#if this.items}}
         <hr>
-        {{/if}}
-        {{#each this.items}}
-        {{#unless this.isCompleted}} {{ this.itemName }} {{/unless}}
-        {{/each}}
+        <div class="queue-items" data-queue-id="{{this.queueConfig_id}}">
+          {{#each this.items}}
+          {{#unless this.isCompleted}}
+          <div class="queue-item-draggable" data-item-id="{{this.id}}" data-item-name="{{this.itemName}}">
+            <i class="bi bi-grip-vertical drag-handle"></i>
+            <span class="queue-item-text">{{this.itemName}}</span>
+            <div class="queue-item-actions">
+              <button class="queue-item-btn btn-edit" data-item-id="{{this.id}}" title="{{t 'queues.titles.edit'}}">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="queue-item-btn btn-delete" data-item-id="{{this.id}}" title="{{t 'queues.titles.delete'}}">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </div>
+          </div>
+          {{/unless}}
+          {{/each}}
+          <button class="btn queue-item-btn btn-add"><i class="bi bi-plus-lg"></i></button>
+        </div>
       </div>
       <div class="min-width">
         <button type="button" class="btn-completed btn btn-sm btn-outline-primary border-0 me-1"
@@ -88,8 +218,8 @@
           <i class="bi bi-pencil-square"></i>
         </button>
         <button type="button" class="btn-delete btn btn-sm btn-outline-danger border-0"
-          data-queue="{{this.queueConfig_id}}" data-bs-toggle="tooltip" data-bs-placement="left"
-          data-bs-title="{{t 'queues.titles.delete' }}">
+          data-queue='{"queueId": {{this.queueConfig_id}}, "channelId": {{this.userId}} }' data-bs-toggle="tooltip"
+          data-bs-placement="left" data-bs-title="{{t 'queues.titles.delete' }}">
           <i class="bi bi-trash3"></i>
         </button>
       </div>

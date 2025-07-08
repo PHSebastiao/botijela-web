@@ -210,9 +210,26 @@
 
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/jquery.min.js"></script>
+    <script src="/js/Sortable.min.js"></script>
+    <script src="/js/jquery-sortable.js"></script>
     <script src="/js/main.js"></script>
     <script src="/js/shared.js"></script>
     {{#if (eq activePage 'queue')}}
+    <script>
+        // Make translations available to JavaScript
+        window.translations = {
+            'queues.command': '{{t "queues.command"}}',
+            'queues.description': '{{t "queues.description"}}',
+            'queues.separator': '{{t "queues.separator"}}',
+            'queues.titles.complete': '{{t "queues.titles.complete"}}',
+            'queues.titles.edit': '{{t "queues.titles.edit"}}',
+            'queues.titles.delete': '{{t "queues.titles.delete"}}',
+            'queues.delete_success': '{{t "queues.delete_success"}}',
+            'queues.delete_error': '{{t "queues.delete_error"}}',
+            'queues.reorder_success': '{{t 'queues.reorder_success' }}',
+            'queues.reorder_error': '{{t 'queues.reorder_error' }}'
+        };
+    </script>
     <script src="/js/queues.js"></script>
     {{/if}}
     <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>

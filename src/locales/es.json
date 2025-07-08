@@ -45,7 +45,9 @@
     },
     "create_new_queue": "Nueva cola",
     "delete_success": "Cola eliminada con éxito.",
-    "delete_error": "Error al eliminar una cola."
+    "delete_error": "Error al eliminar una cola.",
+    "reorder_error": "No se pudo actualizar el orden de la cola",
+    "reorder_success": "Cola actualizada exitosa"
   },
   "queue": {},
   "other": {

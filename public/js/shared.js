@@ -27,17 +27,53 @@ $(document).on("click", ".lang-switch", function (e) {
   location.reload();
 });
 
+// Translation helper function
+function t(key) {
+  return window.translations[key] || key;
+}
+
+function showToast(type, message) {
+  const toastId = Date.now() + Math.random();
+  const toastHtml = `
+                <div class="toast align-items-center text-bg-${type} border-0 mb-2" role="alert" 
+                     aria-live="assertive" aria-atomic="true" data-toast-id="${toastId}">
+                    <div class="d-flex">
+                        <div class="toast-body">${message}</div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" 
+                                data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+
+  let toastContainer = $(".toast-container");
+  if (toastContainer.length === 0) {
+    toastContainer = $(
+      '<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>'
+    );
+    $("body").append(toastContainer);
+  }
+
+  const $toast = $(toastHtml);
+  toastContainer.append($toast);
+
+  const toast = new bootstrap.Toast($toast[0], {
+    delay: 4000,
+    autohide: true,
+  });
+  toast.show();
+}
+
 $(function () {
   var $toastElements = $(".toast");
   if ($toastElements.length) {
-    $toastElements.each(function(index, element) {
-      var toast = new bootstrap.Toast(element, { 
+    $toastElements.each(function (index, element) {
+      var toast = new bootstrap.Toast(element, {
         delay: 4000,
-        autohide: true
+        autohide: true,
       });
-      
+
       // Stagger the display slightly for multiple toasts
-      setTimeout(function() {
+      setTimeout(function () {
         toast.show();
       }, index * 200);
     });
