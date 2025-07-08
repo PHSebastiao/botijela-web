@@ -78,20 +78,92 @@ queueRouter.delete(
   }
 );
 
-queueRouter.put(
-  "/:queueId/reorder",
+queueRouter.put("/:queueId/reorder", isAuthenticated, async (req, res) => {
+  try {
+    const queueId = req.params.queueId;
+    // addSuccess(req, req.t("queues.reorder_success"));
+    await InternalApiService.reorderItem(queueId, req.body);
+    let result = await InternalApiService.getActiveQueueItems(queueId);
+    res.status(201).json(result);
+  } catch (error) {
+    console.error("Error reordering queue:", error);
+    addError(req, error.message || req.t("queues.reorder_error"));
+    return res.redirect("/queue");
+  }
+});
+
+queueRouter.post("/:queueId/items", isAuthenticated, async (req, res) => {
+  try {
+    const queueId = req.params.queueId;
+    const { itemName } = req.body;
+
+    if (!itemName || itemName.trim().length === 0) {
+      return res
+        .status(400)
+        .json({ error: req.t("queues.item_name_required") });
+    }
+
+    await InternalApiService.addQueueItem(queueId, {
+      queueItems: itemName.trim(),
+    });
+
+    let result = await InternalApiService.getActiveQueueItems(queueId);
+    res.status(201).json(result);
+  } catch (error) {
+    console.error("Error adding queue item:", error);
+    return res
+      .status(500)
+      .json({ error: error.message || req.t("queues.add_item_error") });
+  }
+});
+
+queueRouter.delete(
+  "/:queueId/items/:itemId",
   isAuthenticated,
   async (req, res) => {
     try {
       const queueId = req.params.queueId;
-      // addSuccess(req, req.t("queues.delete_success"));
-      res
-        .status(200)
-        .json(await InternalApiService.reorderItem(queueId, req.body));
+      const itemId = req.params.itemId;
+
+      await InternalApiService.removeQueueItem(queueId, itemId);
+
+      let result = await InternalApiService.getActiveQueueItems(queueId);
+      res.status(201).json(result);
     } catch (error) {
-      console.error("Error deleting queue:", error);
-      // addError(req, error.message || req.t("queues.delete_error"));
-      return res.redirect("/queue");
+      console.error("Error adding queue item:", error);
+      return res
+        .status(500)
+        .json({ error: error.message || req.t("queues.add_item_error") });
+    }
+  }
+);
+
+queueRouter.put(
+  "/:queueId/items/:itemId",
+  isAuthenticated,
+  async (req, res) => {
+    try {
+      const { queueId, itemId } = req.params;
+      const { itemName, isPriority } = req.body;
+
+      if (!itemName || itemName.trim().length === 0) {
+        return res
+          .status(400)
+          .json({ error: req.t("queues.item_name_required") });
+      }
+
+      await InternalApiService.updateQueueItem(queueId, itemId, {
+        itemName: itemName.trim(),
+        isPriority: isPriority || false
+      });
+
+      let result = await InternalApiService.getActiveQueueItems(queueId);
+      res.status(200).json(result);
+    } catch (error) {
+      console.error("Error updating queue item:", error);
+      return res
+        .status(500)
+        .json({ error: error.message || req.t("queues.update_item_error") });
     }
   }
 );

@@ -9,6 +9,15 @@
     flex-direction: column;
   }
 
+  .form-check {
+    display: flex;
+    align-items: center;
+  }
+
+  .priority-checkbox {
+    margin-top: 4px;
+  }
+
   .queue-items {
     margin-top: 10px;
     display: flex;
@@ -32,6 +41,13 @@
     width: 120px;
     flex-shrink: 0;
   }
+
+  .priority-item {
+    --webkit-box-sizing: border-box;
+    --moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid red;
+}
 
   .queue-item-draggable.expanded {
     min-width: 120px;
@@ -102,13 +118,25 @@
   .queue-item-btn.btn-delete:hover {
     background-color: var(--bs-danger);
   }
-  .queue-item-btn.btn-add {
+
+  .queue-item-btn.btn-add, .queue-item-btn.btn-send {
     background-color: var(--bs-primary);
     padding: 6px 12px;
     font-size: 0.875rem;
-}
+  }
+
   .queue-item-btn.btn-add:hover {
     background-color: var(--bs-primary-bg-subtle);
+  }
+
+  .add-item-cancel {
+    padding: 6px 12px;
+    font-size: 0.875rem;
+  }
+
+  .add-item-field {
+    border-radius: 12px;
+    padding: 5px 11px;
   }
 
   [data-bs-theme=light] .queue-item-draggable {
@@ -189,14 +217,17 @@
         <div class="queue-items" data-queue-id="{{this.queueConfig_id}}">
           {{#each this.items}}
           {{#unless this.isCompleted}}
-          <div class="queue-item-draggable" data-item-id="{{this.id}}" data-item-name="{{this.itemName}}">
+          <div class="queue-item-draggable{{#if this.isPriority}} priority-item{{/if}}"
+            data-item-id="{{this.queueItem_id}}" data-item-name="{{this.itemName}}">
             <i class="bi bi-grip-vertical drag-handle"></i>
             <span class="queue-item-text">{{this.itemName}}</span>
             <div class="queue-item-actions">
-              <button class="queue-item-btn btn-edit" data-item-id="{{this.id}}" title="{{t 'queues.titles.edit'}}">
+              <button class="queue-item-btn btn-edit" data-item-id="{{this.queueItem_id}}"
+                title="{{t 'queues.titles.edit'}}">
                 <i class="bi bi-pencil"></i>
               </button>
-              <button class="queue-item-btn btn-delete" data-item-id="{{this.id}}" title="{{t 'queues.titles.delete'}}">
+              <button class="queue-item-btn btn-delete" data-item-id="{{this.queueItem_id}}"
+                title="{{t 'queues.titles.delete'}}">
                 <i class="bi bi-trash3"></i>
               </button>
             </div>
@@ -212,12 +243,12 @@
           data-bs-title="{{t 'queues.titles.complete' }}">
           <i class="bi bi-list"></i>
         </button>
-        <button type="button" class="btn-edit btn btn-sm btn-outline-warning border-0 me-1"
+        <button type="button" class="btn-edit-queue btn btn-sm btn-outline-warning border-0 me-1"
           data-queue="{{this.queueConfig_id}}" data-bs-toggle="tooltip" data-bs-placement="left"
           data-bs-title="{{t 'queues.titles.edit' }}">
           <i class="bi bi-pencil-square"></i>
         </button>
-        <button type="button" class="btn-delete btn btn-sm btn-outline-danger border-0"
+        <button type="button" class="btn-delete-queue btn btn-sm btn-outline-danger border-0"
           data-queue='{"queueId": {{this.queueConfig_id}}, "channelId": {{this.userId}} }' data-bs-toggle="tooltip"
           data-bs-placement="left" data-bs-title="{{t 'queues.titles.delete' }}">
           <i class="bi bi-trash3"></i>

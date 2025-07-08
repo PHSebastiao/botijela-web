@@ -51,24 +51,24 @@ class BaseApiService {
     }
   }
 
-  get(endpoint) {
-    return this.request(endpoint);
+  async get(endpoint) {
+    return await this.request(endpoint);
   }
 
-  post(endpoint, data) {
-    return this.request(endpoint, "POST", data);
+  async post(endpoint, data) {
+    return await this.request(endpoint, "POST", data);
   }
 
-  put(endpoint, data) {
-    return this.request(endpoint, "PUT", data);
+  async put(endpoint, data) {
+    return await this.request(endpoint, "PUT", data);
   }
   
-  patch(endpoint, data) {
-    return this.request(endpoint, "PATCH", data);
+  async patch(endpoint, data) {
+    return await this.request(endpoint, "PATCH", data);
   }
 
-  delete(endpoint) {
-    return this.request(endpoint, "DELETE");
+  async delete(endpoint) {
+    return await this.request(endpoint, "DELETE");
   }
 }
 

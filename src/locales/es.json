@@ -30,7 +30,8 @@
       "title": {
         "description": "Texto corto que inicia la cola.",
         "silentActions": "No envíe las acciones de chat de la cola (agregar, completar, eliminar).",
-        "separator": "Carácter que se encuentra entre los elementos de cola"
+        "separator": "Carácter que se encuentra entre los elementos de cola",
+        "queueItemAdd": "Use como comando: nombre de elementos separados como desee y --p para elementos prioritarios."
       }
     },
     "description": "Descripción",
@@ -47,7 +48,17 @@
     "delete_success": "Cola eliminada con éxito.",
     "delete_error": "Error al eliminar una cola.",
     "reorder_error": "No se pudo actualizar el orden de la cola",
-    "reorder_success": "Cola actualizada exitosa"
+    "reorder_success": "Cola actualizada exitosa",
+    "add_item_placeholder": "Introduzca el nombre del itens...",
+    "add_item": "Agregar nuevo artículo",
+    "cancel": "Cancelar",
+    "add_success": "Artículo agregado con éxito.",
+    "add_item_error": "Error agregar en la cola",
+    "item_name_required": "Nombre del artículo requerido",
+    "remove_item_error": "Error de eliminar el elemento de la cola",
+    "remove_item_success": "Artículo eliminado con éxito.",
+    "send_item": "Para enviar",
+    "priority_item": "Artículo prioritario"
   },
   "queue": {},
   "other": {
