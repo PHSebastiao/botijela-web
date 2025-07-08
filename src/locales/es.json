@@ -42,7 +42,9 @@
     "titles": {
       "complete": "Lista de Completo",
       "edit": "Editar la cola",
-      "delete": "Borrar la cola"
+      "delete": "Borrar la cola",
+      "editItem": "Elemento de edición",
+      "removeItem": "Eliminar el artículo"
     },
     "create_new_queue": "Nueva cola",
     "delete_success": "Cola eliminada con éxito.",
@@ -58,7 +60,10 @@
     "remove_item_error": "Error de eliminar el elemento de la cola",
     "remove_item_success": "Artículo eliminado con éxito.",
     "send_item": "Para enviar",
-    "priority_item": "Artículo prioritario"
+    "priority_item": "Artículo prioritario",
+    "save_item": "Ahorrar",
+    "update_success": "Artículo actualizado con éxito.",
+    "update_error": "No actualizar el elemento"
   },
   "queue": {},
   "other": {

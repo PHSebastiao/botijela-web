@@ -42,7 +42,9 @@
     "titles": {
       "complete": "Completed List",
       "edit": "Edit queue",
-      "delete": "Delete queue"
+      "delete": "Delete queue",
+      "editItem": "Edit item",
+      "removeItem": "Remove item"
     },
     "create_new_queue": "New queue",
     "delete_success": "Queue successfully deleted.",
@@ -58,7 +60,10 @@
     "remove_item_error": "Error removing item from the queue",
     "remove_item_success": "Item successfully removed.",
     "send_item": "Send",
-    "priority_item": "Priority item"
+    "priority_item": "Priority item",
+    "save_item": "Save",
+    "update_success": "Item successfully updated.",
+    "update_error": "Failure to update item"
   },
   "queue": {},
   "other": {

@@ -42,7 +42,9 @@
     "titles": {
       "complete": "Lista de Completos",
       "edit": "Editar Fila",
-      "delete": "Excluir Fila"
+      "delete": "Excluir Fila",
+      "editItem": "Editar Item",
+      "removeItem": "Remover item"
     },
     "create_new_queue": "Criar nova fila",
     "delete_success": "Fila deletada com sucesso.",
@@ -58,7 +60,10 @@
     "remove_item_error": "Erro ao remover item da fila",
     "remove_item_success": "Item removido com sucesso.",
     "send_item": "Enviar",
-    "priority_item": "Item Prioritário"
+    "priority_item": "Item Prioritário",
+    "save_item": "Salvar",
+    "update_success": "Item atualizado com sucesso.",
+    "update_error": "Falha ao atualizar item"
   },
   "queue": {},
   "other": {

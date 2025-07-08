@@ -131,7 +131,7 @@ function hideAddItemInput($inputForm, $addButton) {
   // Restore the add button
   $addButton.removeClass("btn-send").addClass("btn-add");
   $addButton.html('<i class="bi bi-plus-lg"></i>');
-  $addButton.attr("title", t ? t("queues.add_item") : "Add item");
+  $addButton.attr("title", t("queues.add_item"));
 
   $addButton.off("click").on("click", function (e) {
     e.preventDefault();
@@ -183,7 +183,7 @@ function addQueueItem(queueId, itemName, $queueContainer) {
       $inputForm.find("input, button").prop("disabled", false);
       $sendButton.prop("disabled", false).html('<i class="bi bi-send"></i>');
 
-      let errorMessage = t ? t("queues.add_error") : "Failed to add item";
+      let errorMessage = t("queues.add_item_error");
       if (xhr.responseJSON && xhr.responseJSON.error) {
         errorMessage = xhr.responseJSON.error;
       }
@@ -217,9 +217,9 @@ function showEditItemInput($queueItem, queueId, itemId) {
       <input type="text" class="form-control form-control-sm queue-item-input" 
              value="${currentName}" maxlength="100" autocomplete="off">
       <div class="form-check">
-      <label class="form-check-label priority-label" title="${
-        t ? t("queues.priority_item") : "Priority"
-      }">
+      <label class="form-check-label priority-label" title="${t(
+        "queues.priority_item"
+      )}">
         <input class="form-check-input priority-checkbox" type="checkbox" 
                ${isPriority ? "checked" : ""}>
           <i class="bi bi-star-fill text-warning"></i>
@@ -231,7 +231,7 @@ function showEditItemInput($queueItem, queueId, itemId) {
   // Transform edit button to send button
   $editButton.removeClass("btn-edit").addClass("btn-send");
   $editButton.html('<i class="bi bi-send"></i>');
-  $editButton.attr("title", t ? t("queues.save_item") : "Save");
+  $editButton.attr("title", t("queues.save_item"));
 
   // Get the input and checkbox for event binding
   const $input = $queueItem.find(".queue-item-input");
@@ -306,7 +306,7 @@ function exitEditMode($queueItem, originalName) {
   // Restore edit button
   $sendButton.removeClass("btn-send").addClass("btn-edit");
   $sendButton.html('<i class="bi bi-pencil"></i>');
-  $sendButton.attr("title", t ? t("queues.titles.edit") : "Edit");
+  $sendButton.attr("title", t("queues.titles.editItem"));
 
   // Remove document click handler
   $(document).off("click.editItem");
@@ -340,10 +340,7 @@ function updateQueueItem(queueId, itemId, newName, isPriority, $queueItem) {
 
         // Show success toast if available
         if (typeof showToast === "function") {
-          showToast(
-            "success",
-            t ? t("queues.update_success") : "Item updated successfully"
-          );
+          showToast("success", t("queues.update_success"));
         }
       },
       error: function (xhr) {
@@ -352,9 +349,7 @@ function updateQueueItem(queueId, itemId, newName, isPriority, $queueItem) {
         $priorityCheckbox.prop("disabled", false);
         $sendButton.prop("disabled", false).html('<i class="bi bi-send"></i>');
 
-        let errorMessage = t
-          ? t("queues.update_error")
-          : "Failed to update item";
+        let errorMessage = t("queues.update_error");
         if (xhr.responseJSON && xhr.responseJSON.error) {
           errorMessage = xhr.responseJSON.error;
         }
@@ -638,12 +633,12 @@ function rebuildQueueItems($queueContainer, data, queueId) {
   <div class="queue-item-actions">
     <button class="queue-item-btn btn-edit" data-item-id="${
       queueItem.queueItem_id
-    }" title="${t ? t("queues.titles.edit") : "Edit"}">
+    }" title="${t("queues.titles.editItem")}">
       <i class="bi bi-pencil"></i>
     </button>
     <button class="queue-item-btn btn-delete" data-item-id="${
       queueItem.queueItem_id
-    }" title="${t ? t("queues.titles.delete") : "Delete"}">
+    }" title="${t("queues.titles.removeItem")}">
       <i class="bi bi-trash3"></i>
     </button>
   </div>
