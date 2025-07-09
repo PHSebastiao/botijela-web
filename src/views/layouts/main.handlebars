@@ -214,10 +214,15 @@
     <script src="/js/jquery-sortable.js"></script>
     <script src="/js/main.js"></script>
     <script src="/js/shared.js"></script>
+    <script>
+        window.translations = {
+            'kofi.support_me': '{{t "kofi.support_me"}}',
+        };
+    </script>
     {{#if (eq activePage 'queue')}}
     <script>
         // Make translations available to JavaScript
-        window.translations = {
+        window.translations = Object.assign(window.translations || {}, {
             'queues.command': '{{t "queues.command"}}',
             'queues.description': '{{t "queues.description"}}',
             'queues.separator': '{{t "queues.separator"}}',
@@ -241,7 +246,7 @@
             'queues.titles.editItem': '{{t 'queues.titles.editItem' }}',
             'queues.titles.removeItem': '{{t 'queues.titles.removeItem' }}',
             'queues.save_item': '{{t 'queues.save_item' }}',
-        };
+        });
     </script>
     <script src="/js/loading-wrapper.js"></script>
     <script src="/js/queues.js"></script>
@@ -250,7 +255,7 @@
     <script>
         kofiWidgetOverlay.draw('botijela', {
             'type': 'floating-chat',
-            'floating-chat.donateButton.text': 'Support Me',
+            'floating-chat.donateButton.text': t('kofi.support_me'),
             'floating-chat.donateButton.background-color': '#794bc4',
             'floating-chat.donateButton.text-color': '#fff'
         });

@@ -1,11 +1,16 @@
 import express from "express";
 import { isAuthenticated, isNotAuthenticated } from "../middleware/auth.js";
-import { getAndClearToasts, addError } from "../utils/toast.js";
+import { getAndClearToasts, addError, addSuccess } from "../utils/toast.js";
+import InternalApiService from "../services/InternalApiService.js";
 
 const router = express.Router();
 
 router.get("/login", isNotAuthenticated, (req, res) => {
-  res.render("login", { title: "Botijela - Login", activePage: "login", layout: "initial" });
+  res.render("login", {
+    title: "Botijela - Login",
+    activePage: "login",
+    layout: "initial",
+  });
 });
 
 router.get("/logout", (req, res) => {
@@ -22,6 +27,13 @@ router.get("/", isAuthenticated, (req, res) => {
   const toasts = getAndClearToasts(req);
   res.render("home", { title: "Botijela", activePage: "home", toasts });
 });
+
+router.patch("/join", isAuthenticated, async (req, res) => {
+  addSuccess(
+    await InternalApiService.joinChannel(res.locals.managing.username, req.user.username)
+  );
+  res.redirect("/");
+}); 
 
 router.get("/options", isAuthenticated, (req, res) => {
   try {

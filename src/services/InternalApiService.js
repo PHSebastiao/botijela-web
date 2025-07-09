@@ -24,6 +24,14 @@ class InternalApiService extends BaseApiService {
     return await this.get(`/channels/${channelName}`);
   }
 
+  async joinChannel(channelName, data) {
+    return await this.post(`/channels/join/${channelName}`, data)
+  }
+
+  async partChannel(channelName, data) {
+    return await this.post(`/channels/part/${channelName}`, data)
+  }
+
   async getQueueList(channelName) {
     return await this.get(`/channels/${channelName}/queues`);
   }

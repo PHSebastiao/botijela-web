@@ -71,5 +71,8 @@
   },
   "main": {
     "moderated_channels": "Canales moderados"
+  },
+  "kofi": {
+    "support_me": "Apóyame"
   }
 }

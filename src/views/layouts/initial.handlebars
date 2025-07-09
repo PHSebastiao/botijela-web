@@ -41,10 +41,12 @@
           <a class="navbar-brand" href="#">Botijela</a>
           <ul class="navbar-nav d-flex flex-row gap-2 mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link {{#if (eq activePage 'login')}}active{{/if}}"{{#if (eq activePage 'login')}} aria-current="page"{{/if}} href="/">Login</a>
+              <a class="nav-link {{#if (eq activePage 'login')}}active{{/if}}" {{#if (eq activePage 'login' )}}
+                aria-current="page" {{/if}} href="/">Login</a>
             </li>
             {{!-- <li class="nav-item">
-              <a class="nav-link{{#if (eq activePage 'docs')}}active{{/if}}"{{#if (eq activePage 'docs')}} aria-current="page"{{/if}} href="/docs">Docs</a>
+              <a class="nav-link{{#if (eq activePage 'docs')}}active{{/if}}" {{#if (eq activePage 'docs' )}}
+                aria-current="page" {{/if}} href="/docs">Docs</a>
             </li> --}}
           </ul>
         </div>
@@ -92,9 +94,14 @@
   <script src="/js/shared.js"></script>
   <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
   <script>
+    window.translations = {
+      'kofi.support_me': '{{t "kofi.support_me"}}',
+    };
+  </script>
+  <script>
     kofiWidgetOverlay.draw('botijela', {
       'type': 'floating-chat',
-      'floating-chat.donateButton.text': 'Support Me',
+      'floating-chat.donateButton.text': t("kofi.support_me"),
       'floating-chat.donateButton.background-color': '#794bc4',
       'floating-chat.donateButton.text-color': '#fff'
     });
