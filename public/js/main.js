@@ -20,7 +20,7 @@ $(document).on("click", "#joinChannel", function (e) {
   e.preventDefault();
   $.ajax({
     url: `/join`,
-    type: "PATCH",
+    type: "POST",
   });
   location.reload();
 });

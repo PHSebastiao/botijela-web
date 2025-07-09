@@ -28,9 +28,9 @@ router.get("/", isAuthenticated, (req, res) => {
   res.render("home", { title: "Botijela", activePage: "home", toasts });
 });
 
-router.patch("/join", isAuthenticated, async (req, res) => {
+router.post("/join", isAuthenticated, async (req, res) => {
   addSuccess(
-    await InternalApiService.joinChannel(res.locals.managing.username, req.user.username)
+    await InternalApiService.joinChannel(res.locals.managing.username, {user: req.user.username})
   );
   res.redirect("/");
 }); 
