@@ -13,6 +13,7 @@ function initializeSortable() {
       onEnd: function (evt) {
         // Get the moved item's ID and new position
         const itemId = $(evt.item).data("item-id");
+        if (evt.newIndex == evt.oldIndex) return;
         const newPosition = evt.newIndex + 1;
 
         // Send API request to update order
@@ -67,7 +68,7 @@ function showAddItemInput($queueContainer, queueId) {
   // Change the add button to send button
   $addButton.removeClass("btn-add").addClass("btn-send");
   $addButton.html('<i class="bi bi-send"></i>');
-  $addButton.attr("title", t("queues.send_item"));
+  $addButton.attr("title", t("queues.save_item"));
 
   let tooltip = new bootstrap.Tooltip($inputForm.find(".add-item-field"));
 
@@ -164,41 +165,43 @@ function addQueueItem(queueId, itemName, $queueContainer) {
     .prop("disabled", true)
     .html('<span class="spinner-border spinner-border-sm"></span>');
 
-  $.ajax({
-    url: `/queue/${queueId}/items`,
-    type: "POST",
-    contentType: "application/json",
-    data: JSON.stringify({ itemName: itemName }),
-    success: function (data) {
-      // Use the helper function to rebuild queue items properly (this will remove the input form)
-      rebuildQueueItems($queueContainer, data, queueId);
+  $queueContainer.wrapLoading(
+    $.ajax({
+      url: `/queue/${queueId}/items`,
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({ itemName: itemName }),
+      success: function (data) {
+        // Use the helper function to rebuild queue items properly (this will remove the input form)
+        rebuildQueueItems($queueContainer, data, queueId);
 
-      // Show success toast if available
-      if (typeof showToast === "function") {
-        showToast("success", t("queues.add_success"));
-      }
-    },
-    error: function (xhr) {
-      // Re-enable form and restore send button
-      $inputForm.find("input, button").prop("disabled", false);
-      $sendButton.prop("disabled", false).html('<i class="bi bi-send"></i>');
+        // Show success toast if available
+        if (typeof showToast === "function") {
+          showToast("success", t("queues.add_success"));
+        }
+      },
+      error: function (xhr) {
+        // Re-enable form and restore send button
+        $inputForm.find("input, button").prop("disabled", false);
+        $sendButton.prop("disabled", false).html('<i class="bi bi-send"></i>');
 
-      let errorMessage = t("queues.add_item_error");
-      if (xhr.responseJSON && xhr.responseJSON.error) {
-        errorMessage = xhr.responseJSON.error;
-      }
+        let errorMessage = t("queues.add_item_error");
+        if (xhr.responseJSON && xhr.responseJSON.error) {
+          errorMessage = xhr.responseJSON.error;
+        }
 
-      // Show error toast if available
-      if (typeof showToast === "function") {
-        showToast("danger", errorMessage);
-      } else {
-        alert(errorMessage);
-      }
+        // Show error toast if available
+        if (typeof showToast === "function") {
+          showToast("danger", errorMessage);
+        } else {
+          alert(errorMessage);
+        }
 
-      // Focus input again
-      $inputForm.find("input").focus();
-    },
-  });
+        // Focus input again
+        $inputForm.find("input").focus();
+      },
+    })
+  );
 }
 
 function showEditItemInput($queueItem, queueId, itemId) {
@@ -431,6 +434,33 @@ function bindEventHandlers() {
         })
       );
     });
+  
+    $(".queue-item-btn.btn-complete")
+    .off("click")
+    .on("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const $button = $(this);
+      const $queueContainer = $button.closest(".queue-items");
+      const queueId = $queueContainer.data("queue-id");
+      const itemId = $(this).data("item-id");
+
+      $queueContainer.wrapLoading(
+        $.ajax({
+          url: `/queue/${queueId}/items/${itemId}/complete`,
+          type: "POST",
+          success: function (data) {
+            // Use the helper function to rebuild queue items properly
+            rebuildQueueItems($queueContainer, data, queueId);
+            showToast("success", t("queues.complete_item_success"));
+          },
+          error: function () {
+            // Show error toast
+            showToast("danger", t("queues.complete_item_error"));
+          },
+        })
+      );
+    });
 
   // Item-level add buttons
   $(".queue-item-btn.btn-add")
@@ -458,7 +488,8 @@ function bindEventHandlers() {
       const $this = $(this);
 
       // Remove expanded class from all items and reset their widths
-      $(".queue-item-draggable").removeClass("expanded").css("width", "120px");
+      $(".queue-item-draggable:not(.editing)").css("width", "120px");
+      $(".queue-item-draggable").removeClass("expanded")
 
       // Calculate the natural width needed for this item
       const $clone = $this
@@ -484,12 +515,7 @@ function bindEventHandlers() {
     .off("click.queueItems")
     .on("click.queueItems", function (e) {
       // Hide all tooltips
-      $('[data-bs-toggle="tooltip"]').each(function () {
-        const tooltipInstance = bootstrap.Tooltip.getInstance(this);
-        if (tooltipInstance) {
-          tooltipInstance.hide();
-        }
-      });
+      $(".tooltip").remove();
 
       if (!$(e.target).closest(".queue-item-draggable").length) {
         $(".queue-item-draggable")
@@ -503,7 +529,7 @@ function bindEventHandlers() {
     .on("click", function (e) {
       e.preventDefault();
       let data = $(this).data("queue");
-      const $queueItem = $(this).closest(".list-group-item");
+      const $queueItem = $(this).closest(".list-group");
       $queueItem.wrapLoading(
         $.ajax({
           url: `/queue/${data.channelId}/${data.queueId}`,
@@ -553,20 +579,26 @@ function reRenderQueues(queues) {
           .filter((item) => !item.isCompleted)
           .map(
             (item) => `
-          <div class="queue-item-draggable" data-item-id="${
-            item.id
-          }" data-item-name="${item.itemName}">
+          <div class="queue-item-draggable${
+            item.isPriority ? " priority-item" : ""
+          }" data-item-id="${item.id}" data-item-name="${item.itemName}">
             <i class="bi bi-grip-vertical drag-handle"></i>
             <span class="queue-item-text">${item.itemName}</span>
             <div class="queue-item-actions">
+              <button class="queue-item-btn btn-complete" data-item-id="${
+                item.queueItem_id
+              }"
+                title="${t("queues.titles.completeItem")}">
+                <i class="bi bi-check-lg"></i>
+              </button>
               <button class="queue-item-btn btn-edit" data-item-id="${
                 item.id
-              }" title="${t("queues.titles.edit")}">
+              }" title="${t("queues.titles.editItem")}">
                 <i class="bi bi-pencil"></i>
               </button>
               <button class="queue-item-btn btn-delete" data-item-id="${
                 item.id
-              }" title="${t("queues.titles.delete")}">
+              }" title="${t("queues.titles.removeItem")}">
                 <i class="bi bi-trash"></i>
               </button>
             </div>
@@ -589,14 +621,14 @@ function reRenderQueues(queues) {
         data-queue="${
           queue.queueConfig_id
         }" data-bs-toggle="tooltip" data-bs-placement="left"
-        data-bs-title="${t("queues.titles.edit")}">
+        data-bs-title="${t("queues.titles.editItem")}">
         <i class="bi bi-pencil-square"></i>
       </button>
       <button type="button" class="btn-delete-queue btn btn-sm btn-outline-danger border-0"
         data-queue='{"queueId": ${queue.queueConfig_id}, "channelId": ${
         queue.userId
       }}' data-bs-toggle="tooltip" data-bs-placement="left"
-        data-bs-title="${t("queues.titles.delete")}">
+        data-bs-title="${t("queues.titles.removeItem")}">
         <i class="bi bi-trash3"></i>
       </button>
     </div>
@@ -631,6 +663,12 @@ function rebuildQueueItems($queueContainer, data, queueId) {
   <i class="bi bi-grip-vertical drag-handle"></i>
   <span class="queue-item-text">${queueItem.itemName}</span>
   <div class="queue-item-actions">
+    <button class="queue-item-btn btn-complete" data-item-id="${
+      queueItem.queueItem_id
+    }"
+      title="${t("queues.titles.completeItem")}">
+      <i class="bi bi-check-lg"></i>
+    </button>
     <button class="queue-item-btn btn-edit" data-item-id="${
       queueItem.queueItem_id
     }" title="${t("queues.titles.editItem")}">

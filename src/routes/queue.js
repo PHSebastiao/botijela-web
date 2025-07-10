@@ -138,6 +138,27 @@ queueRouter.delete(
   }
 );
 
+queueRouter.post(
+  "/:queueId/items/:itemId/complete",
+  isAuthenticated,
+  async (req, res) => {
+    try {
+      const queueId = req.params.queueId;
+      const itemId = req.params.itemId;
+
+      await InternalApiService.completeQueueItem(queueId, itemId);
+
+      let result = await InternalApiService.getActiveQueueItems(queueId);
+      res.status(201).json(result);
+    } catch (error) {
+      console.error("Error adding queue item:", error);
+      return res
+        .status(500)
+        .json({ error: error.message || req.t("queues.add_item_error") });
+    }
+  }
+);
+
 queueRouter.put(
   "/:queueId/items/:itemId",
   isAuthenticated,
@@ -163,7 +184,7 @@ queueRouter.put(
       console.error("Error updating queue item:", error);
       return res
         .status(500)
-        .json({ error: error.message || req.t("queues.update_item_error") });
+        .json({ error: error.message || req.t("queues.update_error") });
     }
   }
 );

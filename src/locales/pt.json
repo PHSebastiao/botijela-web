@@ -31,7 +31,7 @@
         "description": "Pequeno texto que inicia a fila.",
         "silentActions": "Não mandar no chat ações da fila (adicionar, completar, remover).",
         "separator": "Caractere que fica entre os itens da fila",
-        "queueItemAdd": "Use como se fosse o comando: nome dos itens separados como quiser e --p para itens prioritários."
+        "queueItemAdd": "Use como o comando: nome dos itens separados por espaços e --p para itens prioritários."
       }
     },
     "description": "Descrição",
@@ -44,7 +44,8 @@
       "edit": "Editar Fila",
       "delete": "Excluir Fila",
       "editItem": "Editar Item",
-      "removeItem": "Remover item"
+      "removeItem": "Remover item",
+      "completeItem": "Completar Item"
     },
     "create_new_queue": "Criar nova fila",
     "delete_success": "Fila deletada com sucesso.",
@@ -59,11 +60,12 @@
     "item_name_required": "Nome do item requerido",
     "remove_item_error": "Erro ao remover item da fila",
     "remove_item_success": "Item removido com sucesso.",
-    "send_item": "Enviar",
     "priority_item": "Item Prioritário",
     "save_item": "Salvar",
     "update_success": "Item atualizado com sucesso.",
-    "update_error": "Falha ao atualizar item"
+    "update_error": "Falha ao atualizar item",
+    "complete_item_error": "Erro ao completar da fila",
+    "complete_item_success": "Item completado com sucesso"
   },
   "queue": {},
   "other": {

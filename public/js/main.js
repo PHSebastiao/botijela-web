@@ -21,6 +21,11 @@ $(document).on("click", "#joinChannel", function (e) {
   $.ajax({
     url: `/join`,
     type: "POST",
+    success: function(data) {
+      location.reload();
+    },
+    error: function(xhr, status, error) {
+      location.reload();
+    }
   });
-  location.reload();
 });

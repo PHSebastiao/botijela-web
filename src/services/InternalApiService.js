@@ -56,8 +56,12 @@ class InternalApiService extends BaseApiService {
     return await this.post(`/queues/${queueId}/items`, itemData);
   }
   
-  async removeQueueItem(queueId, itemId, itemData) {
-    return await this.delete(`/queues/${queueId}/items/${itemId}`, itemData);
+  async removeQueueItem(queueId, itemId) {
+    return await this.delete(`/queues/${queueId}/items/${itemId}`);
+  }
+  
+  async completeQueueItem(queueId, itemId) {
+    return await this.post(`/queues/${queueId}/items/${itemId}/complete`);
   }
 
   async updateQueueItem(queueId, itemId, itemData) {

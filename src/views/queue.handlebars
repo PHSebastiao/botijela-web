@@ -31,6 +31,7 @@
     align-items: center;
     padding: 6px 12px;
     background-color: var(--bs-secondary-bg);
+    border: 2px solid var(--bs-secondary-bg);
     color: var(--bs-white);
     border-radius: 50px;
     font-size: 0.875rem;
@@ -46,8 +47,8 @@
     --webkit-box-sizing: border-box;
     --moz-box-sizing: border-box;
     box-sizing: border-box;
-    border: 1px solid red;
-}
+    border: 2px solid var(--bs-info);
+  }
 
   .queue-item-draggable.expanded {
     min-width: 120px;
@@ -92,7 +93,16 @@
   }
 
   .queue-item-draggable.expanded .queue-item-actions {
-    width: 60px;
+    width: 80px;
+  }
+
+  .queue-item-draggable.editing .btn-delete,
+  .queue-item-draggable.editing .btn-complete {
+    display: none;
+  }
+
+  .queue-item-draggable.editing .queue-item-actions {
+    width: 30px;
   }
 
   .queue-item-btn {
@@ -101,14 +111,17 @@
     border: none;
     background-color: rgba(255, 255, 255, 0.1);
     color: var(--bs-white);
-    border-radius: 12px;
+    border-radius: 50px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .queue-item-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2);
     border-color: none;
+  }
+
+  .queue-item-btn.btn-complete:hover {
+    background-color: var(--bs-primary);
   }
 
   .queue-item-btn.btn-edit:hover {
@@ -119,8 +132,15 @@
     background-color: var(--bs-danger);
   }
 
-  .queue-item-btn.btn-add, .queue-item-btn.btn-send {
+  .queue-item-btn.btn-add,
+  .queue-item-btn.btn-send {
     background-color: var(--bs-primary);
+    border: 2px solid var(--bs-primary);
+    ;
+  }
+
+  .queue-items>.queue-item-btn.btn-add,
+  .queue-items>.queue-item-btn.btn-send {
     padding: 6px 12px;
     font-size: 0.875rem;
   }
@@ -130,6 +150,8 @@
   }
 
   .add-item-cancel {
+    background-color: var(--bs-btn-bg);
+    border: 2px solid rgba(255, 255, 255, 0.1);
     padding: 6px 12px;
     font-size: 0.875rem;
   }
@@ -137,6 +159,12 @@
   .add-item-field {
     border-radius: 12px;
     padding: 5px 11px;
+  }
+
+  .queue-item-input {
+    border-radius: 12px;
+    padding: 0px 12px;
+    min-height: 0;
   }
 
   [data-bs-theme=light] .queue-item-draggable {
@@ -222,12 +250,16 @@
             <i class="bi bi-grip-vertical drag-handle"></i>
             <span class="queue-item-text">{{this.itemName}}</span>
             <div class="queue-item-actions">
+              <button class="queue-item-btn btn-complete" data-item-id="{{this.queueItem_id}}"
+                title="{{t 'queues.titles.completeItem'}}">
+                <i class="bi bi-check-lg"></i>
+              </button>
               <button class="queue-item-btn btn-edit" data-item-id="{{this.queueItem_id}}"
-                title="{{t 'queues.titles.edit'}}">
+                title="{{t 'queues.titles.editItem'}}">
                 <i class="bi bi-pencil"></i>
               </button>
               <button class="queue-item-btn btn-delete" data-item-id="{{this.queueItem_id}}"
-                title="{{t 'queues.titles.delete'}}">
+                title="{{t 'queues.titles.removeItem'}}">
                 <i class="bi bi-trash3"></i>
               </button>
             </div>

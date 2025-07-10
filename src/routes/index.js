@@ -29,11 +29,19 @@ router.get("/", isAuthenticated, (req, res) => {
 });
 
 router.post("/join", isAuthenticated, async (req, res) => {
-  addSuccess(
-    await InternalApiService.joinChannel(res.locals.managing.username, {user: req.user.username})
-  );
-  res.redirect("/");
-}); 
+  try {
+    const result = await InternalApiService.joinChannel(
+      res.locals.managing.username,
+      { user: req.user.username }
+    );
+    addSuccess(req, result.message);
+    res.redirect("/");
+  } catch (error) {
+    console.error("Error joining channel:", error);
+    addError(req, error.message || "Failed to join channel");
+    res.redirect("/");
+  }
+});
 
 router.get("/options", isAuthenticated, (req, res) => {
   try {

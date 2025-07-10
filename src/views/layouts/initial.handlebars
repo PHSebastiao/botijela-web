@@ -33,7 +33,7 @@
   </style>
 </head>
 
-<body data-theme="{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
+<body>
   <header>
     <nav class="navbar fixed-top navbar-expand-lg">
       <div class="container-fluid">
@@ -92,12 +92,13 @@
   <script src="/js/bootstrap.bundle.min.js"></script>
   <script src="/js/jquery.min.js"></script>
   <script src="/js/shared.js"></script>
-  <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
   <script>
     window.translations = {
       'kofi.support_me': '{{t "kofi.support_me"}}',
     };
   </script>
+
+  <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
   <script>
     kofiWidgetOverlay.draw('botijela', {
       'type': 'floating-chat',

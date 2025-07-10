@@ -9,11 +9,9 @@ function setCookie(name, value, days) {
 }
 
 function toggleTheme() {
-  const body = document.body;
-  const currentTheme = body.getAttribute("data-theme");
+  const currentTheme = document.documentElement.getAttribute("data-bs-theme");
   const newTheme = currentTheme === "dark" ? "light" : "dark";
   document.documentElement.setAttribute("data-bs-theme", newTheme);
-  body.setAttribute("data-theme", newTheme);
   setCookie("theme", newTheme, 30);
   $(this).find("i").toggleClass("bi-moon bi-sun");
 }

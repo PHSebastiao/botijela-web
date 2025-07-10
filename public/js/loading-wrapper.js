@@ -61,14 +61,14 @@ class LoadingWrapper {
       }
 
       /* Light theme spinner */
-      [data-theme="light"] .loading-spinner,
-      :root:not([data-theme="dark"]) .loading-spinner {
+      [data-bs-theme=light] .loading-spinner,
+      :root:not([data-bs-theme=dark]) .loading-spinner {
         border-top-color: #007bff;
         border-right-color: #007bff;
       }
 
       /* Dark theme spinner */
-      [data-theme="dark"] .loading-spinner {
+      [data-bs-theme=dark] .loading-spinner {
         border-top-color: #0d6efd;
         border-right-color: #0d6efd;
       }

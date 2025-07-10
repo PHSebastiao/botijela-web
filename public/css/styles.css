@@ -7,17 +7,14 @@
 }
 
 /* Dark Theme Variables */
-[data-theme="dark"] {
+[data-bs-theme=dark] {
   --bg-color: #111;
+  --bs-body-bg: #111;
   --text-color: #ffffff;
   --btn-outline-color: #ffffff;
 }
 
 /* Body Styles */
-html[data-bs-theme="dark"] body {
-  --bs-body-bg: #111 !important;
-}
-
 body {
   height: 100vh;
   margin: 0;
@@ -35,6 +32,8 @@ body {
   border-color: var(--btn-outline-color);
   color: var(--btn-outline-color);
 }
+
+
 
 /* Sidebar Styles */
 #sidebar {

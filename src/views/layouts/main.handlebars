@@ -58,7 +58,7 @@
     </style>
 </head>
 
-<body data-theme="{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
+<body>
     <div class="wrapper d-flex w-100 h-100">
         <!-- Sidebar -->
         <nav id="sidebar">
@@ -141,7 +141,7 @@
                             <ul class="navbar-nav align-items-center">
                                 {{#unless managing.join }}
                                 <li class="nav-item">
-                                    <button class="btn btn-success" id="joinChannel">Join</button>
+                                    <button class="btn btn-outline-success" id="joinChannel">Join</button>
                                 </li>
                                 {{/unless}}
                                 {{#if managingSelf}}
@@ -152,6 +152,7 @@
                                         {{managing.displayName}}
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="channelToManage">
+                                        {{#if manageable}}
                                         <li>
                                             <h6 class="dropdown-header">{{t 'main.moderated_channels' }}:</h6>
                                         </li>
@@ -169,6 +170,7 @@
                                         <li>
                                             <hr class="dropdown-divider">
                                         </li>
+                                        {{/if}}
                                         <li><a class="dropdown-item log-out" href="/logout">Logout</a></li>
                                     </ul>
                                 </li>
@@ -245,7 +247,10 @@
             'queues.priority_item': '{{t 'queues.priority_item' }}',
             'queues.titles.editItem': '{{t 'queues.titles.editItem' }}',
             'queues.titles.removeItem': '{{t 'queues.titles.removeItem' }}',
+            'queues.titles.completeItem': '{{t 'queues.titles.completeItem' }}',
             'queues.save_item': '{{t 'queues.save_item' }}',
+            'queues.complete_item_success': '{{t 'queues.complete_item_success' }}',
+            'queues.complete_item_error': '{{t 'queues.complete_item_error' }}',
         });
     </script>
     <script src="/js/loading-wrapper.js"></script>

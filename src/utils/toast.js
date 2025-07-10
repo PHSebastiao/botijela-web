@@ -9,6 +9,11 @@
  * @param {string} message - Toast message
  */
 export const addToast = (req, type, message) => {
+  if (!req.session) {
+    console.warn('Session not available, cannot add toast message:', message);
+    return;
+  }
+  
   if (!req.session.toasts) {
     req.session.toasts = [];
   }
@@ -42,6 +47,11 @@ export const addToasts = (req, type, messages) => {
  * @returns {object[]} Array of toast objects
  */
 export const getAndClearToasts = (req) => {
+  if (!req.session) {
+    console.warn('Session not available, cannot get toasts');
+    return [];
+  }
+  
   const toasts = req.session.toasts || [];
   delete req.session.toasts;
   return toasts;

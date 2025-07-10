@@ -31,7 +31,7 @@
         "description": "Short text that starts the queue.",
         "silentActions": "Do not send in the chat actions of the queue (add, complete, remove).",
         "separator": "Character(s) that sit between the queue items",
-        "queueItemAdd": "Use as the command: Name of the items separated however you want and --p for priority items."
+        "queueItemAdd": "Use as the command: Name of the items separated by spaces and --p for priority items."
       }
     },
     "description": "Description",
@@ -44,7 +44,8 @@
       "edit": "Edit queue",
       "delete": "Delete queue",
       "editItem": "Edit item",
-      "removeItem": "Remove item"
+      "removeItem": "Remove item",
+      "completeItem": "Complete Item"
     },
     "create_new_queue": "New queue",
     "delete_success": "Queue successfully deleted.",
@@ -59,11 +60,12 @@
     "item_name_required": "Name of item is required",
     "remove_item_error": "Error removing item from the queue",
     "remove_item_success": "Item successfully removed.",
-    "send_item": "Send",
     "priority_item": "Priority item",
     "save_item": "Save",
     "update_success": "Item successfully updated.",
-    "update_error": "Failure to update item"
+    "update_error": "Failure to update item",
+    "complete_item_success": "Successfuly completed item",
+    "complete_item_error": "Error completing item from queue"
   },
   "queue": {},
   "other": {
