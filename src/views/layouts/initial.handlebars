@@ -23,12 +23,12 @@
   <link rel="stylesheet" href="/css/styles.css">
 
   <style>
-    .language-switch>a>img {
-      margin-top: -5px;
-    }
-
     .btn-twitch {
       background-color: #9146FF;
+    }
+
+    .language-switch {
+      padding: 6px;
     }
   </style>
 </head>
@@ -51,8 +51,7 @@
           </ul>
         </div>
         <div class="d-flex align-items-end">
-          <button type="button" id="themeToggle"
-            class="btn btn-outline-{{#if (eq theme 'dark')}}light{{else}}dark{{/if}} me-2">
+          <button type="button" id="themeToggle" class="me-2">
             <i class="bi {{#if (eq theme 'dark')}}bi-moon{{else}}bi-sun{{/if}}"></i>
           </button>
           <div class="dropdown language-switch">

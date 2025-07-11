@@ -47,7 +47,7 @@ class LoadingWrapper {
 
       /* Dark theme overlay */
       [data-bs-theme=dark] .loading-overlay {
-        background-color: rgba(17, 17, 17, 0.8);
+        background-color: rgba(4, 5, 20, 0.8);
         backdrop-filter: blur(2px);
       }
 

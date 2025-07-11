@@ -62,7 +62,7 @@
     <div class="wrapper d-flex w-100 h-100">
         <!-- Sidebar -->
         <nav id="sidebar">
-            <div class="p-3 d-flex flex-column justify-content-between pb-5 h-90">
+            <div class="p-3 d-flex flex-column justify-content-between h-100">
                 <div>
                     <h4 class="mb-3">Botijela</h4>
                     <ul class="nav flex-column">
@@ -86,39 +86,6 @@
                         </li>
                     </ul>
                 </div>
-                <div class="d-flex nav">
-                    <li class="nav-item dropup">
-                        <a class="nav-link dropdown-toggle" href="#" id="changeLanguage" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            {{#if (eq resolvedLanguage 'pt' )}}
-                            <img src="/img/br.png" class="language-flag" alt="Português">
-                            {{else if (eq resolvedLanguage 'en')}}
-                            <img src="/img/eua.png" class="language-flag" alt="English">
-                            {{else}}
-                            <img src="/img/es.png" class="language-flag" alt="Español">
-                            {{/if}}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="changeLanguage">
-                            {{#each (array
-                            (object "code" "pt" "img" "/img/br.png" "label"
-                            "Português")
-                            (object "code" "en" "img" "/img/eua.png" "label"
-                            "English")
-                            (object "code" "es" "img" "/img/es.png" "label"
-                            "Español")
-                            )}}
-                            <li>
-                                <a href="#"
-                                    class="lang-switch dropdown-item{{#if (eq ../resolvedLanguage this.code)}} disabled{{/if}}"
-                                    data-lang="{{this.code}}" title="{{this.label}}">
-                                    <img src="{{this.img}}" class="language-flag" alt="{{this.label}}">
-                                    {{this.label}}
-                                </a>
-                            </li>
-                            {{/each}}
-                        </ul>
-                    </li>
-                </div>
             </div>
         </nav>
 
@@ -128,24 +95,49 @@
                 <nav class="navbar navbar-expand-lg">
                     <div class="container-fluid">
                         <div class="d-flex flex-row">
-                            <button type="button" id="sidebarCollapse"
-                                class="btn btn-outline-{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
+                            <button type="button" id="sidebarCollapse">
                                 <i class="bi bi-layout-sidebar"></i>
                             </button>
-                            <button type="button" id="themeToggle"
-                                class="btn btn-outline-{{#if (eq theme 'dark')}}dark{{else}}light{{/if}}">
+                            <button type="button" id="themeToggle" class="ms-1">
                                 <i class="bi {{#if (eq theme 'dark')}}bi-moon{{else}}bi-sun{{/if}}"></i>
                             </button>
                         </div>
                         <div class="justify-content-end">
                             <ul class="navbar-nav align-items-center">
                                 {{#unless managing.join }}
-                                <li class="nav-item">
-                                    <button class="btn btn-outline-success" id="joinChannel">Join</button>
+                                <li class="nav-item me-2">
+                                    <button class="btn btn-success" id="joinChannel">Join</button>
                                 </li>
                                 {{/unless}}
+                                <li class="dropdown language-switch">
+                                    <a class="nav-link dropdown-toggle" href="#" id="changeLanguage" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        {{#if (eq resolvedLanguage 'pt' )}}
+                                        <img src="/img/br.png" class="language-flag" alt="Português">
+                                        {{else if (eq resolvedLanguage 'en')}}
+                                        <img src="/img/eua.png" class="language-flag" alt="English">
+                                        {{else}}
+                                        <img src="/img/es.png" class="language-flag" alt="Español">
+                                        {{/if}}
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="changeLanguage">
+                                        {{#each (array
+                                        (object "code" "pt" "img" "/img/br.png" "label" "Português")
+                                        (object "code" "en" "img" "/img/eua.png" "label" "English")
+                                        (object "code" "es" "img" "/img/es.png" "label" "Español")
+                                        )}}
+                                        <li>
+                                            <a href="#"
+                                                class="lang-switch dropdown-item{{#if (eq ../resolvedLanguage this.code)}} disabled{{/if}}"
+                                                data-lang="{{this.code}}" title="{{this.label}}">
+                                                <img src="{{this.img}}" class="language-flag" alt="{{this.label}}">
+                                                {{this.label}}
+                                            </a>
+                                        </li>
+                                        {{/each}}
+                                    </ul>
+                                </li>
                                 {{#if managingSelf}}
-
                                 <li class="nav-item dropdown">
                                     <button class="nav-link dropdown-toggle" id="channelToManage" type="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -328,7 +320,7 @@
                     </div>
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <div id="completedItemsPagination d-flex align-items-center">
+                    <div id="completedItemsPagination" class="d-flex align-items-center">
                         <button type="button" class="btn btn-outline-secondary btn-sm" id="prevPageBtn" disabled>
                             <i class="bi bi-chevron-left me-1"></i>
                             {{t 'queues.previous'}}
@@ -403,6 +395,7 @@
             'queues.loading_completed_items': '{{t 'queues.loading_completed_items' }}',
             'queues.fetch_error': '{{t 'queues.fetch_error' }}',
             'queues.no_completed_items': '{{t 'queues.no_completed_items' }}',
+            'queues.confirm_remove_completed': '{{t 'queues.confirm_remove_completed' }}',
             'queues.remove_completed_success': '{{t 'queues.remove_item_success' }}',
             'queues.remove_completed_error': '{{t 'queues.remove_completed_error' }}',
             'queues.previous': '{{t 'queues.previous' }}',

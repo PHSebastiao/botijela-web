@@ -82,7 +82,8 @@
     "next": "Próximo",
     "page": "Página",
     "of": "de",
-    "close": "Para cerrar"
+    "close": "Para cerrar",
+    "confirm_remove_completed": "¿Estás seguro de que quieres eliminar este artículo?"
   },
   "queue": {},
   "other": {

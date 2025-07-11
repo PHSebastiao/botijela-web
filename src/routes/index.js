@@ -61,4 +61,16 @@ router.get("/options", isAuthenticated, (req, res) => {
   }
 });
 
+router.get("/api/manageable", isAuthenticated, async (req, res) => {
+  try {
+    const manageable = await InternalApiService.getModeratedChannels(
+      req.user.userId
+    );
+    res.json({ manageable });
+  } catch (error) {
+    console.error("Error fetching manageable channels:", error);
+    res.status(500).json({ error: "Failed to fetch manageable channels" });
+  }
+});
+
 export default router;

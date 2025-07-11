@@ -82,7 +82,8 @@
     "next": "Next",
     "page": "Page",
     "of": "of",
-    "close": "Close"
+    "close": "Close",
+    "confirm_remove_completed": "Are you sure you want to remove this item?"
   },
   "queue": {},
   "other": {

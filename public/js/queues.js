@@ -1,3 +1,25 @@
+// Initialize with event delegation
+$(function () {
+  initializeSortable();
+  initializeEventDelegation();
+  initializeTooltips();
+});
+
+document.addEventListener("visibilitychange", (ev) => {
+  if (document.visibilityState == "visible") {
+    $(".list-group").wrapLoading(
+      QueueAPI.getQueues()
+        .done((data) => {
+          $(".list-group").forceCleanupLoading();
+          reRenderQueues(data);
+        })
+        .fail(function () {
+          showToast("danger", t("queues.edit_error"));
+        })
+    );
+  }
+});
+
 function initializeSortable() {
   $(".queue-items").each(function () {
     const $element = $(this);
@@ -677,6 +699,7 @@ const QueueAPI = {
   deleteQueue: (channelId, queueId) =>
     QueueAPI.request(`/queue/${channelId}/${queueId}`, { method: "DELETE" }),
   getQueue: (queueId) => QueueAPI.request(`/queue/${queueId}/edit`),
+  getQueues: () => QueueAPI.request(`/queue/queues`),
   updateQueue: (queueId, data) =>
     QueueAPI.request(`/queue/${queueId}`, { method: "PUT", data }),
   getCompletedItems: (queueId, page, limit) =>
@@ -686,13 +709,6 @@ const QueueAPI = {
       method: "DELETE",
     }),
 };
-
-// Initialize with event delegation
-$(function () {
-  initializeSortable();
-  initializeEventDelegation();
-  initializeTooltips();
-});
 
 // One-time tooltip initialization with accessibility improvements
 function initializeTooltips() {

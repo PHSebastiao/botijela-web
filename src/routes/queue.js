@@ -30,6 +30,22 @@ queueRouter.get("/", isAuthenticated, async (req, res) => {
   }
 });
 
+queueRouter.get("/queues", isAuthenticated, async (req, res) => {
+  try {
+    let queues = await InternalApiService.getQueueList(
+      res.locals.managing.username
+    );
+    res.status(200).json({
+      items: queues,
+      count: queues.length,
+    });
+  } catch (error) {
+    console.error("Error fetching queue list:", error);
+    addError(req, error.message || req.t("other.fetch_error"));
+    return res.redirect("/");
+  }
+});
+
 queueRouter.post("/", isAuthenticated, async (req, res) => {
   try {
     // Validate and sanitize input data
@@ -175,7 +191,7 @@ queueRouter.put(
 
       await InternalApiService.updateQueueItem(queueId, itemId, {
         itemName: itemName.trim(),
-        isPriority: isPriority || false
+        isPriority: isPriority || false,
       });
 
       let result = await InternalApiService.getActiveQueueItems(queueId);
@@ -210,9 +226,7 @@ queueRouter.put("/:queueId", isAuthenticated, async (req, res) => {
     const validation = validateQueueData(req.body);
 
     if (!validation.isValid) {
-      return res
-        .status(400)
-        .json({ error: validation.errors.join(", ") });
+      return res.status(400).json({ error: validation.errors.join(", ") });
     }
 
     await InternalApiService.updateQueue(queueId, {
@@ -237,8 +251,12 @@ queueRouter.get("/:queueId/completed", isAuthenticated, async (req, res) => {
     const queueId = req.params.queueId;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 50;
-    
-    const result = await InternalApiService.getCompletedQueueItems(queueId, page, limit);
+
+    const result = await InternalApiService.getCompletedQueueItems(
+      queueId,
+      page,
+      limit
+    );
     res.status(200).json(result);
   } catch (error) {
     console.error("Error fetching completed items:", error);
