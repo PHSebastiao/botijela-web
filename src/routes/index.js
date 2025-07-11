@@ -6,10 +6,13 @@ import InternalApiService from "../services/InternalApiService.js";
 const router = express.Router();
 
 router.get("/login", isNotAuthenticated, (req, res) => {
+  const toasts = getAndClearToasts(req);
+
   res.render("login", {
     title: "Botijela - Login",
     activePage: "login",
     layout: "initial",
+    toasts,
   });
 });
 
@@ -18,7 +21,7 @@ router.get("/logout", (req, res) => {
     if (err) console.error("Logout error:", err);
     req.session.destroy((err) => {
       res.clearCookie("connect.sid");
-      res.redirect("/");
+      res.redirect("/login");
     });
   });
 });

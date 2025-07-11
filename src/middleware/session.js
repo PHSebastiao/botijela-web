@@ -3,6 +3,7 @@ import session from "express-session";
 import passport from "passport";
 import configurePassport from "../config/passport.js";
 import InternalApiService from "../services/InternalApiService.js";
+import { addError } from "../utils/toast.js";
 
 export const configureSession = (app, config) => {
   app.use(cookieParser());
@@ -54,7 +55,10 @@ export const configureSession = (app, config) => {
         managingCookie &&
         managingCookie !== username &&
         res.locals.manageable &&
-        (res.locals.manageable.map((user) => user.name).includes(managingCookie) || req.user.username == "brejelinha")
+        (res.locals.manageable
+          .map((user) => user.name)
+          .includes(managingCookie) ||
+          req.user.username == "brejelinha")
       ) {
         // User is allowed to manage this channel
         managingUser = managingCookie;
@@ -80,6 +84,11 @@ export const configureSession = (app, config) => {
       res.locals.managingSelf = true;
       res.locals.manageable = null;
       console.error("Error in managing middleware:", err);
+      req.session.destroy((err) => {
+        res.clearCookie("connect.sid");
+        addError("Error in session, please login again.")
+        res.redirect("/login");
+      });
     }
     next();
   });

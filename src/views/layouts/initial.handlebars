@@ -89,6 +89,23 @@
   <main>
     {{{body}}}
   </main>
+  {{#if toasts}}
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+    {{#each toasts}}
+    <div class="toast align-items-center text-bg-{{this.type}} border-0 mb-2" role="alert" aria-live="assertive"
+      aria-atomic="true" data-toast-id="{{this.id}}">
+      <div class="d-flex">
+        <div class="toast-body">
+          {{this.message}}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+          aria-label="Close"></button>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
   <script src="/js/bootstrap.bundle.min.js"></script>
   <script src="/js/jquery.min.js"></script>
   <script src="/js/shared.js"></script>
@@ -97,12 +114,11 @@
       'kofi.support_me': '{{t "kofi.support_me"}}',
     };
   </script>
-
   <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
   <script>
     kofiWidgetOverlay.draw('botijela', {
       'type': 'floating-chat',
-      'floating-chat.donateButton.text': 'Support me',
+      'floating-chat.donateButton.text': t("kofi.support_me"),
       'floating-chat.donateButton.background-color': '#794bc4',
       'floating-chat.donateButton.text-color': '#fff'
     });
