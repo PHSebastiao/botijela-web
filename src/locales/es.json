@@ -45,7 +45,8 @@
       "delete": "Borrar la cola",
       "editItem": "Elemento de edición",
       "removeItem": "Eliminar el artículo",
-      "completeItem": "Artículo completo"
+      "completeItem": "Artículo completo",
+      "completed_items": "Artículos completos"
     },
     "create_new_queue": "Nueva cola",
     "delete_success": "Cola eliminada con éxito.",
@@ -71,7 +72,17 @@
     "save_changes": "Guardar Cambios",
     "saving": "Guardando...",
     "edit_success": "¡Cola actualizada exitosamente!",
-    "edit_error": "Error al actualizar cola."
+    "edit_error": "Error al actualizar cola.",
+    "loading": "Cargando",
+    "loading_completed_items": "Cargando artículos completos",
+    "fetch_error": "Error al cargar",
+    "no_completed_items": "Sin artículos completos",
+    "remove_completed_error": "Error al eliminar Complete",
+    "previous": "Anterior",
+    "next": "Próximo",
+    "page": "Página",
+    "of": "de",
+    "close": "Para cerrar"
   },
   "queue": {},
   "other": {

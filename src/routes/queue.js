@@ -231,4 +231,41 @@ queueRouter.put("/:queueId", isAuthenticated, async (req, res) => {
   }
 });
 
+// GET route to fetch completed items with pagination
+queueRouter.get("/:queueId/completed", isAuthenticated, async (req, res) => {
+  try {
+    const queueId = req.params.queueId;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 50;
+    
+    const result = await InternalApiService.getCompletedQueueItems(queueId, page, limit);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error fetching completed items:", error);
+    return res
+      .status(500)
+      .json({ error: error.message || req.t("queues.fetch_error") });
+  }
+});
+
+// DELETE route to remove completed item
+queueRouter.delete(
+  "/:queueId/completed/:itemId",
+  isAuthenticated,
+  async (req, res) => {
+    try {
+      const queueId = req.params.queueId;
+      const itemId = req.params.itemId;
+
+      await InternalApiService.removeCompletedQueueItem(queueId, itemId);
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error("Error removing completed item:", error);
+      return res
+        .status(500)
+        .json({ error: error.message || req.t("queues.remove_error") });
+    }
+  }
+);
+
 export default queueRouter;

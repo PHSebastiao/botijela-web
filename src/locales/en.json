@@ -45,7 +45,8 @@
       "delete": "Delete queue",
       "editItem": "Edit item",
       "removeItem": "Remove item",
-      "completeItem": "Complete Item"
+      "completeItem": "Complete Item",
+      "completed_items": "Completed Items"
     },
     "create_new_queue": "New queue",
     "delete_success": "Queue successfully deleted.",
@@ -71,7 +72,17 @@
     "save_changes": "Save Changes",
     "saving": "Saving...",
     "edit_success": "Queue updated successfully!",
-    "edit_error": "Error updating queue."
+    "edit_error": "Error updating queue.",
+    "loading": "Loading",
+    "loading_completed_items": "Loading completed items",
+    "fetch_error": "Error when loading",
+    "no_completed_items": "No completed items",
+    "remove_completed_error": "Error when removing completed item",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of",
+    "close": "Close"
   },
   "queue": {},
   "other": {

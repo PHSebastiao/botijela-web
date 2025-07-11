@@ -45,7 +45,8 @@
       "delete": "Excluir Fila",
       "editItem": "Editar Item",
       "removeItem": "Remover item",
-      "completeItem": "Completar Item"
+      "completeItem": "Completar Item",
+      "completed_items": "Itens Completos"
     },
     "create_new_queue": "Criar nova fila",
     "delete_success": "Fila deletada com sucesso.",
@@ -71,7 +72,17 @@
     "save_changes": "Salvar Alterações",
     "saving": "Salvando...",
     "edit_success": "Fila atualizada com sucesso!",
-    "edit_error": "Erro ao atualizar fila."
+    "edit_error": "Erro ao atualizar fila.",
+    "loading": "Carregando",
+    "loading_completed_items": "Carregando itens completos",
+    "fetch_error": "Erro ao carregar",
+    "no_completed_items": "Sem itens completos",
+    "remove_completed_error": "Erro ao remover completo",
+    "previous": "Anterior",
+    "next": "Próxima",
+    "page": "Página",
+    "of": "de",
+    "close": "Fechar"
   },
   "queue": {},
   "other": {

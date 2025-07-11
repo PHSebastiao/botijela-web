@@ -304,6 +304,50 @@
             </div>
         </div>
     </div>
+
+    <!-- Completed Items Modal -->
+    <div class="modal fade" id="completedItemsModal" tabindex="-1" aria-labelledby="completedItemsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="completedItemsModalLabel">
+                        <i class="bi bi-check-circle text-success me-2"></i>
+                        {{t 'queues.titles.completed_items'}}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="completedItemsContent">
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">{{t 'queues.loading'}}</span>
+                            </div>
+                            <p class="mt-2">{{t 'queues.loading_completed_items'}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <div id="completedItemsPagination d-flex align-items-center">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="prevPageBtn" disabled>
+                            <i class="bi bi-chevron-left me-1"></i>
+                            {{t 'queues.previous'}}
+                        </button>
+                        <span class="mx-3 text-muted">
+                            {{t 'queues.page'}} <span id="currentPageSpan">1</span> {{t 'queues.of'}} <span
+                                id="totalPagesSpan">1</span>
+                        </span>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="nextPageBtn" disabled>
+                            {{t 'queues.next'}}
+                            <i class="bi bi-chevron-right ms-1"></i>
+                        </button>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{t
+                        'queues.close'}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
     {{/if}}
 
     <script src="/js/bootstrap.bundle.min.js"></script>
@@ -354,6 +398,18 @@
             'queues.edit_success': '{{t 'queues.edit_success' }}',
             'queues.edit_error': '{{t 'queues.edit_error' }}',
             'queues.no_queues': '{{t 'queues.no_queues' }}',
+            'queues.titles.completed_items': '{{t 'queues.titles.completed_items' }}',
+            'queues.loading': '{{t 'queues.loading' }}',
+            'queues.loading_completed_items': '{{t 'queues.loading_completed_items' }}',
+            'queues.fetch_error': '{{t 'queues.fetch_error' }}',
+            'queues.no_completed_items': '{{t 'queues.no_completed_items' }}',
+            'queues.remove_completed_success': '{{t 'queues.remove_item_success' }}',
+            'queues.remove_completed_error': '{{t 'queues.remove_completed_error' }}',
+            'queues.previous': '{{t 'queues.previous' }}',
+            'queues.next': '{{t 'queues.next' }}',
+            'queues.page': '{{t 'queues.page' }}',
+            'queues.of': '{{t 'queues.of' }}',
+            'queues.close': '{{t 'queues.close' }}',
         });
     </script>
     <script src="/js/loading-wrapper.js"></script>

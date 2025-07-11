@@ -1,0 +1,208 @@
+.max-width {
+    width: -webkit-fill-available;
+}
+
+.min-width {
+    width: min-content;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+}
+
+.priority-checkbox {
+    margin-top: 4px;
+}
+
+.queue-items {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.queue-item-draggable {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background-color: var(--bs-secondary-bg);
+    border: 2px solid var(--bs-secondary-bg);
+    color: var(--bs-white);
+    border-radius: 50px;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    position: relative;
+    white-space: nowrap;
+    overflow: visible;
+    width: 120px;
+    flex-shrink: 0;
+}
+
+.priority-item {
+    --webkit-box-sizing: border-box;
+    --moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 2px solid var(--bs-info);
+}
+
+.completed-item-pill:hover,
+.queue-item-draggable.expanded {
+    background-color: var(--bs-primary-dark, var(--bs-tertiary-bg));
+}
+
+.queue-item-draggable.expanded {
+    min-width: 120px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+}
+
+.queue-item-draggable.sortable-ghost {
+    opacity: 0.5;
+}
+
+.queue-item-draggable.sortable-drag {
+    opacity: 0.8;
+}
+
+.drag-handle {
+    color: var(--bs-white);
+    cursor: grab;
+    margin-right: 6px;
+    font-size: 0.75rem;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.queue-item-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.queue-item-actions {
+    display: flex;
+    gap: 4px;
+    margin-left: 8px;
+    width: 0;
+    overflow: hidden;
+    transition: width 0.3s ease;
+}
+
+.queue-item-draggable.expanded .queue-item-actions {
+    width: 80px;
+}
+
+.queue-item-draggable.editing .btn-delete,
+.queue-item-draggable.editing .btn-complete {
+    display: none;
+}
+
+.queue-item-draggable.editing .queue-item-actions {
+    width: 30px;
+}
+
+.queue-item-btn {
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--bs-white);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.queue-item-btn:hover {
+    border-color: none;
+}
+
+.queue-item-btn.btn-complete:hover {
+    background-color: var(--bs-primary);
+}
+
+.queue-item-btn.btn-edit:hover {
+    background-color: var(--bs-warning);
+}
+
+.queue-item-btn.btn-delete:hover,
+.btn-remove-completed:hover {
+    background-color: var(--bs-danger);
+}
+
+.btn-remove-completed {
+    margin-left: 10px;
+}
+
+.queue-item-btn.btn-add,
+.queue-item-btn.btn-send {
+    background-color: var(--bs-primary);
+    border: 2px solid var(--bs-primary);
+}
+
+.queue-items > .queue-item-btn.btn-add,
+.queue-items > .queue-item-btn.btn-send {
+    padding: 6px 12px;
+    font-size: 0.875rem;
+}
+
+.queue-item-btn.btn-add:hover {
+    background-color: var(--bs-primary-bg-subtle);
+}
+
+.add-item-cancel {
+    background-color: var(--bs-btn-bg);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    padding: 6px 12px;
+    font-size: 0.875rem;
+}
+
+.add-item-field {
+    border-radius: 12px;
+    padding: 5px 11px;
+}
+
+.queue-item-input {
+    border-radius: 12px;
+    padding: 0px 12px;
+    min-height: 0;
+}
+
+.completed-item-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background-color: var(--bs-secondary-bg);
+    border: 2px solid var(--bs-secondary-bg);
+    color: var(--bs-white);
+    border-radius: 50px;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    position: relative;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+[data-bs-theme="light"] {
+    .queue-item-draggable,
+    .completed-item-pill {
+        background-color: var(--bs-tertiary-color);
+        color: var(--bs-black);
+    }
+
+    .queue-item-draggable.expanded,
+    .completed-item-pill:hover {
+        background-color: var(--bs-primary-dark, var(--bs-secondary-color));
+        color: var(--bs-black);
+    }
+
+    .drag-handle {
+        color: var(--bs-black);
+    }
+}

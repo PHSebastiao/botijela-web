@@ -19,12 +19,15 @@ function initializeSortable() {
         // Send API request to update order
         const $queueContainer = $(`.queue-items[data-queue-id='${queueId}']`);
         $queueContainer.wrapLoading(
-          QueueAPI.reorderItems(queueId, { itemId: itemId, newPosition: newPosition })
+          QueueAPI.reorderItems(queueId, {
+            itemId: itemId,
+            newPosition: newPosition,
+          })
             .done(function (data) {
               // Optimistic update - item already moved, just clean up loading and refresh hover effects
               $queueContainer.forceCleanupLoading();
               initializeHoverEffects();
-              
+
               // Optional: Show success toast
               // showToast("success", t("queues.reorder_success"));
             })
@@ -149,7 +152,9 @@ function showEditItemInput($queueItem, queueId, itemId) {
   const isPriority = $queueItem.hasClass("priority-item");
 
   // Replace text with input and priority checkbox using template
-  $itemText.replaceWith(QueueTemplates.createEditInput(currentName, isPriority, queueId, itemId));
+  $itemText.replaceWith(
+    QueueTemplates.createEditInput(currentName, isPriority, queueId, itemId)
+  );
 
   // Transform edit button to send button
   $editButton.removeClass("btn-edit").addClass("btn-send");
@@ -166,9 +171,9 @@ function showEditItemInput($queueItem, queueId, itemId) {
   });
 
   // Store the current values for comparison in the delegated handler
-  $queueItem.data('original-name', currentName);
-  $queueItem.data('original-priority', isPriority);
-  
+  $queueItem.data("original-name", currentName);
+  $queueItem.data("original-priority", isPriority);
+
   // Event delegation handles the send button click and keyboard events
 
   // Handle clicking outside to cancel
@@ -218,7 +223,10 @@ function updateQueueItem(queueId, itemId, newName, isPriority, $queueItem) {
     .html('<span class="spinner-border spinner-border-sm"></span>');
 
   $queueContainer.wrapLoading(
-    QueueAPI.updateItem(queueId, itemId, { itemName: newName, isPriority: isPriority })
+    QueueAPI.updateItem(queueId, itemId, {
+      itemName: newName,
+      isPriority: isPriority,
+    })
       .done(function (data) {
         // Use the helper function to rebuild queue items properly
         rebuildQueueItems($queueContainer, data, queueId);
@@ -399,14 +407,17 @@ function handleSendItem(e) {
   const $editInput = $queueItem.find(".queue-item-input");
   const $priorityCheckbox = $queueItem.find(".priority-checkbox");
   const itemId = $button.data("item-id");
-  
+
   if ($editInput.length > 0) {
     const newName = $editInput.val().trim();
     const newPriority = $priorityCheckbox.is(":checked");
-    const originalName = $queueItem.data('original-name');
-    const originalPriority = $queueItem.data('original-priority');
+    const originalName = $queueItem.data("original-name");
+    const originalPriority = $queueItem.data("original-priority");
 
-    if (newName && (newName !== originalName || newPriority !== originalPriority)) {
+    if (
+      newName &&
+      (newName !== originalName || newPriority !== originalPriority)
+    ) {
       updateQueueItem(queueId, itemId, newName, newPriority, $queueItem);
     } else {
       // If no changes, just exit edit mode
@@ -623,30 +634,29 @@ const QueueAPI = {
       config.data = JSON.stringify(config.data);
     }
 
-    return $.ajax(url, config)
-      .fail(function(xhr, status, error) {
-        // Enhanced error logging
-        console.error(`API Error [${config.type} ${url}]:`, {
-          status: xhr.status,
-          statusText: xhr.statusText,
-          responseText: xhr.responseText,
-          error: error
-        });
-        
-        // Show user-friendly error message
-        let errorMessage = 'An unexpected error occurred.';
-        if (xhr.responseJSON && xhr.responseJSON.error) {
-          errorMessage = xhr.responseJSON.error;
-        } else if (xhr.status === 404) {
-          errorMessage = 'Resource not found.';
-        } else if (xhr.status === 500) {
-          errorMessage = 'Server error. Please try again later.';
-        }
-        
-        if (typeof showToast === 'function') {
-          showToast('danger', errorMessage);
-        }
+    return $.ajax(url, config).fail(function (xhr, status, error) {
+      // Enhanced error logging
+      console.error(`API Error [${config.type} ${url}]:`, {
+        status: xhr.status,
+        statusText: xhr.statusText,
+        responseText: xhr.responseText,
+        error: error,
       });
+
+      // Show user-friendly error message
+      let errorMessage = "An unexpected error occurred.";
+      if (xhr.responseJSON && xhr.responseJSON.error) {
+        errorMessage = xhr.responseJSON.error;
+      } else if (xhr.status === 404) {
+        errorMessage = "Resource not found.";
+      } else if (xhr.status === 500) {
+        errorMessage = "Server error. Please try again later.";
+      }
+
+      if (typeof showToast === "function") {
+        showToast("danger", errorMessage);
+      }
+    });
   },
 
   updateItem: (queueId, itemId, data) =>
@@ -669,6 +679,12 @@ const QueueAPI = {
   getQueue: (queueId) => QueueAPI.request(`/queue/${queueId}/edit`),
   updateQueue: (queueId, data) =>
     QueueAPI.request(`/queue/${queueId}`, { method: "PUT", data }),
+  getCompletedItems: (queueId, page, limit) =>
+    QueueAPI.request(`/queue/${queueId}/completed?page=${page}&limit=${limit}`),
+  removeCompletedItem: (queueId, itemId) =>
+    QueueAPI.request(`/queue/${queueId}/completed/${itemId}`, {
+      method: "DELETE",
+    }),
 };
 
 // Initialize with event delegation
@@ -717,19 +733,22 @@ function initializeEventDelegation() {
     // Queue actions
     .on("click", ".btn-delete-queue", handleDeleteQueue)
     .on("click", ".btn-edit-queue", handleEditQueue)
-    .on("click", ".btn-completed", handleCompletedList)
+    .on("click", ".btn-completed", handleCompletedButtonClick)
 
     // Modal actions
     .on("click", "#confirmDeleteQueue", handleConfirmDelete)
     .on("click", "#saveQueueChanges", handleSaveQueue)
+    .on("click", "#prevPageBtn", handlePreviousPage)
+    .on("click", "#nextPageBtn", handleNextPage)
+    .on("click", ".btn-remove-completed", handleRemoveCompletedItem)
 
     // Form submissions
     .on("keypress", ".add-item-field", handleAddItemKeypress)
-    .on("keypress", ".queue-item-input", function(e) {
+    .on("keypress", ".queue-item-input", function (e) {
       handleEditItemKeypress(e);
     })
-    .on("keydown", ".queue-item-input", function(e) {
-      if (e.which === 13 || e.key === 'Enter') {
+    .on("keydown", ".queue-item-input", function (e) {
+      if (e.which === 13 || e.key === "Enter") {
         e.preventDefault();
         e.stopPropagation();
         handleEditItemKeypress(e);
@@ -891,23 +910,28 @@ function handleAddItemKeypress(e) {
 }
 
 function handleEditItemKeypress(e) {
-  if (e.which === 13 || e.key === 'Enter') {
+  if (e.which === 13 || e.key === "Enter") {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const $input = $(e.currentTarget);
     const $queueItem = $input.closest(".queue-item-draggable");
     const $priorityCheckbox = $queueItem.find(".priority-checkbox");
-    const queueId = $input.data("queue-id") || $queueItem.closest(".queue-items").data("queue-id");
-    const itemId = $input.data("item-id") || $queueItem.closest(".btn-edit").data("item-id");
-    
-    
+    const queueId =
+      $input.data("queue-id") ||
+      $queueItem.closest(".queue-items").data("queue-id");
+    const itemId =
+      $input.data("item-id") || $queueItem.closest(".btn-edit").data("item-id");
+
     const newName = $input.val().trim();
     const newPriority = $priorityCheckbox.is(":checked");
-    const originalName = $queueItem.data('original-name');
-    const originalPriority = $queueItem.data('original-priority');
+    const originalName = $queueItem.data("original-name");
+    const originalPriority = $queueItem.data("original-priority");
 
-    if (newName && (newName !== originalName || newPriority !== originalPriority)) {
+    if (
+      newName &&
+      (newName !== originalName || newPriority !== originalPriority)
+    ) {
       updateQueueItem(queueId, itemId, newName, newPriority, $queueItem);
     } else {
       exitEditMode($queueItem, originalName);
@@ -929,4 +953,156 @@ function handleEscapeKey(e) {
       exitEditMode($queueItem, originalName);
     }
   }
+}
+
+// Completed Items Modal Functions
+let currentCompletedPage = 1;
+let totalCompletedPages = 1;
+let currentQueueId = null;
+
+function handleCompletedButtonClick(e) {
+  const $button = $(e.currentTarget);
+  currentQueueId = $button.data("queue");
+  currentCompletedPage = 1;
+
+  // Show the modal
+  const modal = new bootstrap.Modal(
+    document.getElementById("completedItemsModal")
+  );
+  modal.show();
+
+  // Load the first page of completed items
+  loadCompletedItems(currentQueueId, 1);
+}
+
+function loadCompletedItems(queueId, page = 1) {
+  const $content = $("#completedItemsContent");
+
+  // Show loading state
+  $content.html(`
+    <div class="text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">${t("queues.loading")}</span>
+      </div>
+      <p class="mt-2">${t("queues.loading_completed_items")}</p>
+    </div>
+  `);
+
+  // Fetch completed items
+  QueueAPI.getCompletedItems(queueId, page, 50)
+    .done(function (data) {
+      displayCompletedItems(data);
+      updatePagination(data);
+    })
+    .fail(function () {
+      $content.html(`
+        <div class="alert alert-danger text-center">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          ${t("queues.fetch_error")}
+        </div>
+      `);
+    });
+}
+
+function displayCompletedItems(data) {
+  const $content = $("#completedItemsContent");
+
+  if (!data.items || data.items.length === 0) {
+    $content.html(`
+      <div class="text-center text-muted">
+        <i class="bi bi-check-circle fs-1 mb-3"></i>
+        <p>${t("queues.no_completed_items")}</p>
+      </div>
+    `);
+    return;
+  }
+
+  let html = '<div class="completed-items-list d-flex flex-wrap gap-2">';
+
+  data.items.forEach((item) => {
+    html += `
+      <div class="completed-item-pill" 
+           data-item-id="${item.queueItem_id}">
+        <span class="completed-item-text">${escapeHtml(item.itemName)}</span>
+        <button class="queue-item-btn btn-remove-completed" 
+                data-item-id="${item.queueItem_id}" 
+                title="${t("queues.titles.removeItem")}">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+    `;
+  });
+
+  html += "</div>";
+  $content.html(html);
+}
+
+function updatePagination(data) {
+  currentCompletedPage = data.page;
+  totalCompletedPages = data.totalPages;
+
+  $("#currentPageSpan").text(currentCompletedPage);
+  $("#totalPagesSpan").text(totalCompletedPages);
+
+  // Update button states
+  $("#prevPageBtn").prop("disabled", currentCompletedPage <= 1);
+  $("#nextPageBtn").prop(
+    "disabled",
+    currentCompletedPage >= totalCompletedPages
+  );
+}
+
+function handlePreviousPage() {
+  if (currentCompletedPage > 1) {
+    loadCompletedItems(currentQueueId, currentCompletedPage - 1);
+  }
+}
+
+function handleNextPage() {
+  if (currentCompletedPage < totalCompletedPages) {
+    loadCompletedItems(currentQueueId, currentCompletedPage + 1);
+  }
+}
+
+function handleRemoveCompletedItem(e) {
+  const $button = $(e.currentTarget);
+  const itemId = $button.data("item-id");
+  const $itemContainer = $button.closest("[data-item-id]");
+
+  // Show confirmation
+  if (!confirm(t("queues.confirm_remove_completed"))) {
+    return;
+  }
+
+  // Add loading state
+  $button.prop("disabled", true);
+  $button.html('<span class="spinner-border spinner-border-sm"></span>');
+
+  // Remove the item
+  QueueAPI.removeCompletedItem(currentQueueId, itemId)
+    .done(function () {
+      $itemContainer.fadeOut(300, function () {
+        $(this).remove();
+      });
+      showToast("success", t("queues.remove_completed_success"));
+    })
+    .fail(function () {
+      showToast("danger", t("queues.remove_completed_error"));
+      // Reset button state
+      $button.prop("disabled", false);
+      $button.html('<i class="bi bi-x"></i>');
+    });
+}
+
+function escapeHtml(text) {
+  const map = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
+  };
+  return text.replace(/[&<>"']/g, function (m) {
+    return map[m];
+  });
 }
