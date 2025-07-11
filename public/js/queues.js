@@ -19,23 +19,20 @@ function initializeSortable() {
         // Send API request to update order
         const $queueContainer = $(`.queue-items[data-queue-id='${queueId}']`);
         $queueContainer.wrapLoading(
-          $.ajax({
-            url: `/queue/${queueId}/reorder`,
-            type: "PUT",
-            contentType: "application/json",
-            data: JSON.stringify({ itemId: itemId, newPosition: newPosition }),
-            success: function (data) {
-              // Use the helper function to rebuild queue items properly
-              rebuildQueueItems($queueContainer, data, queueId);
-
+          QueueAPI.reorderItems(queueId, { itemId: itemId, newPosition: newPosition })
+            .done(function (data) {
+              // Optimistic update - item already moved, just clean up loading and refresh hover effects
+              $queueContainer.forceCleanupLoading();
+              initializeHoverEffects();
+              
+              // Optional: Show success toast
               // showToast("success", t("queues.reorder_success"));
-            },
-            error: function () {
+            })
+            .fail(function () {
               // showToast("danger", t("queues.reorder_error"));
               // Revert the visual change by recreating the sortable
               location.reload();
-            },
-          })
+            })
         );
       },
     });
@@ -43,23 +40,8 @@ function initializeSortable() {
 }
 
 function showAddItemInput($queueContainer, queueId) {
-  // Create the input form
-  const $inputForm = $(`
-    <div class="add-item-input d-flex justify-content-center" style="opacity: 0; transform: translateY(-10px); transition: all 0.3s ease;">
-      <div class="d-flex gap-2 align-items-center">
-        <input type="text" class="form-control form-control-sm add-item-field" 
-               placeholder="${t("queues.add_item_placeholder")}" 
-               maxlength="300" autocomplete="off" data-bs-toggle="tooltip" data-bs-title="${t(
-                 "queues.form.title.queueItemAdd"
-               )}">
-        <button class="btn queue-item-btn btn-secondary add-item-cancel" title="${t(
-          "queues.cancel"
-        )}">
-          <i class="bi bi-x-lg"></i>
-        </button>
-      </div>
-    </div>
-  `);
+  // Create the input form using template
+  const $inputForm = $(QueueTemplates.createAddItemInput());
 
   // Insert before the add button and transform it to send button
   const $addButton = $queueContainer.find(".btn-add");
@@ -72,16 +54,7 @@ function showAddItemInput($queueContainer, queueId) {
 
   let tooltip = new bootstrap.Tooltip($inputForm.find(".add-item-field"));
 
-  // Bind send functionality directly to the transformed button
-  $addButton.off("click").on("click", function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const itemName = $input.val().trim();
-    if (itemName) {
-      addQueueItem(queueId, itemName, $queueContainer);
-    }
-  });
+  // No need to bind click handler - event delegation handles it via handleSendItem
 
   // Trigger smooth animation
   setTimeout(() => {
@@ -100,27 +73,7 @@ function showAddItemInput($queueContainer, queueId) {
     hideAddItemInput($inputForm, $addButton);
   });
 
-  // Handle Enter key
-  $input.on("keypress", function (e) {
-    if (e.which === 13) {
-      // Enter key
-      const itemName = $input.val().trim();
-      if (itemName) {
-        addQueueItem(queueId, itemName, $queueContainer);
-      }
-    } else if (e.which === 27) {
-      // Escape key
-      hideAddItemInput($inputForm);
-    }
-  });
-
-  // Handle escape key
-  $input.on("keyup", function (e) {
-    if (e.which === 27) {
-      // Escape key
-      hideAddItemInput($inputForm, $addButton);
-    }
-  });
+  // Keypress and keyup are handled by event delegation - no need for direct binding
 }
 
 function hideAddItemInput($inputForm, $addButton) {
@@ -134,21 +87,7 @@ function hideAddItemInput($inputForm, $addButton) {
   $addButton.html('<i class="bi bi-plus-lg"></i>');
   $addButton.attr("title", t("queues.add_item"));
 
-  $addButton.off("click").on("click", function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const $button = $(this);
-    const $queueContainer = $button.closest(".queue-items");
-    const queueId = $queueContainer.data("queue-id");
-
-    // Check if input already exists
-    if ($queueContainer.find(".add-item-input").length > 0) {
-      return;
-    }
-
-    showAddItemInput($queueContainer, queueId);
-  });
+  // No need to bind click handler - event delegation handles it via handleAddItem
 
   setTimeout(() => {
     $inputForm.remove();
@@ -166,12 +105,8 @@ function addQueueItem(queueId, itemName, $queueContainer) {
     .html('<span class="spinner-border spinner-border-sm"></span>');
 
   $queueContainer.wrapLoading(
-    $.ajax({
-      url: `/queue/${queueId}/items`,
-      type: "POST",
-      contentType: "application/json",
-      data: JSON.stringify({ itemName: itemName }),
-      success: function (data) {
+    QueueAPI.addItem(queueId, { itemName: itemName })
+      .done(function (data) {
         // Use the helper function to rebuild queue items properly (this will remove the input form)
         rebuildQueueItems($queueContainer, data, queueId);
 
@@ -179,8 +114,8 @@ function addQueueItem(queueId, itemName, $queueContainer) {
         if (typeof showToast === "function") {
           showToast("success", t("queues.add_success"));
         }
-      },
-      error: function (xhr) {
+      })
+      .fail(function (xhr) {
         // Re-enable form and restore send button
         $inputForm.find("input, button").prop("disabled", false);
         $sendButton.prop("disabled", false).html('<i class="bi bi-send"></i>');
@@ -199,8 +134,7 @@ function addQueueItem(queueId, itemName, $queueContainer) {
 
         // Focus input again
         $inputForm.find("input").focus();
-      },
-    })
+      })
   );
 }
 
@@ -214,22 +148,8 @@ function showEditItemInput($queueItem, queueId, itemId) {
   const currentName = $itemText.text();
   const isPriority = $queueItem.hasClass("priority-item");
 
-  // Replace text with input and priority checkbox
-  $itemText.replaceWith(`
-    <div class="d-flex align-items-center gap-2">
-      <input type="text" class="form-control form-control-sm queue-item-input" 
-             value="${currentName}" maxlength="100" autocomplete="off">
-      <div class="form-check">
-      <label class="form-check-label priority-label" title="${t(
-        "queues.priority_item"
-      )}">
-        <input class="form-check-input priority-checkbox" type="checkbox" 
-               ${isPriority ? "checked" : ""}>
-          <i class="bi bi-star-fill text-warning"></i>
-        </label>
-      </div>
-    </div>
-  `);
+  // Replace text with input and priority checkbox using template
+  $itemText.replaceWith(QueueTemplates.createEditInput(currentName, isPriority, queueId, itemId));
 
   // Transform edit button to send button
   $editButton.removeClass("btn-edit").addClass("btn-send");
@@ -240,49 +160,16 @@ function showEditItemInput($queueItem, queueId, itemId) {
   const $input = $queueItem.find(".queue-item-input");
   const $priorityCheckbox = $queueItem.find(".priority-checkbox");
 
-  // Focus and select the input text
-  setTimeout(() => {
+  // Focus and select the input text with better timing
+  requestAnimationFrame(() => {
     $input.focus().select();
-  }, 50);
-
-  // Bind send functionality to the transformed button
-  $editButton.off("click").on("click", function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const newName = $input.val().trim();
-    const newPriority = $priorityCheckbox.is(":checked");
-
-    if (newName && (newName !== currentName || newPriority !== isPriority)) {
-      updateQueueItem(queueId, itemId, newName, newPriority, $queueItem);
-    } else {
-      // If no changes, just exit edit mode
-      exitEditMode($queueItem, currentName);
-    }
   });
 
-  // Handle Enter key to save
-  $input.on("keypress", function (e) {
-    if (e.which === 13) {
-      // Enter key
-      const newName = $input.val().trim();
-      const newPriority = $priorityCheckbox.is(":checked");
-
-      if (newName && (newName !== currentName || newPriority !== isPriority)) {
-        updateQueueItem(queueId, itemId, newName, newPriority, $queueItem);
-      } else {
-        exitEditMode($queueItem, currentName);
-      }
-    }
-  });
-
-  // Handle Escape key to cancel
-  $input.on("keyup", function (e) {
-    if (e.which === 27) {
-      // Escape key
-      exitEditMode($queueItem, currentName);
-    }
-  });
+  // Store the current values for comparison in the delegated handler
+  $queueItem.data('original-name', currentName);
+  $queueItem.data('original-priority', isPriority);
+  
+  // Event delegation handles the send button click and keyboard events
 
   // Handle clicking outside to cancel
   $(document).on("click.editItem", function (e) {
@@ -314,8 +201,7 @@ function exitEditMode($queueItem, originalName) {
   // Remove document click handler
   $(document).off("click.editItem");
 
-  // Rebind edit functionality
-  bindEventHandlers();
+  // No more rebinding needed - event delegation handles it!
 }
 
 function updateQueueItem(queueId, itemId, newName, isPriority, $queueItem) {
@@ -332,12 +218,8 @@ function updateQueueItem(queueId, itemId, newName, isPriority, $queueItem) {
     .html('<span class="spinner-border spinner-border-sm"></span>');
 
   $queueContainer.wrapLoading(
-    $.ajax({
-      url: `/queue/${queueId}/items/${itemId}`,
-      type: "PUT",
-      contentType: "application/json",
-      data: JSON.stringify({ itemName: newName, isPriority: isPriority }),
-      success: function (data) {
+    QueueAPI.updateItem(queueId, itemId, { itemName: newName, isPriority: isPriority })
+      .done(function (data) {
         // Use the helper function to rebuild queue items properly
         rebuildQueueItems($queueContainer, data, queueId);
 
@@ -345,8 +227,8 @@ function updateQueueItem(queueId, itemId, newName, isPriority, $queueItem) {
         if (typeof showToast === "function") {
           showToast("success", t("queues.update_success"));
         }
-      },
-      error: function (xhr) {
+      })
+      .fail(function (xhr) {
         // Re-enable form
         $input.prop("disabled", false);
         $priorityCheckbox.prop("disabled", false);
@@ -366,121 +248,503 @@ function updateQueueItem(queueId, itemId, newName, isPriority, $queueItem) {
 
         // Focus input again
         $input.focus().select();
-      },
-    })
+      })
   );
 }
 
-function bindEventHandlers() {
-  $(".btn-completed")
-    .off("click")
-    .on("click", (e) => {
-      e.preventDefault();
-      let queueId = $(this).data("queue");
-    });
+// Delegated event handlers (replace bindEventHandlers function)
+function handleCompletedList(e) {
+  e.preventDefault();
+  let queueId = $(this).data("queue");
+  // TODO: Implement completed list functionality
+}
 
-  $(".btn-edit-queue")
-    .off("click")
-    .on("click", (e) => {
-      e.preventDefault();
-      let queueId = $(this).data("queue");
-    });
+function handleEditQueue(e) {
+  e.preventDefault();
+  const $button = $(e.currentTarget);
+  const queueId = $button.data("queue");
 
-  // Item-level edit buttons
-  $(".queue-item-btn.btn-edit")
-    .off("click")
-    .on("click", function (e) {
-      e.preventDefault();
-      e.stopPropagation();
+  // Show loading state
+  $button
+    .prop("disabled", true)
+    .html('<span class="spinner-border spinner-border-sm"></span>');
 
-      const $button = $(this);
-      const $queueItem = $button.closest(".queue-item-draggable");
-      const $queueContainer = $button.closest(".queue-items");
-      const queueId = $queueContainer.data("queue-id");
-      const itemId = $button.data("item-id");
+  // Use centralized API
+  QueueAPI.getQueue(queueId)
+    .done(function (data) {
+      // Populate the form with queue data
+      $("#editQueueName").val(data.queueName);
+      $("#editQueueDescription").val(data.queueDescription);
+      $("#editQueueSeparator").val(data.queueSeparator);
+      $("#editSilentActions").prop("checked", data.silentActions);
 
-      // Check if already in edit mode
-      if ($queueItem.hasClass("editing")) {
-        return;
-      }
+      // Store queue ID for later use
+      $("#editQueueModal").data("queue-id", queueId);
 
-      showEditItemInput($queueItem, queueId, itemId);
-    });
-
-  // Item-level delete buttons
-  $(".queue-item-btn.btn-delete")
-    .off("click")
-    .on("click", function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      const $button = $(this);
-      const $queueContainer = $button.closest(".queue-items");
-      const queueId = $queueContainer.data("queue-id");
-      const itemId = $(this).data("item-id");
-
-      $queueContainer.wrapLoading(
-        $.ajax({
-          url: `/queue/${queueId}/items/${itemId}`,
-          type: "DELETE",
-          success: function (data) {
-            // Use the helper function to rebuild queue items properly
-            rebuildQueueItems($queueContainer, data, queueId);
-            showToast("success", t("queues.remove_item_success"));
-          },
-          error: function () {
-            // Show error toast
-            showToast("danger", t("queues.remove_item_error"));
-          },
-        })
+      // Show the modal
+      const modal = new bootstrap.Modal(
+        document.getElementById("editQueueModal")
       );
+      modal.show();
+
+      // Tooltips already initialized once
+    })
+    .fail(function () {
+      showToast("danger", t("queues.edit_error"));
+    })
+    .always(function () {
+      // Reset button state
+      $button
+        .prop("disabled", false)
+        .html('<i class="bi bi-pencil-square"></i>');
     });
+}
+
+function handleEditItem(e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const $button = $(e.currentTarget);
+  const $queueItem = $button.closest(".queue-item-draggable");
+  const $queueContainer = $button.closest(".queue-items");
+  const queueId = $queueContainer.data("queue-id");
+  const itemId = $button.data("item-id");
+
+  // Check if already in edit mode
+  if ($queueItem.hasClass("editing")) {
+    return;
+  }
+
+  showEditItemInput($queueItem, queueId, itemId);
+}
+
+function handleDeleteItem(e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const $button = $(e.currentTarget);
+  const $queueContainer = $button.closest(".queue-items");
+  const queueId = $queueContainer.data("queue-id");
+  const itemId = $button.data("item-id");
+
+  $queueContainer.wrapLoading(
+    QueueAPI.deleteItem(queueId, itemId)
+      .done(function (data) {
+        rebuildQueueItems($queueContainer, data, queueId);
+        showToast("success", t("queues.remove_item_success"));
+      })
+      .fail(function () {
+        showToast("danger", t("queues.remove_item_error"));
+      })
+  );
+}
+
+function handleCompleteItem(e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const $button = $(e.currentTarget);
+  const $queueContainer = $button.closest(".queue-items");
+  const queueId = $queueContainer.data("queue-id");
+  const itemId = $button.data("item-id");
+
+  $queueContainer.wrapLoading(
+    QueueAPI.completeItem(queueId, itemId)
+      .done(function (data) {
+        rebuildQueueItems($queueContainer, data, queueId);
+        showToast("success", t("queues.complete_item_success"));
+      })
+      .fail(function () {
+        showToast("danger", t("queues.complete_item_error"));
+      })
+  );
+}
+
+function handleAddItem(e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const $button = $(e.currentTarget);
+  const $queueContainer = $button.closest(".queue-items");
+  const queueId = $queueContainer.data("queue-id");
+
+  // Check if input already exists
+  if ($queueContainer.find(".add-item-input").length > 0) {
+    return;
+  }
+
+  showAddItemInput($queueContainer, queueId);
+}
+
+function handleSendItem(e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const $button = $(e.currentTarget);
+  const $queueContainer = $button.closest(".queue-items");
+  const queueId = $queueContainer.data("queue-id");
+
+  // Check if this is an add operation (has add-item-field)
+  const $addInput = $queueContainer.find(".add-item-field");
+  if ($addInput.length > 0) {
+    const itemName = $addInput.val().trim();
+    if (itemName) {
+      addQueueItem(queueId, itemName, $queueContainer);
+    }
+    return;
+  }
+
+  // Otherwise it's an edit operation
+  const $queueItem = $button.closest(".queue-item-draggable");
+  const $editInput = $queueItem.find(".queue-item-input");
+  const $priorityCheckbox = $queueItem.find(".priority-checkbox");
+  const itemId = $button.data("item-id");
   
-    $(".queue-item-btn.btn-complete")
-    .off("click")
-    .on("click", function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      const $button = $(this);
-      const $queueContainer = $button.closest(".queue-items");
-      const queueId = $queueContainer.data("queue-id");
-      const itemId = $(this).data("item-id");
+  if ($editInput.length > 0) {
+    const newName = $editInput.val().trim();
+    const newPriority = $priorityCheckbox.is(":checked");
+    const originalName = $queueItem.data('original-name');
+    const originalPriority = $queueItem.data('original-priority');
 
-      $queueContainer.wrapLoading(
-        $.ajax({
-          url: `/queue/${queueId}/items/${itemId}/complete`,
-          type: "POST",
-          success: function (data) {
-            // Use the helper function to rebuild queue items properly
-            rebuildQueueItems($queueContainer, data, queueId);
-            showToast("success", t("queues.complete_item_success"));
-          },
-          error: function () {
-            // Show error toast
-            showToast("danger", t("queues.complete_item_error"));
-          },
-        })
-      );
+    if (newName && (newName !== originalName || newPriority !== originalPriority)) {
+      updateQueueItem(queueId, itemId, newName, newPriority, $queueItem);
+    } else {
+      // If no changes, just exit edit mode
+      exitEditMode($queueItem, originalName);
+    }
+  }
+}
+
+function handleCancelAdd(e) {
+  const $button = $(e.currentTarget);
+  const $inputForm = $button.closest(".add-item-input");
+  const $addButton = $inputForm.siblings(".btn-add");
+  hideAddItemInput($inputForm, $addButton);
+}
+
+// Queue item hover expansion
+$(".queue-item-draggable")
+  .off("mouseenter")
+  .on("mouseenter", function () {
+    const $this = $(this);
+
+    // Remove expanded class from all items and reset their widths
+    $(".queue-item-draggable:not(.editing)").css("width", "120px");
+    $(".queue-item-draggable").removeClass("expanded");
+
+    // Calculate the natural width needed for this item
+    const $clone = $this
+      .clone()
+      .css({
+        position: "absolute",
+        visibility: "hidden",
+        width: "auto",
+        whiteSpace: "nowrap",
+      })
+      .addClass("expanded")
+      .appendTo("body");
+
+    const naturalWidth = $clone.outerWidth();
+    $clone.remove();
+
+    // Set the calculated width and add expanded class
+    $this.css("width", naturalWidth + "px").addClass("expanded");
+  });
+
+// Click outside to collapse items
+$(document)
+  .off("click.queueItems")
+  .on("click.queueItems", function (e) {
+    // Hide all tooltips
+    $(".tooltip").remove();
+
+    if (!$(e.target).closest(".queue-item-draggable").length) {
+      $(".queue-item-draggable").removeClass("expanded").css("width", "120px");
+    }
+  });
+
+$(".btn-delete-queue")
+  .off("click")
+  .on("click", function (e) {
+    e.preventDefault();
+    let data = $(this).data("queue");
+    const $queueItem = $(this).closest(".list-group");
+    const $listGroupItem = $(this).closest(".list-group-item");
+
+    // Get queue name for display in modal
+    const queueName = $listGroupItem.find("h3").text();
+
+    // Set queue name in modal and store queue data
+    $("#queueNameToDelete").text(queueName);
+    $("#deleteQueueModal").data("queue-data", data);
+    $("#deleteQueueModal").data("queue-item", $queueItem);
+
+    // Show the modal
+    const modal = new bootstrap.Modal(
+      document.getElementById("deleteQueueModal")
+    );
+    modal.show();
+  });
+
+// Handle modal confirmation
+$("#confirmDeleteQueue")
+  .off("click")
+  .on("click", function () {
+    const data = $("#deleteQueueModal").data("queue-data");
+    const $queueItem = $("#deleteQueueModal").data("queue-item");
+
+    // Hide the modal
+    const modal = bootstrap.Modal.getInstance(
+      document.getElementById("deleteQueueModal")
+    );
+    modal.hide();
+
+    // Perform the deletion
+    $queueItem.wrapLoading(
+      $.ajax({
+        url: `/queue/${data.channelId}/${data.queueId}`,
+        type: "DELETE",
+        success: function (data) {
+          reRenderQueues(data);
+          showToast("success", t("queues.delete_success"));
+        },
+        error: function () {
+          showToast("danger", t("queues.delete_error"));
+        },
+      })
+    );
+  });
+
+// Handle edit queue modal save
+$("#saveQueueChanges")
+  .off("click")
+  .on("click", function () {
+    const queueId = $("#editQueueModal").data("queue-id");
+    const $button = $(this);
+    const $buttonText = $button.find(".button-text");
+    const $buttonSpinner = $button.find(".button-spinner");
+
+    // Show loading state
+    $buttonText.addClass("d-none");
+    $buttonSpinner.removeClass("d-none");
+    $button.prop("disabled", true);
+
+    // Prepare form data
+    const formData = {
+      queueName: $("#editQueueName").val().trim(),
+      queueDescription: $("#editQueueDescription").val().trim(),
+      queueSeparator: $("#editQueueSeparator").val().trim(),
+      silentActions: $("#editSilentActions").is(":checked"),
+    };
+
+    // Submit the form
+    $.ajax({
+      url: `/queue/${queueId}`,
+      type: "PUT",
+      contentType: "application/json",
+      data: JSON.stringify(formData),
+      success: function (data) {
+        // Hide the modal
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("editQueueModal")
+        );
+        modal.hide();
+
+        // Reload the page to show updated data
+        location.reload();
+
+        // Show success toast
+        showToast("success", t("queues.edit_success"));
+      },
+      error: function (xhr) {
+        let errorMessage = t("queues.edit_error");
+        if (xhr.responseJSON && xhr.responseJSON.error) {
+          errorMessage = xhr.responseJSON.error;
+        }
+        showToast("danger", errorMessage);
+      },
+      complete: function () {
+        // Reset button state
+        $buttonText.removeClass("d-none");
+        $buttonSpinner.addClass("d-none");
+        $button.prop("disabled", false);
+      },
     });
+  });
 
-  // Item-level add buttons
-  $(".queue-item-btn.btn-add")
-    .off("click")
-    .on("click", function (e) {
+function reRenderQueues(queues) {
+  var $template = $(`<ul class="list-group"></ul>`);
+  if (queues.count > 0) {
+    queues.items.forEach((queue) => {
+      // Use template system for entire queue list item
+      $template.append(QueueTemplates.createQueueListItem(queue));
+    });
+  } else {
+    $("main").append(t("queues.no_queues"));
+  }
+
+  // Replace the existing queue list
+  $(".list-group").replaceWith($template);
+
+  // Only reinitialize what's needed
+  initializeSortable();
+  initializeHoverEffects();
+}
+function rebuildQueueItems($queueContainer, data, queueId) {
+  $queueContainer.forceCleanupLoading();
+  // Clear existing content
+  $queueContainer.html("");
+
+  if (data.count > 0) {
+    // Add each queue item using template
+    data.items.forEach((queueItem) => {
+      $queueContainer.append(QueueTemplates.createQueueItem(queueItem));
+    });
+  }
+
+  // Always add the add button at the end using template
+  $queueContainer.append(QueueTemplates.createAddButton());
+
+  // Only reinitialize what's needed - no more rebinding!
+  initializeSortable();
+  initializeHoverEffects();
+}
+
+// Centralized API service with enhanced error handling
+const QueueAPI = {
+  request(url, options = {}) {
+    const config = {
+      type: options.method || "GET",
+      contentType: "application/json",
+      ...options,
+    };
+
+    if (config.data && typeof config.data === "object") {
+      config.data = JSON.stringify(config.data);
+    }
+
+    return $.ajax(url, config)
+      .fail(function(xhr, status, error) {
+        // Enhanced error logging
+        console.error(`API Error [${config.type} ${url}]:`, {
+          status: xhr.status,
+          statusText: xhr.statusText,
+          responseText: xhr.responseText,
+          error: error
+        });
+        
+        // Show user-friendly error message
+        let errorMessage = 'An unexpected error occurred.';
+        if (xhr.responseJSON && xhr.responseJSON.error) {
+          errorMessage = xhr.responseJSON.error;
+        } else if (xhr.status === 404) {
+          errorMessage = 'Resource not found.';
+        } else if (xhr.status === 500) {
+          errorMessage = 'Server error. Please try again later.';
+        }
+        
+        if (typeof showToast === 'function') {
+          showToast('danger', errorMessage);
+        }
+      });
+  },
+
+  updateItem: (queueId, itemId, data) =>
+    QueueAPI.request(`/queue/${queueId}/items/${itemId}`, {
+      method: "PUT",
+      data,
+    }),
+  deleteItem: (queueId, itemId) =>
+    QueueAPI.request(`/queue/${queueId}/items/${itemId}`, { method: "DELETE" }),
+  addItem: (queueId, data) =>
+    QueueAPI.request(`/queue/${queueId}/items`, { method: "POST", data }),
+  completeItem: (queueId, itemId) =>
+    QueueAPI.request(`/queue/${queueId}/items/${itemId}/complete`, {
+      method: "POST",
+    }),
+  reorderItems: (queueId, data) =>
+    QueueAPI.request(`/queue/${queueId}/reorder`, { method: "PUT", data }),
+  deleteQueue: (channelId, queueId) =>
+    QueueAPI.request(`/queue/${channelId}/${queueId}`, { method: "DELETE" }),
+  getQueue: (queueId) => QueueAPI.request(`/queue/${queueId}/edit`),
+  updateQueue: (queueId, data) =>
+    QueueAPI.request(`/queue/${queueId}`, { method: "PUT", data }),
+};
+
+// Initialize with event delegation
+$(function () {
+  initializeSortable();
+  initializeEventDelegation();
+  initializeTooltips();
+});
+
+// One-time tooltip initialization with accessibility improvements
+function initializeTooltips() {
+  $('[data-bs-toggle="tooltip"]').tooltip();
+
+  // Add accessibility enhancements
+  $(".queue-item-btn.btn-edit").attr("aria-label", t("queues.titles.editItem"));
+  $(".queue-item-btn.btn-delete").attr(
+    "aria-label",
+    t("queues.titles.removeItem")
+  );
+  $(".queue-item-btn.btn-complete").attr(
+    "aria-label",
+    t("queues.titles.completeItem")
+  );
+  $(".queue-item-draggable").attr("tabindex", "0").attr("role", "button");
+
+  // Add keyboard support
+  $(document).on("keydown", ".queue-item-draggable", function (e) {
+    if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      e.stopPropagation();
+      $(this).find(".btn-edit").click();
+    }
+  });
+}
 
-      const $button = $(this);
-      const $queueContainer = $button.closest(".queue-items");
-      const queueId = $queueContainer.data("queue-id");
+// Event delegation
+function initializeEventDelegation() {
+  $(document)
+    // Queue item actions
+    .on("click", ".queue-item-btn.btn-edit", handleEditItem)
+    .on("click", ".queue-item-btn.btn-delete", handleDeleteItem)
+    .on("click", ".queue-item-btn.btn-complete", handleCompleteItem)
+    .on("click", ".queue-item-btn.btn-add", handleAddItem)
+    .on("click", ".queue-item-btn.btn-send", handleSendItem)
+    .on("click", ".add-item-cancel", handleCancelAdd)
 
-      // Check if input already exists
-      if ($queueContainer.find(".add-item-input").length > 0) {
-        return;
+    // Queue actions
+    .on("click", ".btn-delete-queue", handleDeleteQueue)
+    .on("click", ".btn-edit-queue", handleEditQueue)
+    .on("click", ".btn-completed", handleCompletedList)
+
+    // Modal actions
+    .on("click", "#confirmDeleteQueue", handleConfirmDelete)
+    .on("click", "#saveQueueChanges", handleSaveQueue)
+
+    // Form submissions
+    .on("keypress", ".add-item-field", handleAddItemKeypress)
+    .on("keypress", ".queue-item-input", function(e) {
+      handleEditItemKeypress(e);
+    })
+    .on("keydown", ".queue-item-input", function(e) {
+      if (e.which === 13 || e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        handleEditItemKeypress(e);
       }
+    })
+    .on("keyup", ".add-item-field, .queue-item-input", handleEscapeKey)
 
-      showAddItemInput($queueContainer, queueId);
-    });
+    // Click outside to collapse items (preserving your hover functionality)
+    .on("click.queueItems", handleClickOutside);
 
+  // Initialize hover effects separately
+  initializeHoverEffects();
+}
+
+function initializeHoverEffects() {
   // Queue item hover expansion
   $(".queue-item-draggable")
     .off("mouseenter")
@@ -489,7 +753,7 @@ function bindEventHandlers() {
 
       // Remove expanded class from all items and reset their widths
       $(".queue-item-draggable:not(.editing)").css("width", "120px");
-      $(".queue-item-draggable").removeClass("expanded")
+      $(".queue-item-draggable").removeClass("expanded");
 
       // Calculate the natural width needed for this item
       const $clone = $this
@@ -509,194 +773,160 @@ function bindEventHandlers() {
       // Set the calculated width and add expanded class
       $this.css("width", naturalWidth + "px").addClass("expanded");
     });
-
-  // Click outside to collapse items
-  $(document)
-    .off("click.queueItems")
-    .on("click.queueItems", function (e) {
-      // Hide all tooltips
-      $(".tooltip").remove();
-
-      if (!$(e.target).closest(".queue-item-draggable").length) {
-        $(".queue-item-draggable")
-          .removeClass("expanded")
-          .css("width", "120px");
-      }
-    });
-
-  $(".btn-delete-queue")
-    .off("click")
-    .on("click", function (e) {
-      e.preventDefault();
-      let data = $(this).data("queue");
-      const $queueItem = $(this).closest(".list-group");
-      $queueItem.wrapLoading(
-        $.ajax({
-          url: `/queue/${data.channelId}/${data.queueId}`,
-          type: "DELETE",
-          success: function (data) {
-            reRenderQueues(data);
-
-            // Show success toast
-            showToast("success", t("queues.delete_success"));
-          },
-          error: function () {
-            // Show error toast
-            showToast("danger", t("queues.delete_error"));
-          },
-        })
-      );
-    });
 }
 
-function reRenderQueues(queues) {
-  var $template = $(`<ul class="list-group"></ul>`);
-  if (queues.count > 0) {
-    queues.items.forEach((queue) => {
-      const queueItems = queue.items
-        ? queue.items
-            .filter((item) => !item.isCompleted)
-            .map((item) => item.itemName)
-            .join(" ")
-        : "";
+function handleClickOutside(e) {
+  // Hide all tooltips
+  $(".tooltip").remove();
 
-      $template.append(`
-<li class="list-group-item">
-  <div class="d-flex justify-content-between align-items-start">
-    <div class="max-width">
-      <h3>${queue.queueName}</h3>
-      <div name="queueInfo">
-        ${t("queues.command")}: ${queue.prefix || "!"}${queue.queueName}
-        |
-        ${t("queues.description")}: ${queue.queueDescription}
-        |
-        ${t("queues.separator")}: ${queue.queueSeparator}
-      </div>
-      <hr>
-      <div class="queue-items"
-            data-queue-id="${queue.queueConfig_id}">
-        ${queue.items
-          .filter((item) => !item.isCompleted)
-          .map(
-            (item) => `
-          <div class="queue-item-draggable${
-            item.isPriority ? " priority-item" : ""
-          }" data-item-id="${item.id}" data-item-name="${item.itemName}">
-            <i class="bi bi-grip-vertical drag-handle"></i>
-            <span class="queue-item-text">${item.itemName}</span>
-            <div class="queue-item-actions">
-              <button class="queue-item-btn btn-complete" data-item-id="${
-                item.queueItem_id
-              }"
-                title="${t("queues.titles.completeItem")}">
-                <i class="bi bi-check-lg"></i>
-              </button>
-              <button class="queue-item-btn btn-edit" data-item-id="${
-                item.id
-              }" title="${t("queues.titles.editItem")}">
-                <i class="bi bi-pencil"></i>
-              </button>
-              <button class="queue-item-btn btn-delete" data-item-id="${
-                item.id
-              }" title="${t("queues.titles.removeItem")}">
-                <i class="bi bi-trash"></i>
-              </button>
-            </div>
-          </div>
-        `
-          )
-          .join("")}
-          <button class="btn queue-item-btn btn-add btn-primary"><i class="bi bi-plus-lg"></i></button>
-      </div>
-    </div>
-    <div class="min-width">
-      <button type="button" class="btn-completed btn btn-sm btn-outline-primary border-0 me-1"
-        data-queue="${
-          queue.queueConfig_id
-        }" data-bs-toggle="tooltip" data-bs-placement="left"
-        data-bs-title="${t("queues.titles.complete")}">
-        <i class="bi bi-list"></i>
-      </button>
-      <button type="button" class="btn-edit-queue btn btn-sm btn-outline-warning border-0 me-1"
-        data-queue="${
-          queue.queueConfig_id
-        }" data-bs-toggle="tooltip" data-bs-placement="left"
-        data-bs-title="${t("queues.titles.editItem")}">
-        <i class="bi bi-pencil-square"></i>
-      </button>
-      <button type="button" class="btn-delete-queue btn btn-sm btn-outline-danger border-0"
-        data-queue='{"queueId": ${queue.queueConfig_id}, "channelId": ${
-        queue.userId
-      }}' data-bs-toggle="tooltip" data-bs-placement="left"
-        data-bs-title="${t("queues.titles.removeItem")}">
-        <i class="bi bi-trash3"></i>
-      </button>
-    </div>
-  </div>
-</li>
-`);
-    });
+  if (!$(e.target).closest(".queue-item-draggable").length) {
+    $(".queue-item-draggable").removeClass("expanded").css("width", "120px");
   }
-
-  // Replace the existing queue list
-  $(".list-group").replaceWith($template);
-
-  // Reinitialize tooltips and event handlers
-  $('[data-bs-toggle="tooltip"]').tooltip();
-  bindEventHandlers();
-  initializeSortable();
 }
-function rebuildQueueItems($queueContainer, data, queueId) {
-  $queueContainer.forceCleanupLoading();
-  // Clear existing content
-  $queueContainer.html("");
 
-  if (data.count > 0) {
-    // Add each queue item
-    data.items.forEach((queueItem) => {
-      $queueContainer.append(`
-<div class="queue-item-draggable${
-        queueItem.isPriority ? " priority-item" : ""
-      }" data-item-id="${queueItem.queueItem_id}" data-item-name="${
-        queueItem.itemName
-      }">
-  <i class="bi bi-grip-vertical drag-handle"></i>
-  <span class="queue-item-text">${queueItem.itemName}</span>
-  <div class="queue-item-actions">
-    <button class="queue-item-btn btn-complete" data-item-id="${
-      queueItem.queueItem_id
-    }"
-      title="${t("queues.titles.completeItem")}">
-      <i class="bi bi-check-lg"></i>
-    </button>
-    <button class="queue-item-btn btn-edit" data-item-id="${
-      queueItem.queueItem_id
-    }" title="${t("queues.titles.editItem")}">
-      <i class="bi bi-pencil"></i>
-    </button>
-    <button class="queue-item-btn btn-delete" data-item-id="${
-      queueItem.queueItem_id
-    }" title="${t("queues.titles.removeItem")}">
-      <i class="bi bi-trash3"></i>
-    </button>
-  </div>
-</div>
-      `);
-    });
-  }
+function handleDeleteQueue(e) {
+  e.preventDefault();
+  const $button = $(e.currentTarget);
+  const data = $button.data("queue");
+  const $queueItem = $button.closest(".list-group");
 
-  // Always add the add button at the end
-  $queueContainer.append(
-    '<button class="btn queue-item-btn btn-add"><i class="bi bi-plus-lg"></i></button>'
+  // Get queue name for display in modal
+  const queueName = $queueItem.find("h3").text();
+
+  // Set queue name in modal and store queue data
+  $("#queueNameToDelete").text(queueName);
+  $("#deleteQueueModal").data("queue-data", data);
+  $("#deleteQueueModal").data("queue-item", $queueItem);
+
+  // Show the modal
+  const modal = new bootstrap.Modal(
+    document.getElementById("deleteQueueModal")
   );
-
-  // Rebind all event handlers and reinitialize functionality
-  bindEventHandlers();
-  initializeSortable();
+  modal.show();
 }
 
-// Initialize event handlers on page load
-$(function () {
-  bindEventHandlers();
-  initializeSortable();
-});
+function handleConfirmDelete() {
+  const data = $("#deleteQueueModal").data("queue-data");
+  const $queueItem = $("#deleteQueueModal").data("queue-item");
+
+  // Hide the modal
+  const modal = bootstrap.Modal.getInstance(
+    document.getElementById("deleteQueueModal")
+  );
+  modal.hide();
+
+  // Perform the deletion using centralized API
+  $queueItem.wrapLoading(
+    QueueAPI.deleteQueue(data.channelId, data.queueId)
+      .done(function (data) {
+        reRenderQueues(data);
+        showToast("success", t("queues.delete_success"));
+      })
+      .fail(function () {
+        showToast("danger", t("queues.delete_error"));
+      })
+  );
+}
+
+function handleSaveQueue() {
+  const queueId = $("#editQueueModal").data("queue-id");
+  const $button = $(this);
+  const $buttonText = $button.find(".button-text");
+  const $buttonSpinner = $button.find(".button-spinner");
+
+  // Show loading state
+  $buttonText.addClass("d-none");
+  $buttonSpinner.removeClass("d-none");
+  $button.prop("disabled", true);
+
+  // Prepare form data
+  const formData = {
+    queueName: $("#editQueueName").val().trim(),
+    queueDescription: $("#editQueueDescription").val().trim(),
+    queueSeparator: $("#editQueueSeparator").val().trim(),
+    silentActions: $("#editSilentActions").is(":checked"),
+  };
+
+  // Submit using centralized API
+  QueueAPI.updateQueue(queueId, formData)
+    .done(function (data) {
+      // Hide the modal
+      const modal = bootstrap.Modal.getInstance(
+        document.getElementById("editQueueModal")
+      );
+      modal.hide();
+
+      // Reload the page to show updated data
+      location.reload();
+
+      // Show success toast
+      showToast("success", t("queues.edit_success"));
+    })
+    .fail(function (xhr) {
+      let errorMessage = t("queues.edit_error");
+      if (xhr.responseJSON && xhr.responseJSON.error) {
+        errorMessage = xhr.responseJSON.error;
+      }
+      showToast("danger", errorMessage);
+    })
+    .always(function () {
+      // Reset button state
+      $buttonText.removeClass("d-none");
+      $buttonSpinner.addClass("d-none");
+      $button.prop("disabled", false);
+    });
+}
+
+function handleAddItemKeypress(e) {
+  if (e.which === 13) {
+    // Enter key
+    const $input = $(e.currentTarget);
+    const itemName = $input.val().trim();
+    if (itemName) {
+      const $queueContainer = $input.closest(".queue-items");
+      const queueId = $queueContainer.data("queue-id");
+      addQueueItem(queueId, itemName, $queueContainer);
+    }
+  }
+}
+
+function handleEditItemKeypress(e) {
+  if (e.which === 13 || e.key === 'Enter') {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const $input = $(e.currentTarget);
+    const $queueItem = $input.closest(".queue-item-draggable");
+    const $priorityCheckbox = $queueItem.find(".priority-checkbox");
+    const queueId = $input.data("queue-id") || $queueItem.closest(".queue-items").data("queue-id");
+    const itemId = $input.data("item-id") || $queueItem.closest(".btn-edit").data("item-id");
+    
+    
+    const newName = $input.val().trim();
+    const newPriority = $priorityCheckbox.is(":checked");
+    const originalName = $queueItem.data('original-name');
+    const originalPriority = $queueItem.data('original-priority');
+
+    if (newName && (newName !== originalName || newPriority !== originalPriority)) {
+      updateQueueItem(queueId, itemId, newName, newPriority, $queueItem);
+    } else {
+      exitEditMode($queueItem, originalName);
+    }
+  }
+}
+
+function handleEscapeKey(e) {
+  if (e.which === 27) {
+    // Escape key
+    const $input = $(e.currentTarget);
+    if ($input.hasClass("add-item-field")) {
+      const $inputForm = $input.closest(".add-item-input");
+      const $addButton = $inputForm.siblings(".btn-add");
+      hideAddItemInput($inputForm, $addButton);
+    } else if ($input.hasClass("queue-item-input")) {
+      const $queueItem = $input.closest(".queue-item-draggable");
+      const originalName = $queueItem.data("item-name");
+      exitEditMode($queueItem, originalName);
+    }
+  }
+}

@@ -36,6 +36,10 @@ class InternalApiService extends BaseApiService {
     return await this.get(`/channels/${channelName}/queues`);
   }
 
+  async getQueue(queueId) {
+    return await this.get(`/queues/${queueId}`);
+  }
+
   async getActiveQueueItems(queueId) {
     return await this.get(`/queues/${queueId}/items`);
   }
@@ -46,6 +50,10 @@ class InternalApiService extends BaseApiService {
 
   async deleteQueue(channelId, queueId) {
     return await this.delete(`/queues/${channelId}/${queueId}`);
+  }
+
+  async updateQueue(queueId, queueData) {
+    return await this.put(`/queues/${queueId}/config`, queueData);
   }
   
   async reorderItem(queueId, data) {

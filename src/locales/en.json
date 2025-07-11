@@ -65,7 +65,13 @@
     "update_success": "Item successfully updated.",
     "update_error": "Failure to update item",
     "complete_item_success": "Successfuly completed item",
-    "complete_item_error": "Error completing item from queue"
+    "complete_item_error": "Error completing item from queue",
+    "confirm_delete": "Are you sure you want to delete this queue? This action cannot be undone.",
+    "queue_name": "Queue Name",
+    "save_changes": "Save Changes",
+    "saving": "Saving...",
+    "edit_success": "Queue updated successfully!",
+    "edit_error": "Error updating queue."
   },
   "queue": {},
   "other": {

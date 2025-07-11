@@ -65,7 +65,13 @@
     "update_success": "Item atualizado com sucesso.",
     "update_error": "Falha ao atualizar item",
     "complete_item_error": "Erro ao completar da fila",
-    "complete_item_success": "Item completado com sucesso"
+    "complete_item_success": "Item completado com sucesso",
+    "confirm_delete": "Tem certeza que deseja deletar esta fila? Esta ação não pode ser desfeita.",
+    "queue_name": "Nome da Fila",
+    "save_changes": "Salvar Alterações",
+    "saving": "Salvando...",
+    "edit_success": "Fila atualizada com sucesso!",
+    "edit_error": "Erro ao atualizar fila."
   },
   "queue": {},
   "other": {

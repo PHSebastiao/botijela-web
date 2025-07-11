@@ -210,6 +210,102 @@
 
     </div>
 
+    {{#if (eq activePage 'queue')}}
+    <!-- Delete Queue Confirmation Modal -->
+    <div class="modal fade" id="deleteQueueModal" tabindex="-1" aria-labelledby="deleteQueueModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteQueueModalLabel">
+                        <i class="bi bi-exclamation-triangle text-warning me-2"></i>
+                        {{t 'queues.titles.delete'}}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>{{t 'queues.confirm_delete'}}</p>
+                    <div class="alert alert-warning d-flex align-items-center">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <div>
+                            <strong>{{t 'queues.queue_name'}}:</strong> <span id="queueNameToDelete"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{t
+                        'queues.cancel'}}</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteQueue">
+                        <i class="bi bi-trash3 me-1"></i>
+                        {{t 'queues.titles.delete'}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Queue Modal -->
+    <div class="modal fade" id="editQueueModal" tabindex="-1" aria-labelledby="editQueueModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editQueueModalLabel">
+                        <i class="bi bi-pencil-square text-warning me-2"></i>
+                        {{t 'queues.titles.edit'}}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editQueueForm">
+                        <div class="mb-3">
+                            <label for="editQueueName" class="form-label">{{t 'queues.form.name'}}</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="edit-queue-prefix">{{managing.prefix}}</span>
+                                <input type="text" class="form-control" id="editQueueName" name="queueName"
+                                    maxlength="40" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editQueueDescription" class="form-label">{{t 'queues.form.description'}}</label>
+                            <input type="text" class="form-control" id="editQueueDescription" name="queueDescription"
+                                data-bs-toggle="tooltip" data-bs-title="{{t 'queues.form.title.description'}}"
+                                maxlength="50" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editQueueSeparator" class="form-label">{{t 'queues.form.separator'}}</label>
+                            <input type="text" class="form-control" id="editQueueSeparator" name="queueSeparator"
+                                data-bs-toggle="tooltip" data-bs-title="{{t 'queues.form.title.separator'}}"
+                                maxlength="3" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <label class="form-check-label" for="editSilentActions" data-bs-toggle="tooltip"
+                                data-bs-title="{{t 'queues.form.title.silentActions'}}">
+                                <input class="form-check-input" type="checkbox" id="editSilentActions"
+                                    name="silentActions">
+                                {{t 'queues.form.silentActions'}}
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{t
+                        'queues.cancel'}}</button>
+                    <button type="button" class="btn btn-warning" id="saveQueueChanges">
+                        <span class="button-text">
+                            <i class="bi bi-check-lg me-1"></i>
+                            {{t 'queues.save_changes'}}
+                        </span>
+                        <span class="button-spinner d-none">
+                            <span class="spinner-border spinner-border-sm me-1"></span>
+                            {{t 'queues.saving'}}
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/Sortable.min.js"></script>
@@ -251,9 +347,17 @@
             'queues.save_item': '{{t 'queues.save_item' }}',
             'queues.complete_item_success': '{{t 'queues.complete_item_success' }}',
             'queues.complete_item_error': '{{t 'queues.complete_item_error' }}',
+            'queues.confirm_delete': '{{t 'queues.confirm_delete' }}',
+            'queues.queue_name': '{{t 'queues.queue_name' }}',
+            'queues.save_changes': '{{t 'queues.save_changes' }}',
+            'queues.saving': '{{t 'queues.saving' }}',
+            'queues.edit_success': '{{t 'queues.edit_success' }}',
+            'queues.edit_error': '{{t 'queues.edit_error' }}',
+            'queues.no_queues': '{{t 'queues.no_queues' }}',
         });
     </script>
     <script src="/js/loading-wrapper.js"></script>
+    <script src="/js/queue-templates.js"></script>
     <script src="/js/queues.js"></script>
     {{/if}}
     <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>

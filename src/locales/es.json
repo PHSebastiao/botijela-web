@@ -65,7 +65,13 @@
     "update_success": "Artículo actualizado con éxito.",
     "update_error": "No actualizar el elemento",
     "complete_item_success": "Artículo exitoso con éxito",
-    "complete_item_error": "Error al completar de la cola"
+    "complete_item_error": "Error al completar de la cola",
+    "confirm_delete": "¿Está seguro de que desea eliminar esta cola? Esta acción no se puede deshacer.",
+    "queue_name": "Nombre de la Cola",
+    "save_changes": "Guardar Cambios",
+    "saving": "Guardando...",
+    "edit_success": "¡Cola actualizada exitosamente!",
+    "edit_error": "Error al actualizar cola."
   },
   "queue": {},
   "other": {

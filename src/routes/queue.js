@@ -189,4 +189,46 @@ queueRouter.put(
   }
 );
 
+// GET route to fetch queue data for editing
+queueRouter.get("/:queueId/edit", isAuthenticated, async (req, res) => {
+  try {
+    const queueId = req.params.queueId;
+    const queueData = await InternalApiService.getQueue(queueId);
+    res.status(200).json(queueData);
+  } catch (error) {
+    console.error("Error fetching queue data:", error);
+    return res
+      .status(500)
+      .json({ error: error.message || req.t("queues.edit_error") });
+  }
+});
+
+// PUT route to update queue data
+queueRouter.put("/:queueId", isAuthenticated, async (req, res) => {
+  try {
+    const queueId = req.params.queueId;
+    const validation = validateQueueData(req.body);
+
+    if (!validation.isValid) {
+      return res
+        .status(400)
+        .json({ error: validation.errors.join(", ") });
+    }
+
+    await InternalApiService.updateQueue(queueId, {
+      queueName: validation.sanitized.queueName,
+      queueDescription: validation.sanitized.queueDescription,
+      queueSeparator: validation.sanitized.queueSeparator,
+      silentActions: validation.sanitized.silentActions,
+    });
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Error updating queue:", error);
+    return res
+      .status(500)
+      .json({ error: error.message || req.t("queues.edit_error") });
+  }
+});
+
 export default queueRouter;
