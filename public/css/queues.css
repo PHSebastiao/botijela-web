@@ -53,7 +53,7 @@
 /* Enhanced Hover and Interaction States */
 .completed-item-pill:hover,
 .queue-item-draggable.expanded {
-    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    background: linear-gradient(135deg, var(--gray-200), var(--gray-400));
     color: var(--text-color);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
@@ -145,7 +145,7 @@
 }
 
 .queue-item-btn.btn-complete:hover {
-    background-color: var(--success);
+    background-color: var(--info);
     color: white;
 }
 
@@ -232,8 +232,8 @@
     align-items: center;
     padding: var(--space-sm) var(--space-md);
     background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
-    border: 2px solid var(--success);
-    color: white;
+    border: 2px solid var(--gray-300);
+    color: var(--text-color);
     border-radius: var(--radius-full);
     font-size: 0.875rem;
     font-weight: 500;
@@ -270,7 +270,7 @@
 [data-bs-theme="dark"] {
     .queue-item-draggable,
     .completed-item-pill {
-        background: linear-gradient(135deg, #1e293b, #334155);
+        background: linear-gradient(135deg, var(--gray-700), var(--gray-800));
         border-color: #334155;
         color: var(--text-color);
     }
@@ -282,9 +282,9 @@
         background: linear-gradient(135deg, var(--primary-dark), var(--primary-hover)) !important;
     }
 
-    .queue-item-draggable:hover,
+    .queue-item-draggable.expanded,
     .completed-item-pill:hover {
-        background: linear-gradient(135deg, #334155, #475569);
+        background: linear-gradient(135deg, var(--gray-700), var(--gray-900));
     }
 
     .drag-handle {

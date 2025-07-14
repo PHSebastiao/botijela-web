@@ -70,7 +70,7 @@ const QueueTemplates = {
     const queueItemsHtml = queue.items
       .filter((item) => !item.isCompleted)
       .map((item) => this.createQueueItem({
-        queueItem_id: item.id,
+        queueItem_id: item.queueItem_id,
         itemName: item.itemName,
         isPriority: item.isPriority
       }))

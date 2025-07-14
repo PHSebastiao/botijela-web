@@ -62,7 +62,7 @@ function updateManageableDropdown(manageable) {
     // Create new manageable items
     let manageableHtml = `
       <li>
-        <h6 class="dropdown-header">Moderated Channels:</h6>
+        <h6 class="dropdown-header">${t("main.moderated_channels")}:</h6>
       </li>
     `;
 

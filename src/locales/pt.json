@@ -1,7 +1,8 @@
 {
   "home": {
     "welcome": "Seja bem vindo, {{name}}!",
-    "message": "Esta é a página inicial, ainda não tem muita coisa por aqui, mas em breve haverá novidades 🔥"
+    "message": "Esta é a página inicial, ainda não tem muita coisa por aqui, mas em breve haverá novidades 🔥",
+    "managing_help": "Acesse outros canais que modera clicando em seu nome no canto superior direito ↗️"
   },
   "sidebar": {
     "options": "Opções",

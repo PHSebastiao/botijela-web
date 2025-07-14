@@ -211,17 +211,7 @@ body {
 
 /* Modern Sidebar Collapse Button */
 #sidebarCollapse {
-  position: absolute;
-  border: none;
-  padding: var(--space-sm) var(--space-md);
-  top: var(--space-sm);
-  left: 260px;
   z-index: 1050;
-  transform: translateX(0);
-  transition: transform var(--transition-slow);
-  border-radius: var(--radius-md);
-  background-color: var(--surface-elevated);
-  box-shadow: var(--shadow-md);
 }
 
 #sidebarCollapse.shift {
@@ -243,7 +233,6 @@ body {
   transition: margin-left var(--transition-slow);
   flex-grow: 1;
   position: relative;
-  z-index: 1;
   background-color: var(--bg-color);
 }
 

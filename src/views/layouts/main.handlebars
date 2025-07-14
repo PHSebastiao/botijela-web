@@ -103,7 +103,7 @@
                             </button>
                         </div>
                         <div class="justify-content-end">
-                            <ul class="navbar-nav align-items-center">
+                            <ul class="navbar-nav align-items-center flex-row">
                                 {{#unless managing.join }}
                                 <li class="nav-item me-2">
                                     <button class="btn btn-success" id="joinChannel">Join</button>
@@ -346,13 +346,14 @@
     <script src="/js/jquery.min.js"></script>
     <script src="/js/Sortable.min.js"></script>
     <script src="/js/jquery-sortable.js"></script>
-    <script src="/js/main.js"></script>
-    <script src="/js/shared.js"></script>
     <script>
         window.translations = {
             'kofi.support_me': '{{t "kofi.support_me"}}',
+            'main.moderated_channels': '{{t "main.moderated_channels"}}'
         };
     </script>
+    <script src="/js/main.js"></script>
+    <script src="/js/shared.js"></script>
     {{#if (eq activePage 'queue')}}
     <script>
         // Make translations available to JavaScript

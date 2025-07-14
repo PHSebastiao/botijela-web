@@ -1,7 +1,8 @@
 {
   "home": {
     "message": "This is the homepage, there is not much here yet, but soon there will be news 🔥",
-    "welcome": "Welcome, {{name}}!"
+    "welcome": "Welcome, {{name}}!",
+    "managing_help": "Access other channels that you moderate by clicking on your name in the upper right corner ↗️"
   },
   "sidebar": {
     "options": "Options",

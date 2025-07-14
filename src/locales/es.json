@@ -1,7 +1,8 @@
 {
   "home": {
     "message": "Esta es la página de inicio, todavía no hay mucho, pero pronto habrá noticias 🔥",
-    "welcome": "Seja bem vindo, {{name}}!"
+    "welcome": "Seja bem vindo, {{name}}!",
+    "managing_help": "Acceda a otros canales que moderan haciendo clic en su nombre en la esquina superior derecha ↗️"
   },
   "sidebar": {
     "options": "Opción",

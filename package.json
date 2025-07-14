@@ -1,6 +1,6 @@
 {
   "name": "botijela-web",
-  "version": "1.2.5",
+  "version": "1.2.7",
   "description": "Botijela's Dashboard. Integration of Express, Handlebars and Twitch OAuth",
   "main": "app.js",
   "type": "module",
