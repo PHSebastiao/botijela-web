@@ -20,10 +20,10 @@ export const configureSecurity = (app) => {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'", "https://ko-fi.com/"],
-          scriptSrc: ["'self'", "'unsafe-inline'", "https://storage.ko-fi.com/", "https://ko-fi.com/"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "https://storage.ko-fi.com/", "https://ko-fi.com/", "https://cdn.jsdelivr.net"],
           styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://storage.ko-fi.com", "https://fonts.googleapis.com"],
           imgSrc: ["'self'", "data:", "https:"],
-          connectSrc: ["'self'"],
+          connectSrc: ["'self'", "http://localhost:1999", "ws://localhost:1999", "http://localhost:1999/", "ws://localhost:1999/"],
           fontSrc: ["'self'", "https://cdn.jsdelivr.net", "https://fonts.gstatic.com/"],
         },
       },

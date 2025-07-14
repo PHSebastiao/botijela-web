@@ -3,22 +3,24 @@ $(function () {
   initializeSortable();
   initializeEventDelegation();
   initializeTooltips();
+  initializeSocketConnection();
 });
 
-document.addEventListener("visibilitychange", (ev) => {
-  if (document.visibilityState == "visible") {
-    $(".list-group").wrapLoading(
-      QueueAPI.getQueues()
-        .done((data) => {
-          $(".list-group").forceCleanupLoading();
-          reRenderQueues(data);
-        })
-        .fail(function () {
-          showToast("danger", t("queues.edit_error"));
-        })
-    );
-  }
-});
+// document.addEventListener("visibilitychange", (ev) => {
+//   if (document.visibilityState == "visible") {
+//     $(".list-group").wrapLoading(
+//       QueueAPI.getQueues()
+//         .done((data) => {
+//           $(".list-group").forceCleanupLoading();
+//           reRenderQueues(data);
+//         })
+//         .fail(function () {
+//           showToast("danger", t("queues.edit_error"));
+//           location.reload();
+//         })
+//     );
+//   }
+// });
 
 function initializeSortable() {
   $(".queue-items").each(function () {
@@ -303,10 +305,10 @@ function handleEditQueue(e) {
   QueueAPI.getQueue(queueId)
     .done(function (data) {
       // Populate the form with queue data
-      $("#editQueueName").val(data.queueName);
-      $("#editQueueDescription").val(data.queueDescription);
-      $("#editQueueSeparator").val(data.queueSeparator);
-      $("#editSilentActions").prop("checked", data.silentActions);
+      $("#editQueueName").val(data[0].queueName);
+      $("#editQueueDescription").val(data[0].queueDescription);
+      $("#editQueueSeparator").val(data[0].queueSeparator);
+      $("#editSilentActions").prop("checked", data[0].silentActions);
 
       // Store queue ID for later use
       $("#editQueueModal").data("queue-id", queueId);
@@ -583,9 +585,6 @@ $("#saveQueueChanges")
         );
         modal.hide();
 
-        // Reload the page to show updated data
-        location.reload();
-
         // Show success toast
         showToast("success", t("queues.edit_success"));
       },
@@ -681,21 +680,81 @@ const QueueAPI = {
     });
   },
 
-  updateItem: (queueId, itemId, data) =>
-    QueueAPI.request(`/queue/${queueId}/items/${itemId}`, {
+  updateItem: (queueId, itemId, data) => {
+    const promise = QueueAPI.request(`/queue/${queueId}/items/${itemId}`, {
       method: "PUT",
       data,
-    }),
-  deleteItem: (queueId, itemId) =>
-    QueueAPI.request(`/queue/${queueId}/items/${itemId}`, { method: "DELETE" }),
-  addItem: (queueId, data) =>
-    QueueAPI.request(`/queue/${queueId}/items`, { method: "POST", data }),
-  completeItem: (queueId, itemId) =>
-    QueueAPI.request(`/queue/${queueId}/items/${itemId}/complete`, {
+    });
+    promise.done((response) => {
+      const channelName = window.socketConfig?.currentChannel;
+      broadcastQueueOperation(
+        "item-updated",
+        channelName,
+        queueId,
+        response.item || response
+      );
+    });
+    return promise;
+  },
+  deleteItem: (queueId, itemId) => {
+    const promise = QueueAPI.request(`/queue/${queueId}/items/${itemId}`, {
+      method: "DELETE",
+    });
+    promise.done((response) => {
+      const channelName = window.socketConfig?.currentChannel;
+      broadcastQueueOperation("item-removed", channelName, queueId, {
+        itemId: itemId,
+      });
+    });
+    return promise;
+  },
+  addItem: (queueId, data) => {
+    const promise = QueueAPI.request(`/queue/${queueId}/items`, {
       method: "POST",
-    }),
-  reorderItems: (queueId, data) =>
-    QueueAPI.request(`/queue/${queueId}/reorder`, { method: "PUT", data }),
+      data,
+    });
+    promise.done((response) => {
+      const channelName = window.socketConfig?.currentChannel;
+      broadcastQueueOperation(
+        "item-added",
+        channelName,
+        queueId,
+        response.item || response
+      );
+    });
+    return promise;
+  },
+  completeItem: (queueId, itemId) => {
+    const promise = QueueAPI.request(
+      `/queue/${queueId}/items/${itemId}/complete`,
+      {
+        method: "POST",
+      }
+    );
+    promise.done((response) => {
+      const channelName = window.socketConfig?.currentChannel;
+      broadcastQueueOperation("item-completed", channelName, queueId, {
+        itemId: itemId,
+      });
+    });
+    return promise;
+  },
+  reorderItems: (queueId, data) => {
+    const promise = QueueAPI.request(`/queue/${queueId}/reorder`, {
+      method: "PUT",
+      data,
+    });
+    promise.done((response) => {
+      const channelName = window.socketConfig?.currentChannel;
+      broadcastQueueOperation(
+        "item-moved",
+        channelName,
+        queueId,
+        response.items || response
+      );
+    });
+    return promise;
+  },
   deleteQueue: (channelId, queueId) =>
     QueueAPI.request(`/queue/${channelId}/${queueId}`, { method: "DELETE" }),
   getQueue: (queueId) => QueueAPI.request(`/queue/${queueId}/edit`),
@@ -890,9 +949,6 @@ function handleSaveQueue() {
         document.getElementById("editQueueModal")
       );
       modal.hide();
-
-      // Reload the page to show updated data
-      location.reload();
 
       // Show success toast
       showToast("success", t("queues.edit_success"));
@@ -1121,4 +1177,268 @@ function escapeHtml(text) {
   return text.replace(/[&<>"']/g, function (m) {
     return map[m];
   });
+}
+
+// Initialize socket connection for queue management
+function initializeSocketConnection() {
+  // Check if socket configuration is available
+  if (!window.socketConfig || !window.socketConfig.partyKitHost) {
+    console.log("PartyKit not configured, skipping socket connection");
+    return;
+  }
+
+  const { partyKitHost, currentChannel } = window.socketConfig;
+
+  if (!currentChannel) {
+    console.log("No current channel, skipping socket connection");
+    return;
+  }
+
+  // Initialize socket manager
+  window.socketManager.init(partyKitHost);
+
+  let sessionId = getSessionId();
+
+  // Connect to current channel
+  window.socketManager.connectToChannel(currentChannel, sessionId);
+
+  // Set up event handlers for queue updates
+  setupQueueSocketHandlers();
+
+  console.log("Socket connection initialized for channel:", currentChannel);
+}
+
+// Set up socket event handlers for queue operations
+function setupQueueSocketHandlers() {
+  // Queue item events
+  window.socketManager.on("itemAdded", (data) => {
+    handleRealtimeItemChange(data, "added");
+  });
+
+  window.socketManager.on("itemUpdated", (data) => {
+    handleRealtimeItemChange(data, "updated");
+  });
+
+  window.socketManager.on("itemRemoved", (data) => {
+    handleRealtimeItemChange(data, "removed");
+  });
+
+  window.socketManager.on("itemCompleted", (data) => {
+    handleRealtimeItemChange(data, "completed");
+  });
+
+  window.socketManager.on("itemMoved", (data) => {
+    handleRealtimeItemChange(data, "moved");
+  });
+
+  window.socketManager.on("queueCleared", (data) => {
+    handleRealtimeQueueChange(data, "cleared");
+  });
+
+  // Queue-level events
+  window.socketManager.on("queueAdded", (data) => {
+    handleRealtimeQueueChange(data, "added");
+  });
+
+  window.socketManager.on("queueRemoved", (data) => {
+    handleRealtimeQueueChange(data, "removed");
+  });
+
+  window.socketManager.on("queueUpdated", (data) => {
+    handleRealtimeQueueChange(data, "updated");
+  });
+
+  // Chat and connection events
+  window.socketManager.on("connectionEstablished", (data) => {
+    handleConnectionEstablished(data);
+  });
+
+  window.socketManager.on("chatMessage", (data) => {
+    handleChatMessage(data);
+  });
+
+  // Connection events
+  window.socketManager.on("connected", (data) => {
+    console.log("Connected to queue socket for channel:", data.channelName);
+  });
+
+  window.socketManager.on("disconnected", (data) => {
+    console.log(
+      "Disconnected from queue socket for channel:",
+      data.channelName
+    );
+  });
+
+  window.socketManager.on("error", (data) => {
+    console.error("Socket error for channel:", data.channelName, data.error);
+  });
+}
+
+// Handle channel switching
+function switchToChannel(channelName) {
+  if (!window.socketManager) return;
+
+  const sessionId = getSessionId();
+  window.socketManager.switchChannel(channelName, sessionId);
+  console.log("Switched to channel:", channelName);
+}
+
+// Broadcast queue operations to other users
+function broadcastQueueOperation(type, channelName, queueId, data) {
+  if (window.socketManager) {
+    const username = window.socketConfig?.user?.username || "Unknown";
+    window.socketManager.sendMessage(
+      type,
+      channelName,
+      queueId,
+      data,
+      username
+    );
+  }
+}
+
+// Simplified realtime event handlers
+function handleRealtimeItemChange(data, action) {
+  const { queueId, username, data: itemData } = data;
+
+  // Reload the specific queue's items
+  refreshQueueItems(queueId);
+
+  // Show notification with username
+  const userText = username ? ` by ${username}` : "";
+  const itemName = itemData ? `(${itemData?.itemName})` : "";
+
+  let message;
+  let type;
+  switch (action) {
+    case "added":
+      message = `Item added ${itemName}${userText}`;
+      type = "success";
+      break;
+    case "updated":
+      message = `Item updated ${itemName}${userText}`;
+      type = "info";
+      break;
+    case "removed":
+      message = `Item removed ${itemName}${userText}`;
+      type = "warning";
+      break;
+    case "completed":
+      message = `Item completed ${itemName}${userText}`;
+      type = "success";
+      break;
+    case "moved":
+      message = `Queue reordered${userText}`;
+      type = "info";
+      break;
+    default:
+      message = `Item ${action}${userText}`;
+      type = "info";
+  }
+
+  showRealtimeNotification(type, message);
+}
+
+function handleRealtimeQueueChange(data, action) {
+  const { queueId, username, data: queueData } = data;
+
+  // Reload all queues
+  refreshQueueList();
+
+  // Show notification with username
+  const userText = username ? ` by ${username}` : "";
+  const queueName = queueData?.queueName || "Unknown queue";
+
+  let message;
+  let type;
+  switch (action) {
+    case "added":
+      message = `Queue created: ${queueName}${userText}`;
+      type = "success";
+      break;
+    case "updated":
+      message = `Queue updated: ${queueName}${userText}`;
+      type = "info";
+      break;
+    case "removed":
+      message = `Queue deleted: ${queueName}${userText}`;
+      type = "warning";
+      break;
+    case "cleared":
+      message = `Queue cleared: ${queueName}${userText}`;
+      type = "warning";
+      break;
+    default:
+      message = `Queue ${action}${userText}`;
+      type = "info";
+  }
+
+  showRealtimeNotification(type, message);
+}
+
+// Refresh the entire queue list
+function refreshQueueList() {
+  const $queueList = $(".list-group");
+  $queueList.wrapLoading(
+    QueueAPI.getQueues()
+      .done((data) => {
+        reRenderQueues(data);
+      })
+      .fail(() => {
+        console.error("Failed to refresh queue list");
+        location.reload();
+      })
+  );
+}
+
+// Refresh specific queue items
+function refreshQueueItems(queueId) {
+  const $queueContainer = $(`.queue-items[data-queue-id='${queueId}']`);
+  if ($queueContainer.length > 0)
+    $queueContainer.wrapLoading(
+      QueueAPI.getQueue(queueId)
+        .done((data) => {
+          if (data.length == 1) {
+            rebuildQueueItems(
+              $queueContainer,
+              { count: data[0].items.length, items: data[0].items },
+              queueId
+            );
+          }
+        })
+        .fail(() => {
+          console.error("Failed to refresh queue items for queue:", queueId);
+          location.reload();
+        })
+    );
+}
+
+// Show realtime notifications with different styling
+function showRealtimeNotification(type, message) {
+  if (typeof showToast === "function") {
+    showToast(type, message);
+  } else {
+    console.log(`[${type.toUpperCase()}] ${message}`);
+  }
+}
+
+// Handle connection established event
+function handleConnectionEstablished(data) {
+  const { channelName, username, data: connectionData, timestamp } = data;
+  console.log(
+    `Connection established for channel: ${channelName}`,
+    connectionData
+  );
+
+  // You can add any initialization logic here
+  // For example, request current queue state or show welcome message
+}
+
+// Handle chat message event
+function handleChatMessage(data) {
+  const { channelName, username, data: messageData, timestamp } = data;
+  console.log(`Chat message from ${username} in ${channelName}:`, messageData);
+
+  // You can implement mod chat functionality here
+  // For example, display the message in a chat interface
 }

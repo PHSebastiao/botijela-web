@@ -346,10 +346,20 @@
     <script src="/js/jquery.min.js"></script>
     <script src="/js/Sortable.min.js"></script>
     <script src="/js/jquery-sortable.js"></script>
+    <script src="/js/socket-manager.js"></script>
     <script>
         window.translations = {
             'kofi.support_me': '{{t "kofi.support_me"}}',
             'main.moderated_channels': '{{t "main.moderated_channels"}}'
+        };
+
+        // Socket configuration
+        window.socketConfig = {
+            partyKitHost: '{{partyKitHost}}',
+            currentChannel: '{{#if managing}}{{managing.username}}{{/if}}',
+            user: {
+                username: '{{#if user}}{{user.username}}{{/if}}'
+            }
         };
     </script>
     <script src="/js/main.js"></script>

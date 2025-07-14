@@ -39,4 +39,7 @@ export default {
   apiUrl: process.env.BOT_API_URL,
   port: process.env.PORT || 4200,
   host: process.env.HOST || "::",
+  partykit: {
+    host: process.env.PARTYKIT_HOST || null,
+  },
 };

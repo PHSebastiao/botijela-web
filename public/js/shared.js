@@ -8,6 +8,25 @@ function setCookie(name, value, days) {
   document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 
+// Get session ID from cookie or generate one
+function getSessionId() {
+  let sessionId = getCookie("socket_session_id");
+  if (!sessionId) {
+    sessionId =
+      "session_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
+    setCookie("socket_session_id", sessionId, 30); // 30 days
+  }
+  return sessionId;
+}
+
+// Cookie utilities
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+  return null;
+}
+
 function toggleTheme() {
   const currentTheme = document.documentElement.getAttribute("data-bs-theme");
   const newTheme = currentTheme === "dark" ? "light" : "dark";

@@ -30,6 +30,8 @@ export const configureSession = (app, config) => {
     res.locals.link = "https://" + req.hostname + req.url;
     res.locals.theme = req.cookies.theme || "dark";
     res.locals.user = req.user || null;
+    res.locals.partyKitHost = config.partykit?.host || null;
+    res.locals.sessionId = req.cookies.socket_session_id;
 
     if (!req.user) {
       // Not authenticated, skip managing logic
