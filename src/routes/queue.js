@@ -56,7 +56,7 @@ queueRouter.post("/", isAuthenticated, async (req, res) => {
       return res.redirect("/queue");
     }
 
-    await InternalApiService.createQueue(res.locals.managing.username, {
+    await InternalApiService.createQueue(res.locals.managing.username, res.locals.user.username, {
       username: res.locals.managing.username,
       userId: res.locals.managing.userId,
       queueName: validation.sanitized.queueName,
@@ -67,11 +67,11 @@ queueRouter.post("/", isAuthenticated, async (req, res) => {
     });
 
     addSuccess(req, req.t("queues.create_success"));
-    res.redirect("/queue");
   } catch (error) {
     console.error("Error creating queue:", error);
-    addError(req, error.message || req.t("queues.create_error"));
-    return res.redirect("/queue");
+    return res
+      .status(500)
+      .json({ error: error.message || req.t("queues.create_error") });
   }
 });
 
@@ -88,8 +88,9 @@ queueRouter.delete(
         .json(await InternalApiService.deleteQueue(channelId, queueId));
     } catch (error) {
       console.error("Error deleting queue:", error);
-      // addError(req, error.message || req.t("queues.delete_error"));
-      return res.redirect("/queue");
+      return res
+      .status(500)
+      .json({ error: error.message || req.t("queues.delete_error") });
     }
   }
 );
@@ -98,13 +99,13 @@ queueRouter.put("/:queueId/reorder", isAuthenticated, async (req, res) => {
   try {
     const queueId = req.params.queueId;
     // addSuccess(req, req.t("queues.reorder_success"));
-    await InternalApiService.reorderItem(queueId, req.body);
-    let result = await InternalApiService.getActiveQueueItems(queueId);
+    let result = await InternalApiService.reorderItem(queueId, req.body);
     res.status(201).json(result);
   } catch (error) {
     console.error("Error reordering queue:", error);
-    addError(req, error.message || req.t("queues.reorder_error"));
-    return res.redirect("/queue");
+    return res
+      .status(500)
+      .json({ error: error.message || req.t("queues.reorder_error") });
   }
 });
 
@@ -141,9 +142,7 @@ queueRouter.delete(
       const queueId = req.params.queueId;
       const itemId = req.params.itemId;
 
-      await InternalApiService.removeQueueItem(queueId, itemId);
-
-      let result = await InternalApiService.getActiveQueueItems(queueId);
+      let result = await InternalApiService.removeQueueItem(queueId, itemId);
       res.status(201).json(result);
     } catch (error) {
       console.error("Error adding queue item:", error);
@@ -162,9 +161,7 @@ queueRouter.post(
       const queueId = req.params.queueId;
       const itemId = req.params.itemId;
 
-      await InternalApiService.completeQueueItem(queueId, itemId);
-
-      let result = await InternalApiService.getActiveQueueItems(queueId);
+      let result = await InternalApiService.completeQueueItem(queueId, itemId);
       res.status(201).json(result);
     } catch (error) {
       console.error("Error adding queue item:", error);

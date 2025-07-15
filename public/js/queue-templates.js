@@ -89,7 +89,7 @@ const QueueTemplates = {
               ${t("queues.separator")}: ${queue.queueSeparator}
             </div>
             <hr>
-            <div class="queue-items" data-queue-id="${queue.queueConfig_id}">
+            <div class="queue-items" data-queue-id="${queue.queueConfig_id}" data-queue-name="${queue.queueName}">
               ${queueItemsHtml}
               ${this.createAddButton()}
             </div>

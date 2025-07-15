@@ -7,6 +7,7 @@
   constructor() {
     this.connections = new Map();
     this.currentChannel = null;
+    this.currentUser = null;
     this.partyKitHost = null; // Will be set from server config
     this.eventHandlers = new Map();
   }
@@ -18,7 +19,7 @@
   }
 
   // Connect to a specific channel's room
-  connectToChannel(channelName, sessionId) {
+  connectToChannel(channelName, username, sessionId) {
     if (!this.partyKitHost) {
       console.error("PartyKit host not configured");
       return null;
@@ -40,6 +41,7 @@
       query: {
         sessionId: sessionId,
         channelName: channelName,
+        username: username
       },
     });
 
@@ -49,6 +51,7 @@
     // Store connection
     this.connections.set(connectionKey, socket);
     this.currentChannel = channelName;
+    this.currentUser = username;
 
     console.log("Connected to PartyKit room:", roomId);
     return socket;
@@ -65,7 +68,7 @@
       try {
         const data = JSON.parse(event.data);
         console.log("Received message:", data);
-        this.handleMessage(data, channelName);
+        this.handleMessage(data);
       } catch (error) {
         console.error("Error parsing message:", error);
       }
@@ -83,11 +86,12 @@
   }
 
   // Handle incoming messages
-  handleMessage(data, channelName) {
+  handleMessage(data) {
     const {
       type,
       channelName: messageChannelName,
       username,
+      connectedUsers,
       queueId,
       data: payload,
       timestamp,
@@ -98,6 +102,16 @@
         this.triggerEvent("connectionEstablished", {
           channelName: messageChannelName,
           username,
+          connectedUsers,
+          data: payload,
+          timestamp,
+        });
+        break;
+        case "connection-left":
+        this.triggerEvent("connectionLeft", {
+          channelName: messageChannelName,
+          username,
+          connectedUsers,
           data: payload,
           timestamp,
         });
@@ -243,7 +257,7 @@
     }
 
     // Connect to new channel
-    return this.connectToChannel(newChannelName, sessionId);
+    return this.connectToChannel(newChannelName, this.currentUser, sessionId);
   }
 
   // Event handler system

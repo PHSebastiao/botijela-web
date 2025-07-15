@@ -60,7 +60,7 @@
           {{t "queues.separator" }}: {{ this.queueSeparator }}
         </div>
         <hr>
-        <div class="queue-items" data-queue-id="{{this.queueConfig_id}}">
+        <div class="queue-items" data-queue-id="{{this.queueConfig_id}}" data-queue-name="{{this.queueName}}">
           {{#each this.items}}
           {{#unless this.isCompleted}}
           <div class="queue-item-draggable{{#if this.isPriority}} priority-item{{/if}}"

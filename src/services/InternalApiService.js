@@ -44,8 +44,8 @@ class InternalApiService extends BaseApiService {
     return await this.get(`/queues/${queueId}/items`);
   }
 
-  async createQueue(channelName, queueData) {
-    return await this.post(`/queues/${channelName}`, queueData);
+  async createQueue(channelName, username, queueData) {
+    return await this.post(`/queues/newQueue/${channelName}/${username}`, queueData);
   }
 
   async deleteQueue(channelId, queueId) {
@@ -61,7 +61,7 @@ class InternalApiService extends BaseApiService {
   } 
 
   async addQueueItem(queueId, itemData) {
-    return await this.post(`/queues/${queueId}/items`, itemData);
+    return await this.post(`/queues/addItem/${queueId}`, itemData);
   }
   
   async removeQueueItem(queueId, itemId) {

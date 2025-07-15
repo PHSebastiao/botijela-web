@@ -357,6 +357,7 @@
         window.socketConfig = {
             partyKitHost: '{{partyKitHost}}',
             currentChannel: '{{#if managing}}{{managing.username}}{{/if}}',
+            sessionId: '{{sessionId}}',
             user: {
                 username: '{{#if user}}{{user.username}}{{/if}}'
             }
@@ -418,7 +419,11 @@
     </script>
     <script src="/js/loading-wrapper.js"></script>
     <script src="/js/queue-templates.js"></script>
-    <script src="/js/queues.js"></script>
+    <script src="/js/cache-manager.js"></script>
+    <script src="/js/queue-api.js"></script>
+    <script src="/js/queue-socket.js"></script>
+    <script src="/js/queue-ui-helpers.js"></script>
+    <script src="/js/queues-main.js"></script>
     {{/if}}
     <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
     <script>
