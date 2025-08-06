@@ -9,12 +9,12 @@ $(document).on("click", ".select-managing", function (e) {
   e.preventDefault();
   const username = $(this).data("username");
   document.cookie = `managing=${username};path=/;SameSite=Lax`;
-  
+
   // Switch socket connection to new channel if socket manager is available
-  if (window.socketManager && typeof switchToChannel === 'function') {
+  if (window.socketManager && typeof switchToChannel === "function") {
     switchToChannel(username);
   }
-  
+
   location.reload();
 });
 $(document).on("click", ".manage-self", function (e) {
@@ -36,9 +36,9 @@ $(document).on("click", "#joinChannel", function (e) {
   });
 });
 
-$(document).on("click", "#channelToManage", function (e) {
-  refreshManageableChannels();
-});
+// $(document).on("click", "#channelToManage", function (e) {
+//   refreshManageableChannels();
+// });
 
 function refreshManageableChannels() {
   $.ajax({

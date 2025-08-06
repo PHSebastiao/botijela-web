@@ -80,6 +80,10 @@ class InternalApiService extends BaseApiService {
     return await this.get(`/queues/${queueId}/completed?page=${page}&limit=${limit}`);
   }
 
+  async getChannelRewards(queueId, userId) {
+    return await this.get(`/channel/${userId}/channelRewards?queueId=${queueId}`);
+  }
+
   async removeCompletedQueueItem(queueId, itemId) {
     return await this.delete(`/queues/${queueId}/completed/${itemId}`);
   }

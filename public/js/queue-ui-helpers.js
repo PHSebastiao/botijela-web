@@ -44,6 +44,23 @@ class QueueUIHelpers {
   // Event delegation for better performance
   initializeEventDelegation() {
     this.$cached.document
+      .on("click", ".btn-refresh-queues", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this)
+          .prop("disabled", true)
+          .html('<span class="spinner-border spinner-border-sm"></span>');
+
+        window.queueUIHelpers.$cached.listGroup.wrapLoading(
+          window.QueueAPI.getQueues().done((data) => {
+            window.queueUIHelpers.reRenderQueues(data).done(() => {
+              $(this)
+                .prop("disabled", false)
+                .html('<i class="arrow-repeat"></i>');
+            });
+          })
+        );
+      })
       // Queue item actions
       .on("click", ".queue-item-btn.btn-edit", (e) => this.handleEditItem(e))
       .on("click", ".queue-item-btn.btn-delete", (e) =>
@@ -60,6 +77,7 @@ class QueueUIHelpers {
       .on("click", ".btn-delete-queue", (e) => this.handleDeleteQueue(e))
       .on("click", ".btn-edit-queue", (e) => this.handleEditQueue(e))
       .on("click", ".btn-completed", (e) => this.handleCompletedButtonClick(e))
+      .on("click", ".btn-rewards", (e) => this.handleListChannelRewards(e))
 
       // Modal actions
       .on("click", "#confirmDeleteQueue", () => this.handleConfirmDelete())
@@ -101,7 +119,7 @@ class QueueUIHelpers {
         const $this = $(e.currentTarget);
 
         // Remove expanded class from all items and reset their widths
-        $(".queue-item-draggable:not(.editing)").css("width", "120px");
+        $(".queue-item-draggable:not(.editing)").css("width", "130px");
         $(".queue-item-draggable").removeClass("expanded");
 
         // Calculate the natural width needed for this item
@@ -180,7 +198,6 @@ class QueueUIHelpers {
               newPosition: newPosition,
             })
               .done(() => {
-                $queueContainer.forceCleanupLoading();
                 this.initializeHoverEffects();
               })
               .fail(() => {
@@ -223,11 +240,9 @@ class QueueUIHelpers {
     const itemId = $button.data("item-id");
 
     $queueContainer.wrapLoading(
-      window.QueueAPI.deleteItem(queueId, itemId)
-        .done((data) => {
-          $queueItem.remove();
-          $queueContainer.forceCleanupLoading();
-        })
+      window.QueueAPI.deleteItem(queueId, itemId).done((data) => {
+        $queueItem.remove();
+      })
     );
   }
 
@@ -242,11 +257,9 @@ class QueueUIHelpers {
     const itemId = $button.data("item-id");
 
     $queueContainer.wrapLoading(
-      window.QueueAPI.completeItem(queueId, itemId)
-        .done((data) => {
-          $queueItem.remove();
-          $queueContainer.forceCleanupLoading();
-        })
+      window.QueueAPI.completeItem(queueId, itemId).done((data) => {
+        $queueItem.remove();
+      })
     );
   }
 
@@ -318,7 +331,7 @@ class QueueUIHelpers {
     $(".tooltip").remove();
 
     if (!$(e.target).closest(".queue-item-draggable").length) {
-      $(".queue-item-draggable").removeClass("expanded").css("width", "120px");
+      $(".queue-item-draggable").removeClass("expanded").css("width", "130px");
     }
   }
 
@@ -413,8 +426,7 @@ class QueueUIHelpers {
   }
 
   // Rebuild queue items after API calls
-  rebuildQueueItems($queueContainer, data, queueId) {
-    $queueContainer.forceCleanupLoading();
+  rebuildQueueItems($queueContainer, data) {
     $queueContainer.html("");
 
     if (data.count > 0) {
@@ -517,7 +529,7 @@ class QueueUIHelpers {
     $queueContainer.wrapLoading(
       window.QueueAPI.addItem(queueId, { itemName: itemName })
         .done((data) => {
-          this.rebuildQueueItems($queueContainer, data, queueId);
+          this.rebuildQueueItems($queueContainer, data);
         })
         .fail((xhr) => {
           $inputForm.find("input, button").prop("disabled", false);
@@ -548,7 +560,7 @@ class QueueUIHelpers {
         isPriority: isPriority,
       })
         .done((data) => {
-          this.rebuildQueueItems($queueContainer, data, queueId);
+          this.rebuildQueueItems($queueContainer, data);
         })
         .fail((xhr) => {
           $input.prop("disabled", false);
@@ -692,6 +704,33 @@ class QueueUIHelpers {
       });
   }
 
+  handleListChannelRewards(e) {
+    e.preventDefault();
+    const $button = $(e.currentTarget);
+    const queueId = $button.data("queue");
+
+    $button
+      .prop("disabled", true)
+      .html('<span class="spinner-border spinner-border-sm"></span>');
+
+    window.QueueAPI.getRewards(queueId)
+      .done((data) => {
+        const $panel = $("#rewardsPanel");
+        const $grid = $panel.find(".reward-grid");
+
+        data.forEach((reward) => {
+          $grid.append(QueueTemplates.createChannelReward(reward));
+        });
+
+        $panel.toggleClass("d-none d-flex");
+      })
+      .always(() => {
+        $button
+          .prop("disabled", false)
+          .html('<img src="/img/reward.png" width="17px" height="19px">');
+      });
+  }
+
   // Utility methods
   escapeHtml(text) {
     const map = {
@@ -823,11 +862,10 @@ window.refreshQueueItems = (queueId) => {
   $queueContainer.wrapLoading(
     window.QueueAPI.getQueue(queueId).done((data) => {
       if (data.length == 1) {
-        window.queueUIHelpers.rebuildQueueItems(
-          $queueContainer,
-          { count: data[0].items.length, items: data[0].items },
-          queueId
-        );
+        window.queueUIHelpers.rebuildQueueItems($queueContainer, {
+          count: data[0].items.length,
+          items: data[0].items,
+        });
       }
     })
   );

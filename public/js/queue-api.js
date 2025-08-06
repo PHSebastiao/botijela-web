@@ -2,8 +2,7 @@
 // Centralized API service for queue operations with caching and error handling
 
 class QueueAPIService {
-  constructor(cacheManager) {
-    this.cache = cacheManager;
+  constructor() {
   }
 
   // Core request method with caching
@@ -14,26 +13,8 @@ class QueueAPIService {
       ...options,
     };
 
-    // Check cache for GET requests
-    if (config.type === "GET" && !options.skipCache) {
-      const cached = this.cache.get(url, config);
-      if (cached) {
-        return $.Deferred().resolve(cached).promise();
-      }
-    }
-
-    if (config.data && typeof config.data === "object") {
-      config.data = JSON.stringify(config.data);
-    }
-
     const request = $.ajax(url, config);
 
-    // Cache successful GET responses
-    if (config.type === "GET" && !options.skipCache) {
-      request.done((data) => {
-        this.cache.set(url, config, data);
-      });
-    }
 
     return request.fail((xhr, status, error) => {
       // Enhanced error logging
@@ -75,8 +56,6 @@ class QueueAPIService {
     });
 
     promise.done((response) => {
-      this.cache.invalidate(`/queue/${queueId}/edit`);
-
       const channelName = window.socketConfig?.currentChannel;
       if (window.broadcastQueueOperation) {
         window.broadcastQueueOperation("item-updated", channelName, queueId, {
@@ -103,8 +82,6 @@ class QueueAPIService {
     });
 
     promise.done((response) => {
-      this.cache.invalidate(`/queue/${queueId}/edit`);
-
       const channelName = window.socketConfig?.currentChannel;
 
       if (window.broadcastQueueOperation) {
@@ -127,8 +104,6 @@ class QueueAPIService {
     const { itemName } = data;
 
     promise.done((response) => {
-      this.cache.invalidate(`/queue/${queueId}/edit`);
-
       const channelName = window.socketConfig?.currentChannel;
 
       if (window.broadcastQueueOperation) {
@@ -155,8 +130,6 @@ class QueueAPIService {
     });
 
     promise.done((response) => {
-      this.cache.invalidate(`/queue/${queueId}/edit`);
-
       const channelName = window.socketConfig?.currentChannel;
 
       if (window.broadcastQueueOperation) {
@@ -184,8 +157,6 @@ class QueueAPIService {
     });
 
     promise.done((response) => {
-      this.cache.invalidate(`/queue/${queueId}/edit`);
-
       const channelName = window.socketConfig?.currentChannel;
       if (window.broadcastQueueOperation) {
         window.broadcastQueueOperation("item-moved", channelName, queueId, {
@@ -208,7 +179,6 @@ class QueueAPIService {
     });
 
     promise.done((response) => {
-      this.cache.invalidate(`/queue/`);
 
       const channelName = window.socketConfig?.currentChannel;
       if (window.broadcastQueueOperation) {
@@ -231,9 +201,6 @@ class QueueAPIService {
     });
 
     promise.done((response) => {
-      this.cache.invalidate(`/queue/${queueId}`);
-      this.cache.invalidate(`/queue/queues`);
-
       const channelName = window.socketConfig?.currentChannel;
       if (window.broadcastQueueOperation) {
         window.broadcastQueueOperation("queue-updated", channelName, queueId, {
@@ -246,13 +213,16 @@ class QueueAPIService {
     return promise;
   }
 
-  // Read operations (cached)
   getQueue(queueId) {
     return this.request(`/queue/${queueId}/edit`);
   }
-
+  
   getQueues() {
     return this.request(`/queue/queues`);
+  }
+  
+  getRewards(queueId) {
+    return this.request(`/queue/${queueId}/rewards`);
   }
 
   getCompletedItems(queueId, page, limit) {
@@ -269,4 +239,4 @@ class QueueAPIService {
 }
 
 // Global API instance
-window.QueueAPI = new QueueAPIService(window.cacheManager);
+window.QueueAPI = new QueueAPIService();

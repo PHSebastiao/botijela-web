@@ -124,6 +124,10 @@ body {
   border: 2px solid var(--success);
 }
 
+main {
+  height: inherit;
+}
+
 /* Enhanced form controls */
 .form-control {
   border-radius: var(--radius-md);
@@ -161,7 +165,7 @@ body {
   color: var(--text-color);
   transform: translateX(0);
   transition: transform var(--transition-slow);
-  overflow-y: auto;
+  /* overflow-y: auto; */
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-xl);
@@ -333,16 +337,26 @@ body,
   height: 100%;
 }
 
-#content {
-  overflow-y: auto;
-}
-
 .modal-content {
   border-radius: var(--radius-2xl);
 }
 
 .h-90 {
   height: 90%;
+}
+
+/* Simplebar Custom Styles */
+.simplebar-scrollbar:before {
+  background: hsl(0, 0%, 60%);
+  border-radius: 100vw;
+}
+
+.simplebar-scrollbar.simplebar-hover:before {
+  background: hsl(0, 0%, 50%);
+}
+
+.simplebar-track.simplebar-vertical {
+  width: 0.5em;
 }
 
 /* Custom Scrollbar Styles */

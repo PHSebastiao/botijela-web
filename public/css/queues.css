@@ -10,6 +10,12 @@
     gap: var(--space-xs);
 }
 
+.queues-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 .form-check {
     display: flex;
     align-items: center;
@@ -43,8 +49,8 @@
     transition: all var(--transition-normal);
     position: relative;
     white-space: nowrap;
-    overflow: visible;
-    width: 120px;
+    /* overflow: visible; */
+    width: 130px;
     flex-shrink: 0;
     box-shadow: var(--shadow-sm);
     cursor: pointer;
@@ -60,7 +66,7 @@
 }
 
 .queue-item-draggable.expanded {
-    min-width: 120px;
+    min-width: 130px;
     z-index: 10;
 }
 
@@ -266,8 +272,105 @@
     background: linear-gradient(135deg, var(--primary-light), var(--primary-hover)) !important;
 }
 
+/* Rewards Styling */
+.rewards-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-radius: 0.75rem;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+    width: 23rem;
+    padding: 0.9rem;
+    max-height: 37rem;
+    z-index: 1050;
+    /* Flexbox layout for sticky footer */
+    flex-direction: column;
+}
+
+.reward-grid {
+    display: grid;
+    flex: 1;
+    overflow-y: auto;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    max-height: 20rem;
+    padding: 2px;
+}
+
+.reward-item {
+    text-align: center;
+}
+
+.reward-button {
+    height: 6rem;
+    width: 6rem;
+    border-radius: 0.4rem;
+    padding: 0.5rem;
+    text-align: center;
+    color: var(--text-color);
+    font-size: 0.85rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.reward-button:hover {
+    transform: scale(1.05);
+    transition: transform 0.15s ease-in-out;
+}
+
+.reward-button .reward-img {
+    width: 1.8rem;
+    position: absolute;
+    top: 1.8rem;
+}
+
+.reward-cost {
+    font-size: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.35);
+    color: white;
+    padding: 2px;
+    border-radius: 0.2rem;
+}
+
+.reward-item div p {
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.panel-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-status {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 1rem;
+    font-size: 0.85rem;
+    background-color: var(--bg-color);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-left: -1rem;
+    margin-right: -1rem;
+    margin-bottom: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+
 /* Dark Navy Mode Adjustments */
 [data-bs-theme="dark"] {
+    .rewards-panel,
+    .footer-status {
+        background-color: #18181b;
+    }
+
     .queue-item-draggable,
     .completed-item-pill {
         background: linear-gradient(135deg, var(--gray-700), var(--gray-800));

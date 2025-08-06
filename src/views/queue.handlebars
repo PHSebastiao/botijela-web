@@ -1,6 +1,9 @@
 <link rel="stylesheet" href="/css/queues.css">
 
-<h1>{{t 'queues.title' }}</h1>
+<div class="queues-header">
+  <h1>{{t 'queues.title' }}</h1>
+  <button type="button" class="btn btn-secondary btn-sm btn-refresh-queues"><i class="bi bi-arrow-repeat"></i></button>
+</div>
 <div class="accordion mb-4" id="new-queue-acc">
   <div class="accordion-item">
     <h2 class="accordion-header">
@@ -46,7 +49,7 @@
   </div>
 </div>
 {{#if queues}}
-<ul class="list-group">
+<ul class="list-group" id="queues">
   {{#each queues}}
   <li class="list-group-item">
     <div class="d-flex justify-content-between align-items-start">
@@ -60,7 +63,7 @@
           {{t "queues.separator" }}: {{ this.queueSeparator }}
         </div>
         <hr>
-        <div class="queue-items" data-queue-id="{{this.queueConfig_id}}" data-queue-name="{{this.queueName}}">
+        <div class="queue-items" id="queue-items-{{this.queueConfig_id}}" data-queue-id="{{this.queueConfig_id}}" data-queue-name="{{this.queueName}}">
           {{#each this.items}}
           {{#unless this.isCompleted}}
           <div class="queue-item-draggable{{#if this.isPriority}} priority-item{{/if}}"
@@ -103,6 +106,11 @@
           data-bs-placement="left" data-bs-title="{{t 'queues.titles.delete' }}">
           <i class="bi bi-trash3"></i>
         </button>
+        {{!-- <button type="button" class="btn-rewards btn btn-sm btn-outline-info border-0"
+          data-queue='{{this.queueConfig_id}}' data-bs-toggle="tooltip" data-bs-placement="left"
+          data-bs-title="{{t 'queues.titles.rewards' }}">
+          <img src="/img/reward.png" width="17px" height="19px">
+        </button> --}}
       </div>
     </div>
   </li>

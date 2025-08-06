@@ -47,7 +47,10 @@
       "editItem": "Edit item",
       "removeItem": "Remove item",
       "completeItem": "Complete Item",
-      "completed_items": "Completed Items"
+      "completed_items": "Completed Items",
+      "rewards": "Select Redemptions",
+      "reward_user": "{{name}}'s Rewards",
+      "rewards_notPowerUps": " & Rewards"
     },
     "create_new_queue": "New queue",
     "delete_success": "Queue successfully deleted.",

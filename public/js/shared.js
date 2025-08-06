@@ -113,11 +113,3 @@ $(".dropdown").on("show.bs.dropdown", function () {
 $(".dropdown").on("hide.bs.dropdown", function () {
   $(this).find(".dropdown-menu").first().slideToggle(300);
 });
-
-$(".dropup").on("show.bs.dropdown", function () {
-  $(this).find(".dropdown-menu").first().slideToggle(300);
-});
-
-$(".dropup").on("hide.bs.dropdown", function () {
-  $(this).find(".dropdown-menu").first().stop(100, 100).slideDown(300);
-});

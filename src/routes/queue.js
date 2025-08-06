@@ -56,15 +56,19 @@ queueRouter.post("/", isAuthenticated, async (req, res) => {
       return res.redirect("/queue");
     }
 
-    await InternalApiService.createQueue(res.locals.managing.username, res.locals.user.username, {
-      username: res.locals.managing.username,
-      userId: res.locals.managing.userId,
-      queueName: validation.sanitized.queueName,
-      queueDescription: validation.sanitized.queueDescription,
-      queueSeparator: validation.sanitized.queueSeparator,
-      silentActions: validation.sanitized.silentActions,
-      lng: res.locals.resolvedLanguage,
-    });
+    await InternalApiService.createQueue(
+      res.locals.managing.username,
+      res.locals.user.username,
+      {
+        username: res.locals.managing.username,
+        userId: res.locals.managing.userId,
+        queueName: validation.sanitized.queueName,
+        queueDescription: validation.sanitized.queueDescription,
+        queueSeparator: validation.sanitized.queueSeparator,
+        silentActions: validation.sanitized.silentActions,
+        lng: res.locals.resolvedLanguage,
+      }
+    );
 
     addSuccess(req, req.t("queues.create_success"));
   } catch (error) {
@@ -89,8 +93,8 @@ queueRouter.delete(
     } catch (error) {
       console.error("Error deleting queue:", error);
       return res
-      .status(500)
-      .json({ error: error.message || req.t("queues.delete_error") });
+        .status(500)
+        .json({ error: error.message || req.t("queues.delete_error") });
     }
   }
 );
@@ -253,6 +257,23 @@ queueRouter.get("/:queueId/completed", isAuthenticated, async (req, res) => {
       queueId,
       page,
       limit
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error fetching completed items:", error);
+    return res
+      .status(500)
+      .json({ error: error.message || req.t("queues.fetch_error") });
+  }
+});
+
+queueRouter.get("/:queueId/rewards", isAuthenticated, async (req, res) => {
+  try {
+    const queueId = req.params.queueId;
+
+    const result = await InternalApiService.getChannelRewards(
+      queueId,
+      res.locals.managing.userId
     );
     res.status(200).json(result);
   } catch (error) {

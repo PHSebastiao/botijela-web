@@ -89,7 +89,7 @@ const QueueTemplates = {
               ${t("queues.separator")}: ${queue.queueSeparator}
             </div>
             <hr>
-            <div class="queue-items" data-queue-id="${queue.queueConfig_id}" data-queue-name="${queue.queueName}">
+            <div class="queue-items" id="queue-items-${queue.queueConfig_id}" data-queue-id="${queue.queueConfig_id}" data-queue-name="${queue.queueName}">
               ${queueItemsHtml}
               ${this.createAddButton()}
             </div>
@@ -111,9 +111,30 @@ const QueueTemplates = {
               data-bs-title="${t("queues.titles.delete")}">
               <i class="bi bi-trash3"></i>
             </button>
+
           </div>
         </div>
       </li>
     `;
+            // <button type="button" class="btn-rewards btn btn-sm btn-outline-info border-0"
+            //   data-queue='{"queueId": {{this.queueConfig_id}}, "channelId": {{this.userId}} }' data-bs-toggle="tooltip"
+            //   data-bs-placement="left" data-bs-title="{{t 'queues.titles.rewards' }}">
+            //   <img src="/img/reward.png" width="17px" height="19px">
+            //  </button>
+  },
+  
+  // Create channel reward from template
+  createChannelReward(reward) {
+    return `
+    <div class="reward-item">
+      <div class="reward-button" style="background: ${reward.backgroundColor}" data-id="${reward.rewardId}">
+        <div class="reward-img"><img class="img-fluid" src="${reward.imgUrl}" alt="${reward.title}" /></div>
+        <div class="reward-cost">🔮 ${reward.cost}</div>
+      </div>
+      <div title="${reward.title}">
+        <p>${reward.title}</p>
+      </div>
+    </div>
+    `
   }
 };

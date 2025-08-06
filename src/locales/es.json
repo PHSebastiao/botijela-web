@@ -47,7 +47,10 @@
       "editItem": "Elemento de edición",
       "removeItem": "Eliminar el artículo",
       "completeItem": "Artículo completo",
-      "completed_items": "Artículos completos"
+      "completed_items": "Artículos completos",
+      "rewards": "Seleccionar canje",
+      "reward_user": "Recompensas de {{nombre}}",
+      "rewards_notPowerUps": " y recompensas"
     },
     "create_new_queue": "Nueva cola",
     "delete_success": "Cola eliminada con éxito.",

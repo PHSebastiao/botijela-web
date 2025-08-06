@@ -16,7 +16,8 @@
   },
   "options": {
     "message": "Esta é a página de opções, onde serão configurados algumas coisas relacionado ao bot e seu canal.",
-    "title": "Opções"
+    "title": "Opções",
+    "advanced_message": "Login avançado com permissões extras para funcionalidades especiais do bot, não é necessário acessar se não sabe o que está fazendo"
   },
   "queues": {
     "title": "Filas",
@@ -47,7 +48,10 @@
       "editItem": "Editar Item",
       "removeItem": "Remover item",
       "completeItem": "Completar Item",
-      "completed_items": "Itens Completos"
+      "completed_items": "Itens Completos",
+      "rewards": "Selecionar Resgates",
+      "reward_user": "Recompensas de {{name}}",
+      "rewards_notPowerUps": " e recompensas"
     },
     "create_new_queue": "Criar nova fila",
     "delete_success": "Fila deletada com sucesso.",

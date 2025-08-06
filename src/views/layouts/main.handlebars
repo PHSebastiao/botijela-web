@@ -21,6 +21,7 @@
 
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/simplebar.min.css">
     <link rel="stylesheet" href="/css/styles.css">
 
     <style>
@@ -61,7 +62,7 @@
 <body>
     <div class="wrapper d-flex w-100 h-100">
         <!-- Sidebar -->
-        <nav id="sidebar">
+        <nav id="sidebar" data-simplebar>
             <div class="p-3 d-flex flex-column justify-content-between h-100">
                 <div>
                     <h4 class="mb-3">Botijela</h4>
@@ -143,7 +144,8 @@
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         {{managing.displayName}}
                                     </button>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="channelToManage">
+                                    <ul class="dropdown-menu dropdown-menu-end" id="manageChannel"
+                                        aria-labelledby="channelToManage" >
                                         {{#if manageable}}
                                         <li>
                                             <h6 class="dropdown-header">{{t 'main.moderated_channels' }}:</h6>
@@ -179,7 +181,7 @@
                     </div>
                 </nav>
             </header>
-            <main class="container-fluid p-3">
+            <main class="container-fluid p-3" data-simplebar>
                 {{{body}}}
             </main>
             {{#if toasts}}
@@ -340,10 +342,41 @@
             </div>
         </div>
     </div>
+
+    <!-- Rewards Holder -->
+    <!-- Floating Panel Left of Button -->
+    <div class="rewards-panel d-none" id="rewardsPanel">
+        <div class="panel-header">
+            <h6 class="mb-1"><s>Power-ups</s>{{t 'queues.titles.rewards_notPowerUps' }}</h6>
+            <p class="text-muted mb-3" style="font-size: 0.8rem; font-weight: 600;">
+                {{t "queues.titles.reward_user" name=managing.displayName}}
+            </p>
+        </div>
+        <div class="reward-grid">
+            {{!--
+            <div class="reward-item">
+                <div class="reward-button" style="background: ${reward.backgroundColor}" data-id="${reward.rewardId}">
+                    <div class="reward-img"><img class="img-fluid" src="${reward.imgUrl}" alt="${reward.title}" />
+                    </div>
+                    <div class="reward-cost">🔮 ${reward.cost}</div>
+                </div>
+                <div title="${reward.title}">
+                    <p>${reward.title}</p>
+                </div>
+            </div>
+            --}}
+        </div>
+
+        <div class="footer-status">
+            <span class="badge text-light" style="background: rgba(83, 83, 95, 0.38); pointer-event: none;">🔮 Infinitos
+                Pontos</span>
+        </div>
+    </div>
     {{/if}}
 
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/jquery.min.js"></script>
+    <script src="/js/simplebar.min.js"></script>
     <script src="/js/Sortable.min.js"></script>
     <script src="/js/jquery-sortable.js"></script>
     <script src="/js/socket-manager.js"></script>
@@ -419,7 +452,6 @@
     </script>
     <script src="/js/loading-wrapper.js"></script>
     <script src="/js/queue-templates.js"></script>
-    <script src="/js/cache-manager.js"></script>
     <script src="/js/queue-api.js"></script>
     <script src="/js/queue-socket.js"></script>
     <script src="/js/queue-ui-helpers.js"></script>

@@ -3,12 +3,7 @@
 
 // Cleanup function for page unload
 function setupCleanup() {
-  $(window).on("beforeunload", function () {
-    // Cleanup cache
-    if (window.cacheManager) {
-      window.cacheManager.clear();
-    }
-    
+  $(window).on("beforeunload", function () {    
     // Cleanup socket connections
     if (window.queueSocketManager) {
       window.queueSocketManager.cleanup();
