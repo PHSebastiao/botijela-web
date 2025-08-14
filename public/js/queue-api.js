@@ -9,7 +9,6 @@ class QueueAPIService {
   request(url, options = {}) {
     const config = {
       type: options.method || "GET",
-      contentType: "application/json",
       ...options,
     };
 
