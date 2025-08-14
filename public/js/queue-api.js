@@ -2,18 +2,21 @@
 // Centralized API service for queue operations with caching and error handling
 
 class QueueAPIService {
-  constructor() {
-  }
+  constructor() {}
 
   // Core request method with caching
   request(url, options = {}) {
     const config = {
       type: options.method || "GET",
+      contentType: "application/json",
       ...options,
     };
 
-    const request = $.ajax(url, config);
+    if (config.data && typeof config.data === "object") {
+      config.data = JSON.stringify(config.data);
+    }
 
+    const request = $.ajax(url, config);
 
     return request.fail((xhr, status, error) => {
       // Enhanced error logging
@@ -178,7 +181,6 @@ class QueueAPIService {
     });
 
     promise.done((response) => {
-
       const channelName = window.socketConfig?.currentChannel;
       if (window.broadcastQueueOperation) {
         window.broadcastQueueOperation("queue-removed", channelName, queueId, {
@@ -215,11 +217,11 @@ class QueueAPIService {
   getQueue(queueId) {
     return this.request(`/queue/${queueId}/edit`);
   }
-  
+
   getQueues() {
     return this.request(`/queue/queues`);
   }
-  
+
   getRewards(queueId) {
     return this.request(`/queue/${queueId}/rewards`);
   }
